@@ -3,19 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package java.project.one;
+package MainPackages;
 
 /**
  *
  * @author Lin-Li
  */
-public class JavaProjectOne {
+public class Main {
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+       Window window = new Window();
     }
     
 }
