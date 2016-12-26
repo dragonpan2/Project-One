@@ -18,7 +18,7 @@ public class Vector2 {
         this.r = Math.sqrt(Math.exp(x)+Math.exp(y));
         this.phi = Math.atan2(y, x);
     }
-    public Vector2(double r, double phi, boolean cw) {
+    public Vector2(double r, double phi, boolean isSpherical) {
         this.x = r*Math.cos(phi);
         this.y = r*Math.sin(phi);
         this.r = r;
