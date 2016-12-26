@@ -101,14 +101,73 @@ public class Matrix {
         return newmatrix;
     }
     
+    public static Matrix multMat3(Matrix... args) {
+        Matrix newmatrix = args[0];
+        for (int k=1; k<args.length; k++) {
+            newmatrix = multMat2(newmatrix, args[k]);
+        }
+        return newmatrix;
+        
+    }
+    
+    public static Matrix multMat2(Matrix mat1, Matrix mat2) {
+        
+        if (mat1.columns == mat2.rows) {
+            Matrix newmatrix = new Matrix(mat1.rows, mat2.columns);
+            int n = mat1.columns;
+            
+            for (int i=0; i<newmatrix.rows; i++) {
+                for (int j=0; j<newmatrix.columns; j++) {
+                    double component = 0;
+                    for (int r=0; r<n; r++) {
+                        component += mat1.components[i][r] * mat2.components[r][j];
+                    }
+                    newmatrix.components[i][j] = component;
+                }
+            }
+            
+            return newmatrix;
+        } else {
+            return new Matrix(0,0);
+        }
+    }
+    
+    public static Matrix multMat(Matrix... args) {
+        Matrix multmatrix = args[0];
+        for (int k=1; k<args.length; k++) {
+            if (multmatrix.columns == args[k].rows) {
+                Matrix newmatrix = new Matrix(multmatrix.rows, args[k].columns);
+                int n = multmatrix.columns;
+
+                for (int i=0; i<newmatrix.rows; i++) {
+                    for (int j=0; j<newmatrix.columns; j++) {
+                        double component = 0;
+                        for (int r=0; r<n; r++) {
+                            component += multmatrix.components[i][r] * args[k].components[r][j];
+                        }
+                        newmatrix.components[i][j] = component;
+                    }
+                }
+                multmatrix = newmatrix;
+            } else {
+                return new Matrix(0,0);
+            }
+            
+        }
+        return multmatrix;
+        
+    }
+    
     public Matrix getShell() {
         return shell(this);
     }
-
     public double[][] getComponents() {
         return components;
     }
-    public double getComponents(int i, int j) {
+    public double getComponent(int i, int j) {
         return components[i][j];
+    }
+    public boolean getIsSquare() {
+        return this.columns == this.rows;
     }
 }

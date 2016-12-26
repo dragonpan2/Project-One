@@ -20,16 +20,25 @@ public class Main {
        Window window = new Window();
        
        double[][] testarray = {{1,2,3},{4,5,6}};
+       double[][] testarray2 = {{11,3},{7,11}};
+       double[][] testarray3 = {{8,0,1},{0,3,5}};
+       double[][] testarray4 = {{5,2},{1,9},{6,5}};
        Matrix testmatrix = new Matrix(testarray);
        Matrix testmatrix2 = Matrix.add(testmatrix, testmatrix);
        Matrix testmatrix3 = Matrix.multSca(testmatrix, 1, 2, 10);
        Matrix testmatrix4 = Matrix.transpose(testmatrix);
+       
+       Matrix testmatrix5 = new Matrix(testarray2);
+       Matrix testmatrix6 = new Matrix(testarray3);
+       Matrix testmatrix7 = new Matrix(testarray4);
+       Matrix testmatrix8 = Matrix.multMat(testmatrix5, testmatrix6, testmatrix7); //good answer is [605 387][685 719]
        
        
        System.out.println(Arrays.deepToString(testmatrix.getComponents()));
        System.out.println(Arrays.deepToString(testmatrix2.getComponents()));
        System.out.println(Arrays.deepToString(testmatrix3.getComponents()));
        System.out.println(Arrays.deepToString(testmatrix4.getComponents()));
+       System.out.println(Arrays.deepToString(testmatrix8.getComponents()));
        
        
        
