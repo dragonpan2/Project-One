@@ -5,6 +5,8 @@
  */
 package MainPackages;
 
+import java.util.Arrays;
+
 /**
  *
  * @author Lin-Li
@@ -16,6 +18,21 @@ public class Main {
      */
     public static void main(String[] args) {
        Window window = new Window();
+       
+       double[][] testarray = {{1,2,3},{4,5,6}};
+       Matrix testmatrix = new Matrix(testarray);
+       Matrix testmatrix2 = Matrix.add(testmatrix, testmatrix);
+       Matrix testmatrix3 = Matrix.multSca(testmatrix, 1, 2, 10);
+       Matrix testmatrix4 = Matrix.transpose(testmatrix);
+       
+       
+       System.out.println(Arrays.deepToString(testmatrix.getComponents()));
+       System.out.println(Arrays.deepToString(testmatrix2.getComponents()));
+       System.out.println(Arrays.deepToString(testmatrix3.getComponents()));
+       System.out.println(Arrays.deepToString(testmatrix4.getComponents()));
+       
+       
+       
     }
     
 }
