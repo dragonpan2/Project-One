@@ -24,26 +24,36 @@ public class Vector2 {
         this.r = r;
         this.phi = phi;
     }
-    public Vector2 projVec(Vector2 vec1, Vector2 vec2) {
-        double scalar = (vec1.getX()*vec2.getX()+vec1.getY()*vec2.getY())/vec2.getR();
-        Vector2 vec3 = new Vector2(1, vec2.getPhi(), false);
-        
+    public Vector2 projVec(Vector2 vec2) {
+        double scalar = (this.x*vec2.getX()+this.y*vec2.getY())/vec2.getR();
+        return new Vector2(scalar, vec2.getPhi(), false);
     }
-
+    public void updatePolar() {
+        this.r = Math.sqrt(Math.exp(this.x)+Math.exp(this.y));
+        this.phi = Math.atan2(this.y, this.x);
+    }
+    public void updateSpherical() {
+        this.x = this.r*Math.cos(this.phi);
+        this.y = this.r*Math.sin(this.phi);
+    }
     public void setX(double x) {
         this.x = x;
+        this.updateSpherical();
     }
 
     public void setY(double y) {
         this.y = y;
+        this.updateSpherical();
     }
 
     public void setR(double r) {
         this.r = r;
+        this.updatePolar();
     }
 
     public void setPhi(double phi) {
         this.phi = phi;
+        this.updatePolar();
     }
 
     public double getX() {
