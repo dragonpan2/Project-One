@@ -7,9 +7,13 @@ package java.project.one;
 
 /**
  *
- * @author Lin-Li
+ * @author bowen
  */
-public class Player extends Movable {
-    private float xspeed;
-    private float yspeed;
+public class Movable {
+    private float health;
+    private float energy; 
+    
+    
+    
+    
 }
