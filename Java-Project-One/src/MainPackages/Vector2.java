@@ -15,7 +15,7 @@ public class Vector2 {
     public Vector2(double x, double y) {
         this.x = x;
         this.y = y;
-        this.r = Math.sqrt(Math.exp(x)+Math.exp(y));
+        this.r = Math.sqrt(Math.pow(x, 2)+Math.pow(y, 2));
         this.phi = Math.atan2(y, x);
     }
     public Vector2(double r, double phi, boolean isSpherical) {
@@ -24,8 +24,11 @@ public class Vector2 {
         this.r = r;
         this.phi = phi;
     }
+    public double getProdSca(Vector2 vec2) {
+        return (this.x*vec2.getX()+this.y*vec2.getY());
+    }
     public double getProjSca(Vector2 vec2) {
-        return (this.x*vec2.getX()+this.y*vec2.getY())/vec2.getR();
+        return this.getProdSca(vec2)/vec2.getR();
     }
     public Vector2 getProjVec(Vector2 vec2) {
         double scalar = this.getProjSca(vec2);
@@ -36,7 +39,7 @@ public class Vector2 {
         return new Vector2(this.x-vec3.getX(), this.y-vec3.getY());
     }
     public void updatePolar() {
-        this.r = Math.sqrt(Math.exp(this.x)+Math.exp(this.y));
+        this.r = Math.sqrt(Math.pow(x, 2)+Math.pow(y, 2));
         this.phi = Math.atan2(this.y, this.x);
     }
     public void updateSpherical() {

@@ -17,14 +17,15 @@ public class TestBall extends JComponent {
 
     public TestBall() {
         
-        this.setSize(10, 10);
+        this.setSize(100, 100);
+        
     }
     
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.setColor(Color.white);
-        g.fillOval(0, 0, 10, 10);
+        g.fillOval(0, 0, 20, 20);
     }
     
 }
