@@ -20,7 +20,7 @@ public class World extends JPanel implements Runnable {
         
         
         
-        thread.start();
+         new Thread(this).start();
     }
 
     @Override

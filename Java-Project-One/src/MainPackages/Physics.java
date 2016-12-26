@@ -3,17 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package java.project.one;
+package MainPackages;
 
 /**
  *
  * @author bowen
  */
-public class Movable {
-    private float health;
-    private float energy; 
-    
-    
-    
-    
+public class Physics {
+    private float x, y;
 }
