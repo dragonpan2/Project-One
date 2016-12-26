@@ -24,9 +24,16 @@ public class Vector2 {
         this.r = r;
         this.phi = phi;
     }
-    public Vector2 projVec(Vector2 vec2) {
-        double scalar = (this.x*vec2.getX()+this.y*vec2.getY())/vec2.getR();
+    public double getProjSca(Vector2 vec2) {
+        return (this.x*vec2.getX()+this.y*vec2.getY())/vec2.getR();
+    }
+    public Vector2 getProjVec(Vector2 vec2) {
+        double scalar = this.getProjSca(vec2);
         return new Vector2(scalar, vec2.getPhi(), false);
+    }
+    public Vector2 getRejVec(Vector2 vec2) {
+        Vector2 vec3 = this.getProjVec(vec2);
+        return new Vector2(this.x-vec3.getX(), this.y-vec3.getY());
     }
     public void updatePolar() {
         this.r = Math.sqrt(Math.exp(this.x)+Math.exp(this.y));
