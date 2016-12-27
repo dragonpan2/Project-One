@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package MainPackages;
+package SkillPackages;
 
 /**
  *
@@ -17,7 +17,7 @@ public class FishingSkill extends Skill {
         
     }
     
-    public void FishingAction() {
+    public void FishingAction(POI poi) {
         if (true) {
             
         }

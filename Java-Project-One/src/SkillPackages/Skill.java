@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package MainPackages;
+package SkillPackages;
 
 /**
  *
@@ -38,6 +38,48 @@ public abstract class Skill {
     public void setType(Type type) {
         this.type = type;
     }
+
+    public String getDisc() {
+        return disc;
+    }
+
+    public int getExp() {
+        return exp;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getRequLevelUp() {
+        return requLevelUp;
+    }
+
+    public void setDisc(String disc) {
+        this.disc = disc;
+    }
+
+    public void setExp(int exp) {
+        this.exp = exp;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setRequLevelUp(int requLevelUp) {
+        this.requLevelUp = requLevelUp;
+    }
+    
+    
     
     public void skillUsed(int expToAdd) {
         
