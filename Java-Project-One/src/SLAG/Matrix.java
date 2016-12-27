@@ -215,4 +215,37 @@ public class Matrix {
         return rows;
     }
     
+    public void setElement(int i, int j, double s) {
+        this.elements[i][j] = s;
+    }
+    public void setElements(Matrix matrix) {
+        Matrix newmatrix = new Matrix(matrix.elements);
+        this.rows = newmatrix.rows;
+        this.columns = newmatrix.columns;
+        this.elements = newmatrix.elements;
+    }
+    private void updateElements(Matrix matrix) {
+        this.rows = matrix.rows;
+        this.columns = matrix.columns;
+        this.elements = matrix.elements;
+    }
+    
+    public void setShell() {
+        this.updateElements(this.getShell());
+    }
+    public void setAdd(Matrix... args) {
+        this.updateElements(this.getAdd(args));
+    }
+    public void setNegate() {
+        this.updateElements(this.getNegate());
+    }
+    public void setMult(double... scalars) {
+        this.updateElements(this.getMult(scalars));
+    }
+    public void setMult(Matrix... args) {
+        this.updateElements(this.getMult(args));
+    }
+    public void setTranspose() {
+        this.updateElements(this.getTranspose());
+    }
 }

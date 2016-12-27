@@ -1,5 +1,6 @@
 package MainPackages;
 
+import SLAG.Vector;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.JFrame;
@@ -28,22 +29,24 @@ public class Window extends JFrame {
         this.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
+                    //System.out.println("Triggered");
                 if (e.getKeyCode() == KeyEvent.VK_UP) {
-                    System.out.println("Triggered");
-
+                    world.vec1.setElement(0, 1, world.vec1.getElement(0, 1)-10);
                 }
                 if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                    System.out.println("Triggered");
+                    world.vec1.setElement(0, 1, world.vec1.getElement(0, 1)+10);
 
                 }
                 if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-                    System.out.println("Triggered");
+                    world.vec1.setElement(0, 0, world.vec1.getElement(0, 0)-10);
 
                 }
                 if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                    System.out.println("Triggered");
+                    world.vec1.setElement(0, 0, world.vec1.getElement(0, 0)+10);
 
                 }
+                world.vec3.setElements(Vector.projVec(world.vec1,world.vec2));
+                world.vec4.setElements(Vector.rejVec(world.vec1,world.vec2));
             }
         });
         

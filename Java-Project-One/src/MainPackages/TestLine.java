@@ -24,7 +24,7 @@ public class TestLine extends JComponent {
         this.vec = vec;
         this.colour = colour;
         this.thickness = thickness;
-        this.setSize(1000, 1000);
+        this.setSize(10000, 10000);
         
     }
     

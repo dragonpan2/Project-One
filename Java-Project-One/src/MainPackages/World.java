@@ -54,7 +54,7 @@ public class World extends JPanel implements Runnable {
             invalidate();
             repaint();
             try {
-                Thread.sleep(1000);
+                Thread.sleep(100);
             } catch (InterruptedException ex) {
                 System.out.println("Thread Error");
             }

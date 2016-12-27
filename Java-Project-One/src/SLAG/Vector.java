@@ -98,7 +98,7 @@ public class Vector extends Matrix {
     
     public static double norm(Vector vector) {
         double sum = 0;
-        for (int i=0; i<vector.getColumns(); i++) {
+        for (int i=0; i<vector.getColumnDimension(); i++) {
             sum += Math.pow(vector.getElement(0, i), 2);
         }
         return Math.sqrt(sum);
