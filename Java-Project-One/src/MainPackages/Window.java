@@ -1,6 +1,8 @@
 
 package MainPackages;
 
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import javax.swing.JFrame;
 
 /**
@@ -18,9 +20,25 @@ public class Window extends JFrame {
         this.setSize(1400, 1000);
         this.setVisible(true);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        
+        keyEventAdd();
         new Thread(world).start();
     }
+    
+    
+    public void keyEventAdd() {
+        this.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_UP) {
+                    System.out.println("Triggered");
+                }
+            }
+            
+            
+});
+    }
+    
+    
     
     
 }
