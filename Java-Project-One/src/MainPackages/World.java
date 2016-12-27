@@ -8,6 +8,7 @@ package MainPackages;
 import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.JPanel;
+import SLAG.*;
 
 /**
  *
@@ -17,10 +18,10 @@ public class World extends JPanel implements Runnable {
     
     TestBall ball = new TestBall();
     
-    Vector2 vec1 = new Vector2(35, 100);
-    Vector2 vec2 = new Vector2(90, 30);
-    Vector2 vec3 = vec1.getProjVec(vec2);
-    Vector2 vec4 = vec1.getRejVec(vec2);
+    Vector vec1 = new Vector(new double[]{35, 100});
+    Vector vec2 = new Vector(new double[]{90, 30});
+    Vector vec3 = Vector.projVec(vec1,vec2);
+    Vector vec4 = Vector.rejVec(vec1,vec2);
     
     TestLine line1 = new TestLine(vec1, Color.red, 2);
     TestLine line2 = new TestLine(vec2, Color.red, 2);

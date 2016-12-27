@@ -31,6 +31,7 @@ public class Window extends JFrame {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_UP) {
                     System.out.println("Triggered");
+                    
                 }
             }
             

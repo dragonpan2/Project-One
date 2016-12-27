@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package MainPackages;
+package SLAG;
 
 /**
  *
@@ -32,9 +32,9 @@ public class Matrix {
     
     
     public Matrix(double[]... args) {
-        if (args.length < 1) { //if there are less than 1 columns
+        if (args.length < 1) { //if there are less than 1 rows
             return;
-        } else if (args[0].length < 1) { //if there are less than 1 rows
+        } else if (args[0].length < 1) { //if there are less than 1 columns
             return;
         }
         for (int i=1; i<args.length; i++) { //check if all rows are of the same dimension
@@ -83,6 +83,37 @@ public class Matrix {
             return new Matrix(0,0);
         }
 
+    }
+    
+    public static Matrix sub(Matrix... args) {
+        if (checkSameSize(args)) {
+            
+            Matrix newmatrix = args[0].getShell();
+            
+            for (int k=0; k<args.length; k++) {
+                for (int j=0; j<args[k].columns; j++) {
+                    for (int i=0; i<args[k].rows; i++) {
+                        newmatrix.components[i][j] -= args[k].components[i][j];
+                    }
+                }
+            }
+            return newmatrix;
+            
+        } else {
+            return new Matrix(0,0);
+        }
+
+    }
+    
+    public static Matrix negate(Matrix matrix) {
+        Matrix newmatrix = matrix.getShell();
+        
+        for (int j=0; j<matrix.columns; j++) {
+            for (int i=0; i<matrix.rows; i++) {
+                newmatrix.components[i][j] = -matrix.components[i][j];
+            }
+        }
+        return newmatrix;
     }
     
     public static Matrix multSca(Matrix matrix, double... scalar) {
@@ -145,6 +176,9 @@ public class Matrix {
     
     public Matrix getShell() {
         return shell(this);
+    }
+    public Matrix getTranspose() {
+        return transpose(this);
     }
     public double[][] getComponents() {
         return components;

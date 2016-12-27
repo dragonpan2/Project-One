@@ -6,6 +6,8 @@
 package MainPackages;
 
 import java.util.Arrays;
+import SLAG.Matrix;
+import SLAG.Vector;
 
 /**
  *
@@ -34,11 +36,22 @@ public class Main {
        Matrix testmatrix8 = Matrix.multMat(testmatrix5, testmatrix6, testmatrix7); //good answer is [605 387][685 719]
        
        
+       double[] testarray5 = {6,5,8};
+       double[] testarray6 = {2,1,0};
+       
+       Vector testvector1 = new Vector(testarray5);
+       Vector testvector2 = new Vector(testarray6);
+       Vector testvector3 = Vector.add(testvector1, testvector2);
+       double prodsca = Vector.prodSca(testvector1, testvector2);
+       
+       
        System.out.println(Arrays.deepToString(testmatrix.getComponents()));
        System.out.println(Arrays.deepToString(testmatrix2.getComponents()));
        System.out.println(Arrays.deepToString(testmatrix3.getComponents()));
        System.out.println(Arrays.deepToString(testmatrix4.getComponents()));
        System.out.println(Arrays.deepToString(testmatrix8.getComponents()));
+       System.out.println(Arrays.deepToString(testvector3.getComponents()));
+       System.out.println(prodsca);
        
        
        
