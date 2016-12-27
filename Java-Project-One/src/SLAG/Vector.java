@@ -44,14 +44,14 @@ public class Vector extends Matrix {
     }
     
 //    public static double prodSca(Vector... args) {
-//        if (!checkSameSize(args)) {
+//        if (!Matrix.checkSameSize(args)) {
 //            return 0;
 //        }
 //        double scalarproduct = 0;
 //        for (int i=0; i<args[0].getColumns(); i++) {
-//            double product = args[0].getComponent(0, i);
+//            double product = args[0].getElement(0, i);
 //            for (int k=1; k<args.length; k++) {
-//                product *= args[k].getComponent(0, i);
+//                product *= args[k].getElement(0, i);
 //            }
 //            scalarproduct += product;
 //        }

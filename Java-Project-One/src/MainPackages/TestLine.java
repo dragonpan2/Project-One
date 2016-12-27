@@ -34,7 +34,7 @@ public class TestLine extends JComponent {
         Graphics2D g2 = (Graphics2D) g;
         g.setColor(this.colour);
         g2.setStroke(new BasicStroke(this.thickness));
-        g2.drawLine(500, 500, 500+(int)vec.getComponent(0, 0), 500+(int)vec.getComponent(0, 1));
+        g2.drawLine(500, 500, 500+(int)vec.getElement(0, 0), 500+(int)vec.getElement(0, 1));
     }
     
 }

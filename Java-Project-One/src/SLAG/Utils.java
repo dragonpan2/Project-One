@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 package SLAG;
-
+import java.util.Arrays;
 
 /**
  *
@@ -18,17 +18,31 @@ public class Utils {
             newArray[i] = array[i].clone();
         }
         
-        return new double[0][0];
+        return newArray;
     } 
     public static double[] copy(double[] array) {
         double[] newArray = array.clone();
         return newArray;
     } 
     
+    public static void fill(double[][] array, double s) {
+        for (int i=0; i<array.length; i++) {
+            Arrays.fill(array[i], s);
+        }
+    } 
     
     public static boolean checkLength(double[]... array) { //checks if all rows are of the same dimension  
         for (int i=1; i<array.length; i++) { 
             if (array[0].length != array[i].length) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    public static boolean checkPositive(int... args) {
+        for (int i=0; i<args.length; i++) {
+            if (args[i] < 0) {
                 return false;
             }
         }

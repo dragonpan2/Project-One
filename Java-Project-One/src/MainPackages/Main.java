@@ -45,7 +45,6 @@ public class Main {
        double prodsca = Vector.prodSca(testvector1, testvector2);
        
        
-       System.out.println(Arrays.deepToString(testmatrix.getElements()));
        System.out.println(Arrays.deepToString(testmatrix2.getElements()));
        System.out.println(Arrays.deepToString(testmatrix3.getElements()));
        System.out.println(Arrays.deepToString(testmatrix4.getElements()));
