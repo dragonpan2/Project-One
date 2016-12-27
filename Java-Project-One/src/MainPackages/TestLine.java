@@ -10,7 +10,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.BasicStroke;
 import javax.swing.JComponent;
-import SLAG.*;
+import SLAG.Vector;
 
 /**
  *

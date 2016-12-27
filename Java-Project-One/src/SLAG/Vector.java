@@ -59,7 +59,7 @@ public class Vector extends Matrix {
     }
     
     public static double projSca(Vector vec1, Vector vec2) {
-        return prodSca(vec1, vec2)/vec2.getNorm();
+        return Vector.prodSca(vec1, vec2)/vec2.getNorm();
     }
     
     public static Vector projVec(Vector... args) {
