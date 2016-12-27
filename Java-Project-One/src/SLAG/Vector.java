@@ -23,7 +23,7 @@ public class Vector extends Matrix {
     }
     
     public Vector(Matrix matrix) {
-        super(matrix.getComponents()[0]);
+        super(matrix.getElements()[0]);
     }
     
 //    public static Vector toVector(Matrix matrix) {
@@ -43,19 +43,29 @@ public class Vector extends Matrix {
         return new Vector(Matrix.multSca(vector, scalar));
     }
     
+//    public static double prodSca(Vector... args) {
+//        if (!checkSameSize(args)) {
+//            return 0;
+//        }
+//        double scalarproduct = 0;
+//        for (int i=0; i<args[0].getColumns(); i++) {
+//            double product = args[0].getComponent(0, i);
+//            for (int k=1; k<args.length; k++) {
+//                product *= args[k].getComponent(0, i);
+//            }
+//            scalarproduct += product;
+//        }
+//        return scalarproduct;
+//    }
+    
     public static double prodSca(Vector... args) {
-        if (!checkSameSize(args)) {
-            return 0;
+        Matrix matrix = args[0];
+        
+        for (int k=1; k<args.length; k++) {
+            matrix = multMat(matrix, args[k].getTranspose());
         }
-        double scalarproduct = 0;
-        for (int i=0; i<args[0].getColumns(); i++) {
-            double product = args[0].getComponent(0, i);
-            for (int k=1; k<args.length; k++) {
-                product *= args[k].getComponent(0, i);
-            }
-            scalarproduct += product;
-        }
-        return scalarproduct;
+        return matrix.getElement(0, 0);
+        
     }
     
     public static double projSca(Vector vec1, Vector vec2) {
@@ -89,7 +99,7 @@ public class Vector extends Matrix {
     public static double norm(Vector vector) {
         double sum = 0;
         for (int i=0; i<vector.getColumns(); i++) {
-            sum += Math.pow(vector.getComponent(0, i), 2);
+            sum += Math.pow(vector.getElement(0, i), 2);
         }
         return Math.sqrt(sum);
     }

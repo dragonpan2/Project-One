@@ -4,49 +4,47 @@
  * and open the template in the editor.
  */
 package SLAG;
-
 /**
  *
  * @author bowen
  */
 public class Matrix {
-    private double[][] components;
+    private double[][] elements;
     private int rows, columns;
     
-    public Matrix(int diagSize) {
-        this.rows = diagSize;
-        this.columns = diagSize;
-        this.components = new double[diagSize][diagSize];
-        
-        for (int n=0; n<diagSize; n++) {
-            this.components[n][n] = 1;
-        }
-        
+    public Matrix(int m, int n) {
+        this.elements = new double[m][n];
+        this.rows = m;
+        this.columns = n;
     }
     
-    public Matrix(int rows, int columns) {
-        this.components = new double[rows][columns];
-        this.rows = rows;
-        this.columns = columns;
+    public Matrix(int n) {
+        this.rows = n;
+        this.columns = n;
+        this.elements = new double[n][n];
+        
+        for (int i=0; i<n; i++) {
+            this.elements[i][i] = 1;
+        }
     }
     
-    
-    public Matrix(double[]... args) {
-        if (args.length < 1) { //if there are less than 1 rows
-            return;
-        } else if (args[0].length < 1) { //if there are less than 1 columns
-            return;
+    public Matrix(double[]... array) {
+        if (array.length < 1) { //if there are less than 1 rows
+            throw new IllegalArgumentException("Invalid number of rows.");
+        } else if (array[0].length < 1) { //if there are less than 1 columns
+            throw new IllegalArgumentException("Invalid number of columns.");
         }
-        for (int i=1; i<args.length; i++) { //check if all rows are of the same dimension
-            if (args[i-1].length != args[i].length) {
-                return;
+        if (!Utils.checkLength(array)) {
+            throw new IllegalArgumentException("Matrix has different row lengths.");
+        }
+        
+        this.rows = array.length;
+        this.columns = array[0].length;
+        this.elements = new double[rows][columns];
+        for (int i=0; i<rows; i++) {
+            for (int j=0; j<columns; j++) {
+                this.elements[i][j] = array[i][j];
             }
-        }
-        this.rows = args.length;
-        this.columns = args[0].length;
-        this.components = new double[rows][columns];
-        for (int i=0; i<args.length; i++) {
-            this.components[i] = args[i];
         }
     }
     
@@ -73,7 +71,7 @@ public class Matrix {
             for (int k=0; k<args.length; k++) {
                 for (int j=0; j<args[k].columns; j++) {
                     for (int i=0; i<args[k].rows; i++) {
-                        newmatrix.components[i][j] += args[k].components[i][j];
+                        newmatrix.elements[i][j] += args[k].elements[i][j];
                     }
                 }
             }
@@ -90,7 +88,7 @@ public class Matrix {
         
         for (int j=0; j<matrix.columns; j++) {
             for (int i=0; i<matrix.rows; i++) {
-                newmatrix.components[i][j] = -matrix.components[i][j];
+                newmatrix.elements[i][j] = -matrix.elements[i][j];
             }
         }
         return newmatrix;
@@ -112,7 +110,7 @@ public class Matrix {
         
         for (int j=0; j<matrix.columns; j++) {
             for (int i=0; i<matrix.rows; i++) {
-                newmatrix.components[i][j] = matrix.components[i][j] * c;
+                newmatrix.elements[i][j] = matrix.elements[i][j] * c;
             }
         }
         return newmatrix;
@@ -123,7 +121,7 @@ public class Matrix {
         
         for (int j=0; j<matrix.columns; j++) {
             for (int i=0; i<matrix.rows; i++) {
-                newmatrix.components[j][i] = matrix.components[i][j];
+                newmatrix.elements[j][i] = matrix.elements[i][j];
             }
         }
         return newmatrix;
@@ -141,9 +139,9 @@ public class Matrix {
                     for (int j=0; j<newmatrix.columns; j++) {
                         double component = 0;
                         for (int r=0; r<n; r++) {
-                            component += multmatrix.components[i][r] * args[k].components[r][j];
+                            component += multmatrix.elements[i][r] * args[k].elements[r][j];
                         }
-                        newmatrix.components[i][j] = component;
+                        newmatrix.elements[i][j] = component;
                     }
                 }
                 multmatrix = newmatrix; //save the new matrix as the leftmost matrix, and repeat
@@ -160,11 +158,11 @@ public class Matrix {
     public Matrix getTranspose() {
         return transpose(this);
     }
-    public double[][] getComponents() {
-        return components;
+    public double[][] getElements() {
+        return elements;
     }
-    public double getComponent(int i, int j) {
-        return components[i][j];
+    public double getElement(int i, int j) {
+        return elements[i][j];
     }
     public boolean getIsSquare() {
         return this.columns == this.rows;
