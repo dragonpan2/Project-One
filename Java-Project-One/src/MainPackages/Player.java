@@ -18,7 +18,7 @@ public class Player extends Movable {
     
     
     public Player() {
-        
+        this.fishingSkill = fishingSkill;
     }
     
     

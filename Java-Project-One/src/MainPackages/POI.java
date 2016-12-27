@@ -9,20 +9,6 @@ package MainPackages;
  *
  * @author Lin-Li
  */
-public class FishingSkill extends Skill {
-
-    public FishingSkill() {
-        super();
-        
-        
-    }
-    
-    public void FishingAction() {
-        if (true) {
-            
-        }
-    }
-    
-    
-    
+public class POI {
+    private String nom;
 }

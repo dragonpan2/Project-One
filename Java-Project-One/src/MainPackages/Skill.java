@@ -30,6 +30,26 @@ public abstract class Skill {
         this.type = type;
         
     }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+    
+    public void skillUsed(int expToAdd) {
+        
+        if (exp+expToAdd >= requLevelUp) {
+            level++;
+            exp = exp+expToAdd-requLevelUp;
+            //
+        }
+        else {
+            exp= exp+expToAdd;
+        }
+    }
     
     
     
