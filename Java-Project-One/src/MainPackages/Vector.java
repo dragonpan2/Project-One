@@ -17,4 +17,19 @@ public class Vector extends Matrix {
     public Vector(double[] array) {
         super(array);
     }
+    
+    public static double prodSca(Vector... args) {
+        if (!checkSameSize(args)) {
+            return 0;
+        }
+        Vector newvector = new Vector(args[0].getComponents().length);
+        for (int k=0; k<args.length; k++) {
+            for (int i=0; i<args[0].getRows(); i++) {
+                
+            }
+        }
+    }
+    
+    
+    
 }

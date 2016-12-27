@@ -155,4 +155,13 @@ public class Matrix {
     public boolean getIsSquare() {
         return this.columns == this.rows;
     }
+
+    public int getColumns() {
+        return columns;
+    }
+
+    public int getRows() {
+        return rows;
+    }
+    
 }

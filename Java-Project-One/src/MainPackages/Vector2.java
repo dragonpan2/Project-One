@@ -27,7 +27,7 @@ public class Vector2 { //2D Vector class
     public Vector2 getAddVec(Vector2 vec2) { //Gets the vector sum of two vectors
         return new Vector2(this.x+vec2.getX(), this.y+vec2.getY());
     }
-    public Vector2 getMultSca(double scalar) { //Gets the scalar multiplication of two vectors
+    public Vector2 getMultSca(double scalar) { //Gets the scalar multiplication
         return new Vector2(this.x*scalar, this.y*scalar);
     }
     public double getProdSca(Vector2 vec2) { //Gets the scalar product of two vectors
