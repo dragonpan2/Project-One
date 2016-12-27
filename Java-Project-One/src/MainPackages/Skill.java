@@ -16,7 +16,10 @@ public abstract class Skill {
     private int level;
     private int requLevelUp;
     private int exp;
-    private String type; //
+    private enum Type {
+        GATHER,REFINE
+    }
+    private Type type;
 
     public Skill() {
         this.name = name;
@@ -24,8 +27,11 @@ public abstract class Skill {
         this.level = 0;
         this.exp = 0;
         this.requLevelUp = 1;
+        this.type = type;
         
     }
+    
+    
     
     
     

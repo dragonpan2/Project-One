@@ -9,13 +9,6 @@ package MainPackages;
  *
  * @author Lin-Li
  */
-public class Fishing extends Skill {
-
-    public Fishing() {
-        super();
-        
-    }
-    
-    
+public class Item {
     
 }

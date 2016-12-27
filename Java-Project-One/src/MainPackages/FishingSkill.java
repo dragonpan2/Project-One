@@ -5,21 +5,18 @@
  */
 package MainPackages;
 
-import MainPackages.Movable;
-
 /**
  *
  * @author Lin-Li
  */
-public class Player extends Movable {
-    private float xspeed;
-    private float yspeed;
-    private FishingSkill fishingSkill = new FishingSkill();
-    
-    
-    public Player() {
+public class FishingSkill extends Skill {
+
+    public FishingSkill() {
+        super();
+        
         
     }
+    
     
     
 }
