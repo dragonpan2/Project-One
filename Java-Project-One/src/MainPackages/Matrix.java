@@ -13,6 +13,17 @@ public class Matrix {
     private double[][] components;
     private int rows, columns;
     
+    public Matrix(int diagSize) {
+        this.rows = diagSize;
+        this.columns = diagSize;
+        this.components = new double[diagSize][diagSize];
+        
+        for (int n=0; n<diagSize; n++) {
+            this.components[n][n] = 1;
+        }
+        
+    }
+    
     public Matrix(int rows, int columns) {
         this.components = new double[rows][columns];
         this.rows = rows;
@@ -82,6 +93,12 @@ public class Matrix {
         
         Matrix newmatrix = matrix.getShell();
         
+        if (c == 0) { //if scalar is 0, return the new 0 matrix to save time
+            return newmatrix;
+        } else if (c == 1) { //if scalar is 1, return the old matrix to save time
+            return matrix;
+        }
+        
         for (int j=0; j<matrix.columns; j++) {
             for (int i=0; i<matrix.rows; i++) {
                 newmatrix.components[i][j] = matrix.components[i][j] * c;
@@ -101,45 +118,15 @@ public class Matrix {
         return newmatrix;
     }
     
-    public static Matrix multMat3(Matrix... args) {
-        Matrix newmatrix = args[0];
-        for (int k=1; k<args.length; k++) {
-            newmatrix = multMat2(newmatrix, args[k]);
-        }
-        return newmatrix;
-        
-    }
-    
-    public static Matrix multMat2(Matrix mat1, Matrix mat2) {
-        
-        if (mat1.columns == mat2.rows) {
-            Matrix newmatrix = new Matrix(mat1.rows, mat2.columns);
-            int n = mat1.columns;
-            
-            for (int i=0; i<newmatrix.rows; i++) {
-                for (int j=0; j<newmatrix.columns; j++) {
-                    double component = 0;
-                    for (int r=0; r<n; r++) {
-                        component += mat1.components[i][r] * mat2.components[r][j];
-                    }
-                    newmatrix.components[i][j] = component;
-                }
-            }
-            
-            return newmatrix;
-        } else {
-            return new Matrix(0,0);
-        }
-    }
-    
     public static Matrix multMat(Matrix... args) {
-        Matrix multmatrix = args[0];
-        for (int k=1; k<args.length; k++) {
-            if (multmatrix.columns == args[k].rows) {
-                Matrix newmatrix = new Matrix(multmatrix.rows, args[k].columns);
+        Matrix multmatrix = args[0]; //save the leftmost matrix
+        for (int k=1; k<args.length; k++) { //multiply the leftmost matrix with each matrix on the right of it
+            
+            if (multmatrix.columns == args[k].rows) { //if the two matrices can be multiplied
+                Matrix newmatrix = new Matrix(multmatrix.rows, args[k].columns); //create the shell of the new matrix
                 int n = multmatrix.columns;
 
-                for (int i=0; i<newmatrix.rows; i++) {
+                for (int i=0; i<newmatrix.rows; i++) { //matrix multiplication
                     for (int j=0; j<newmatrix.columns; j++) {
                         double component = 0;
                         for (int r=0; r<n; r++) {
@@ -148,14 +135,12 @@ public class Matrix {
                         newmatrix.components[i][j] = component;
                     }
                 }
-                multmatrix = newmatrix;
+                multmatrix = newmatrix; //save the new matrix as the leftmost matrix, and repeat
             } else {
-                return new Matrix(0,0);
+                return new Matrix(0,0); //if multiplication is illegal, return empty matrix
             }
-            
         }
         return multmatrix;
-        
     }
     
     public Matrix getShell() {
