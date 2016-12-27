@@ -85,26 +85,6 @@ public class Matrix {
 
     }
     
-    public static Matrix sub(Matrix... args) {
-        if (checkSameSize(args)) {
-            
-            Matrix newmatrix = args[0].getShell();
-            
-            for (int k=0; k<args.length; k++) {
-                for (int j=0; j<args[k].columns; j++) {
-                    for (int i=0; i<args[k].rows; i++) {
-                        newmatrix.components[i][j] -= args[k].components[i][j];
-                    }
-                }
-            }
-            return newmatrix;
-            
-        } else {
-            return new Matrix(0,0);
-        }
-
-    }
-    
     public static Matrix negate(Matrix matrix) {
         Matrix newmatrix = matrix.getShell();
         

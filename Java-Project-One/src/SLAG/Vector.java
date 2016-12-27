@@ -35,8 +35,8 @@ public class Vector extends Matrix {
         return new Vector(Matrix.add(args));
     }
     
-    public static Vector sub(Vector... args) {
-        return new Vector(Matrix.sub(args));
+    public static Vector negate(Vector vector) {
+        return new Vector(Matrix.negate(vector));
     }
     
     public static Vector multSca(Vector vector, double... scalar) {
@@ -81,7 +81,7 @@ public class Vector extends Matrix {
             double prod1 = Vector.prodSca(vec1, vec2);
             double prod2 = Vector.prodSca(vec2, vec2);
             if (prod2 == 0) return vec1;
-            vec1 = Vector.sub(vec1, Vector.multSca(vec2, prod1/prod2));
+            vec1 = new Vector(Matrix.add(vec1, Matrix.negate(Matrix.multSca(vec2, prod1/prod2))));
         }
         return vec1;
     }
