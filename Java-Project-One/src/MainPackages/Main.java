@@ -8,6 +8,7 @@ package MainPackages;
 import java.util.Arrays;
 import SLAG.Matrix;
 import SLAG.Vector;
+import SPHY.FMath;
 
 /**
  *
@@ -20,6 +21,29 @@ public class Main {
      */
     public static void main(String[] args) {
        Window window = new Window();
+       
+//       double x = -3*Math.PI;
+//       while (x < 3*Math.PI) {
+//           double bhas = FMath.bhaskaraSin(x);
+//           double poly1 = FMath.polynomialSin(x);
+//           double poly2 = FMath.polynomialSin2(x);
+//           double math = Math.sin(x);
+//           //System.out.println((float)fast + " | " + (float)math);
+//           System.out.println(FMath.maxError(math, poly2));
+//           x += Math.PI/4;
+//       }
+
+//       double x = -1;
+//       while (x < 1) {
+//           double tayl = FMath.taylorAsin(x);
+//           double math = Math.acos(x);
+//           //System.out.println((float)fast + " | " + (float)math);
+//           System.out.println(math);
+//           //System.out.println(FMath.maxError(math, tayl));
+//           x += Math.PI/20;
+//       }
+       System.out.println(FMath.factorial(20));
+       
        
        double[][] testarray = {{1,2,3},{4,5,6}};
        double[][] testarray2 = {{11,3},{7,11}};
