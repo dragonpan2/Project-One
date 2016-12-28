@@ -10,7 +10,7 @@ package SPHY;
  */
 public class Vector2 {
     private double[] elements = new double[2];
-    public static boolean useFastTrig = true;
+    public static boolean useFastMath = false;
     
     public Vector2() {
     }
@@ -25,12 +25,36 @@ public class Vector2 {
         this.elements = new double[]{x,y};
     }
     public Vector2(double r, double phi, boolean isPolar) {
-        if (useFastTrig) {
-            this.elements[0] = r*FMath.bhaskaraCos(phi);
-            this.elements[1] = r*FMath.bhaskaraSin(phi);
+        this.elements[0] = r*cos(phi);
+        this.elements[1] = r*sin(phi);
+    }
+    
+    private static double sin(double phi) {
+        if (useFastMath) {
+            return FMath.bhaskaraSin(phi);
         } else {
-            this.elements[0] = r*Math.cos(phi);
-            this.elements[1] = r*Math.sin(phi);
+            return Math.sin(phi);
+        }
+    }
+    private static double cos(double phi) {
+        if (useFastMath) {
+            return FMath.bhaskaraCos(phi);
+        } else {
+            return Math.cos(phi);
+        }
+    }
+    private static double atan2(double y, double x) {
+        if (useFastMath) {
+            return FMath.quickAtan2(y, x);
+        } else {
+            return Math.atan2(y, x);
+        }
+    }
+    private static double sqrt(double x) {
+        if (useFastMath) {
+            return FMath.quickSqrt((float)x);
+        } else {
+            return Math.sqrt(x);
         }
     }
     
@@ -40,13 +64,10 @@ public class Vector2 {
     public double getNorm() {
         double a = this.elements[0]*this.elements[0];
         double b = this.elements[1]*this.elements[1];
-        return Math.sqrt(a + b);
+        return sqrt(a + b);
     }
     public double getRot() {
-        if (useFastTrig) {
-            return FMath.taylorAtan(this.elements[1] / this.elements[0]);
-        }
-        return Math.atan(this.elements[1] / this.elements[0]);
+        return atan2(this.elements[1], this.elements[0]);
     }
     public Vector2 getFill(double scalar) {
         return new Vector2(scalar, scalar);
@@ -104,14 +125,14 @@ public class Vector2 {
     public void proj(Vector2 vector) {
         double r = this.getProjSca(vector);
         double phi = vector.getRot();
-        this.elements[0] = r*Math.cos(phi);
-        this.elements[1] = r*Math.sin(phi);
+        this.elements[0] = r*cos(phi);
+        this.elements[1] = r*sin(phi);
     }
     public void rej(Vector2 vector) {
         double r = this.getProjSca(vector);
         double phi = vector.getRot();
-        this.elements[0] -= r*Math.cos(phi);
-        this.elements[1] -= r*Math.sin(phi);
+        this.elements[0] -= r*cos(phi);
+        this.elements[1] -= r*sin(phi);
     }
     public void fill(double scalar) {
         this.elements[0] = scalar;
@@ -127,6 +148,46 @@ public class Vector2 {
     public void setElements(double[] array) {
         this.elements[0] = array[0];
         this.elements[1] = array[1];
+    }
+    public void addToElement(int i, double scalar) {
+        this.elements[i] += scalar;
+    }
+    public void multToElement(int i, double scalar) {
+        this.elements[i] *= scalar;
+    }
+    public void setNorm(double r) {
+        double phi = this.getRot();
+        this.elements[0] = r*cos(phi);
+        this.elements[1] = r*sin(phi);
+    }
+    public void setRot(double phi) {
+        double r = this.getNorm();
+        this.elements[0] = r*cos(phi);
+        this.elements[1] = r*sin(phi);
+    }
+    public void addToNorm(double d) {
+        double phi = this.getRot();
+        double r = this.getNorm() + d;
+        this.elements[0] = r*cos(phi);
+        this.elements[1] = r*sin(phi);
+    }
+    public void multToNorm(double scalar) {
+        double phi = this.getRot();
+        double r = this.getNorm() * scalar;
+        this.elements[0] = r*cos(phi);
+        this.elements[1] = r*sin(phi);
+    }
+    public void addToRot(double tetha) {
+        double phi = this.getRot() + tetha;
+        double r = this.getNorm();
+        this.elements[0] = r*cos(phi);
+        this.elements[1] = r*sin(phi);
+    }
+    public void multToRot(double scalar) {
+        double phi = this.getRot() * scalar;
+        double r = this.getNorm();
+        this.elements[0] = r*cos(phi);
+        this.elements[1] = r*sin(phi);
     }
     
     

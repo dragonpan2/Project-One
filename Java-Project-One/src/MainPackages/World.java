@@ -54,7 +54,10 @@ public class World extends JPanel implements Runnable {
             invalidate();
             repaint();
             try {
-                Thread.sleep(100);
+                Thread.sleep(10);
+                vec1.addToRot(Math.PI/200);
+                vec3.setElements(vec1.getProjVec(vec2));
+                vec4.setElements(vec1.getRejVec(vec2));
             } catch (InterruptedException ex) {
                 System.out.println("Thread Error");
             }
