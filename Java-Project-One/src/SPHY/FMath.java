@@ -46,7 +46,7 @@ public class FMath {
     }
     
     
-    public static double polynomialSin(double rad) {
+    private static double polynomialSin(double rad) {
         double s = 1;
         if (rad < 0) {rad = -rad; s = -s;}
         if (rad > PI2) {rad %= PI2;}
@@ -65,7 +65,7 @@ public class FMath {
         }
         return sin;
     }
-    public static double polynomialCos(double rad) {
+    private static double polynomialCos(double rad) {
         return polynomialSin(PIh + rad);
     }
     public static double polynomialCos2(double rad) {

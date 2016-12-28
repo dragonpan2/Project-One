@@ -9,6 +9,7 @@ import java.util.Arrays;
 import SLAG.Matrix;
 import SLAG.Vector;
 import SPHY.FMath;
+import SPHY.Vector2;
 
 /**
  *
@@ -42,8 +43,47 @@ public class Main {
 //           //System.out.println(FMath.maxError(math, tayl));
 //           x += Math.PI/20;
 //       }
-       System.out.println(FMath.factorial(20));
-       
+
+        long startTime = System.currentTimeMillis();
+        Vector2 vec = new Vector2(1,2);
+        Vector2 vec2 = new Vector2(6,7);
+        Vector2.useFastTrig = false;
+        for (int i=0; i<1000000; i++) {
+            vec.getProjVec(vec2);
+        }
+
+        long finishTime = System.currentTimeMillis();
+
+        System.out.println("That took: "+(finishTime-startTime)+ " ms");
+        
+        Vector2.useFastTrig = true;
+        startTime = System.currentTimeMillis();
+
+        for (int i=0; i<1000000; i++) {
+            vec.getProjVec(vec2);
+        }
+
+        finishTime = System.currentTimeMillis();
+
+        System.out.println("That took: "+(finishTime-startTime)+ " ms");
+
+       double x = -Math.PI/2+0.5;
+       while (x < Math.PI/2-0.5) {
+           double fast = FMath.taylorAtan(x);
+           double math = Math.atan(x);
+           //System.out.println((float)fast + " | " + (float)math);
+           System.out.println(FMath.maxError(math, fast));
+           x += Math.PI/10;
+       }
+           System.out.println("-------------");
+       x = -Math.PI/2+0.5;
+       while (x < Math.PI/2-0.5) {
+           double fast = FMath.bhaskaraSin(x);
+           double math = Math.sin(x);
+           //System.out.println((float)fast + " | " + (float)math);
+           System.out.println(FMath.maxError(math, fast));
+           x += Math.PI/10;
+       }
        
        double[][] testarray = {{1,2,3},{4,5,6}};
        double[][] testarray2 = {{11,3},{7,11}};
