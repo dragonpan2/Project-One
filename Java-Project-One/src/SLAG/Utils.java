@@ -49,4 +49,7 @@ public class Utils {
         return true;
     }
     
+    public static void test() {
+    }
+    
 }

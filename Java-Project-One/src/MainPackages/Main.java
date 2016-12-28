@@ -42,6 +42,8 @@ public class Main {
        Vector testvector1 = new Vector(testarray5);
        Vector testvector2 = new Vector(testarray6);
        Vector testvector3 = Vector.add(testvector1, testvector2);
+       Vector testvector4 = testvector3.getClone();
+       testvector4.setMult(2);
        double prodsca = Vector.prodSca(testvector1, testvector2);
        
        
@@ -50,6 +52,7 @@ public class Main {
        System.out.println(Arrays.deepToString(testmatrix4.getElements()));
        System.out.println(Arrays.deepToString(testmatrix8.getElements()));
        System.out.println(Arrays.deepToString(testvector3.getElements()));
+       System.out.println(Arrays.deepToString(testvector4.getElements()));
        System.out.println(prodsca);
        
        

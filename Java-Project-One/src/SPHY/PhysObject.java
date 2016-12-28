@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package MainPackages;
+package SPHY;
 
 /**
  *
  * @author bowen
  */
-public class Physics {
-    private float x, y;
+public class PhysObject {
+    
 }

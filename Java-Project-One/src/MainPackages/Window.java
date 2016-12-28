@@ -31,18 +31,18 @@ public class Window extends JFrame {
             public void keyPressed(KeyEvent e) {
                     //System.out.println("Triggered");
                 if (e.getKeyCode() == KeyEvent.VK_UP) {
-                    world.vec1.setElement(0, 1, world.vec1.getElement(0, 1)-10);
+                    world.vec1.setElement(1, world.vec1.getElement(1)-10);
                 }
                 if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                    world.vec1.setElement(0, 1, world.vec1.getElement(0, 1)+10);
+                    world.vec1.setElement(1, world.vec1.getElement(1)+10);
 
                 }
                 if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-                    world.vec1.setElement(0, 0, world.vec1.getElement(0, 0)-10);
+                    world.vec1.setElement(0, world.vec1.getElement(0)-10);
 
                 }
                 if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                    world.vec1.setElement(0, 0, world.vec1.getElement(0, 0)+10);
+                    world.vec1.setElement(0, world.vec1.getElement(0)+10);
 
                 }
                 world.vec3.setElements(Vector.projVec(world.vec1,world.vec2));
