@@ -21,7 +21,7 @@ public class Window extends JFrame {
         this.setVisible(true);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         keyEventAdd();
-        new Thread(world).start();
+        //new Thread(world).start();
     }
 
     public void keyEventAdd() {

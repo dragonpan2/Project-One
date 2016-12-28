@@ -27,6 +27,8 @@ public class World extends JPanel implements Runnable {
     TestLine line2 = new TestLine(vec2, Color.red, 2);
     TestLine line3 = new TestLine(vec3, Color.green, 3);
     TestLine line4 = new TestLine(vec4, Color.yellow, 3);
+    
+    Thread thread;
 
     public World() {
          
@@ -39,9 +41,9 @@ public class World extends JPanel implements Runnable {
         this.add(line2);
         this.setLocation(500, 500);
         
-         new Thread(this).start();
-         this.setVisible(true);
-         this.setBackground(Color.black);
+        this.thread = new Thread(this);
+        this.setVisible(true);
+        this.setBackground(Color.black);
     }
 
     @Override
@@ -50,14 +52,18 @@ public class World extends JPanel implements Runnable {
         while (true) {
             
             
+            vec1.addToRot(Math.PI/200);
+            vec3.setElements(vec1.getProjVec(vec2));
+            vec4.setElements(vec1.getRejVec(vec2));
+            
+            
+            
             
             invalidate();
             repaint();
             try {
                 Thread.sleep(10);
-                vec1.addToRot(Math.PI/200);
-                vec3.setElements(vec1.getProjVec(vec2));
-                vec4.setElements(vec1.getRejVec(vec2));
+                
             } catch (InterruptedException ex) {
                 System.out.println("Thread Error");
             }

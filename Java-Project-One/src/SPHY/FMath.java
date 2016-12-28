@@ -67,9 +67,6 @@ public class FMath {
         return x < 0 ? y <= 0 ? y + PI : y - PI : y;
     }
     
-    
-    
-    
     public static double bhaskaraSin(double rad) {
         double s = 1;
         if (rad < 0) {rad = -rad; s = -s;}

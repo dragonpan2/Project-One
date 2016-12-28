@@ -11,4 +11,18 @@ package SPHY;
  */
 public class PhysObject {
     
+    private Vector2 position, velocity, momentum, acceleration;
+    private VectorR rotation, angspeed, angaccel;
+    private Vector2[] forces;
+    private double[] torques;
+    
+    private double mass;
+    private double moment;
+    
+    private boolean immovable; //can give out infinite normal force
+    
+    
+    public PhysObject() {
+        
+    }
 }

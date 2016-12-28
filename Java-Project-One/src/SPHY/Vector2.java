@@ -31,17 +31,15 @@ public class Vector2 {
     
     private static double sin(double phi) {
         if (useFastMath) {
-            return FMath.bhaskaraSin(phi);
-        } else {
-            return Math.sin(phi);
+            //return FMath.bhaskaraSin(phi);
         }
+        return Math.sin(phi);
     }
     private static double cos(double phi) {
         if (useFastMath) {
-            return FMath.bhaskaraCos(phi);
-        } else {
-            return Math.cos(phi);
+            //return FMath.bhaskaraCos(phi);
         }
+        return Math.cos(phi);
     }
     private static double atan2(double y, double x) {
         if (useFastMath) {
@@ -52,10 +50,9 @@ public class Vector2 {
     }
     private static double sqrt(double x) {
         if (useFastMath) {
-            return FMath.quickSqrt((float)x);
-        } else {
-            return Math.sqrt(x);
+            //return FMath.quickSqrt((float)x);
         }
+        return Math.sqrt(x);
     }
     
     public double getElement(int i) {

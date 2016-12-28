@@ -9,6 +9,6 @@ package SPHY;
  *
  * @author bowen
  */
-public class Trans2 {
+public class Matrix2 {
     
 }
