@@ -31,7 +31,7 @@ public class Vector extends Matrix {
     /**
      * Duplicates a vector
      * @param vector Vector to duplicate
-     * @return The duplicated vector
+     * @return The cloned vector
      */
     public static Vector clone(Vector vector) {
         return new Vector(Matrix.clone(vector), true);
