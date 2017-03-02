@@ -11,12 +11,12 @@ package SPHY;
  */
 public class PhysObject {
     
-    private Vector2 position, velocity, momentum, acceleration;
+    private Vector2 position, velocity, momentum, acceleration; //meters, meters/s, meters*kg/s, meters/s^2
     private VectorR rotation, angspeed, angaccel;
-    private Vector2[] forces;
+    private Vector2[] forces; //in N
     private double[] torques;
     
-    private double mass;
+    private double mass; //in KG
     private double moment;
     
     private boolean immovable; //can give out infinite normal force
