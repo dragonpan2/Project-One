@@ -52,7 +52,7 @@ public class World extends JPanel implements Runnable {
         while (true) {
             
             
-            vec1.addToRot(Math.PI/200);
+            //vec1.addToRot(Math.PI/200);
             vec3.setElements(vec1.getProjVec(vec2));
             vec4.setElements(vec1.getRejVec(vec2));
             
