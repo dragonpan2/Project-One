@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Physics2D;
+package MathExt;
 
 /**
  *
  * @author bowen
  */
-public interface Geometric {
+public interface Dimensional {
     //Strict Getters
     int getDimensions(); //Returns num of dimensions
     int getDimensionSize(int i); //Returns the size of dimension (num of elements)
