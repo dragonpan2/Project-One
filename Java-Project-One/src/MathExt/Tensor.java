@@ -14,20 +14,13 @@ public class Tensor implements Dimensional {
     private int[] dimSizes;
     private double[] elements;
     
-    private int getTotalElements() {
-        int totalElements = 1;
-        for (int i=0; i<dimSizes.length; i++) {
-            totalElements *= dimSizes[i];
-        }
-        return totalElements;
-    }
     public Tensor(int[] sizeArray) {
         dimensions = sizeArray.length;
         dimSizes = sizeArray.clone();
         elements = new double[getTotalElements()];
     }
-    public Tensor(int[] dimSizes, double fill) {
-        this(dimSizes);
+    public Tensor(int[] sizeArray, double fill) {
+        this(sizeArray);
         this.fill(fill);
     }
     public Tensor(double[] elementArray) {
@@ -44,36 +37,110 @@ public class Tensor implements Dimensional {
             }
         }
     }
-    public final void fill(double c) {
-        for (int i=0; i<elements.length; i++) {
-            elements[i] = c;
+    public Tensor(double[][][] elementArray3D) {
+        this(new int[] {elementArray3D.length, elementArray3D[0].length, elementArray3D[0][0].length});
+        int n = 0;
+        for (int i=0; i<elementArray3D.length; i++) {
+            for (int j=0; j<elementArray3D[0].length; j++) {
+                for (int k=0; k<elementArray3D[0][0].length; k++) {
+                    elements[n] = elementArray3D[i][j][k];
+                    n++;
+                }
+            }
         }
+    }
+    public static Tensor join(Tensor... tensorArray) {
+        if (sameDimensions(tensorArray)) {
+            int[] newDimSizes = new int[tensorArray[0].dimSizes.length + 1];
+            newDimSizes[0] = tensorArray.length;
+            for (int i=0; i<tensorArray[0].dimSizes.length; i++) {
+                newDimSizes[i+1] = tensorArray[0].dimSizes[i];
+            }
+            Tensor newTensor = new Tensor(newDimSizes);
+            
+            int n = 0;
+            for (int i=0; i<tensorArray.length; i++) {
+                for (int j=0; j<tensorArray[0].elements.length; j++) {
+                        newTensor.elements[n] = tensorArray[i].elements[j];
+                        n++;
+                }
+            }
+            
+            return newTensor;
+        } else {
+            throw new IndexOutOfBoundsException("Tensor of different sizes.");
+        }
+    }
+    private static boolean sameDimensions(Tensor... tensorArray) {
+        int[] firstDimSizes = tensorArray[0].dimSizes;
+        for (int n=1; n<tensorArray.length; n++) {
+            for (int i=0; i<tensorArray[n].dimSizes.length; i++) {
+                if (firstDimSizes[i] != tensorArray[n].dimSizes[i]) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    private int getTotalElements() {
+        int totalElements = 1;
+        for (int i=0; i<dimSizes.length; i++) {
+            totalElements *= dimSizes[i];
+        }
+        return totalElements;
     }
     public int getDimensions() {
         return dimensions;
     }
-    public int getDimensionSize(int d) {
-        return dimSizes[d-1];
+    public int[] getDimensionSizes() {
+        return dimSizes.clone();
     }
-    public double getNorm() {
-        if (dimensions == 1) {
-            return 0; //TODO
-        } else if (dimensions == 2) {
-
-            int rows = dimSizes[0];
-            int columns = dimSizes[1];
+    public int getDimensionSize(int d) {
+        if (d > 0 && d <= dimensions) {
+            return dimSizes[d-1];
+        } else {
+            throw new IndexOutOfBoundsException("Invalid tensor dimension index.");
+        }
+    }
+    public double getNorm() { //Frobenius norm, generalised as vector norm for higher dimensions.
+        if (dimensions < 1) {
+            return 0;
+        } else {
             double sqrsum = 0;
-            for (int i=0; i<rows; i++) { //SIMPLIFY USING ONE FOR
-                for (int j=0; j<columns; j++) {
-                    double elem = get(i,j);
-                    sqrsum += elem * elem;
-                }          
+            for (int i=0; i<elements.length; i++) {
+                double elem = elements[i];
+                sqrsum += elem * elem;
             }
             return Math.sqrt(sqrsum);
-
-        } else {
-            return 0;
         }
+    }
+    public double getNorm(int p) { //n-norm as vector norm
+        if (p < 1) {
+            throw new IllegalArgumentException("Invalid p parameter, must be greater or equal than 1.");
+        } else if (dimensions < 1) {
+            return 0;
+        } else {
+            double sqrsum = 0;
+            for (int i=0; i<elements.length; i++) {
+                double elem = elements[i];
+                sqrsum += Math.pow(elem, p);
+            }
+            return Math.pow(sqrsum, 1/p);
+        }
+        
+    }
+    public double getMaxNorm() { //returns max norm, where p = inf
+        double max = elements[0];
+        for (int i=1; i<elements.length; i++) {
+            double elem = elements[i];
+            if (max < elem) {
+                max = elem;
+            }
+        }
+        return max;
+    }
+    public double getNorm(int p, int q) { //Implement PQ norm
+        return 0;
     }
     private int getDimLeap(int k) { //Get the leap at the nth dimension
         if (k > dimSizes.length) {
@@ -87,6 +154,9 @@ public class Tensor implements Dimensional {
         return prod;
     }
     private int getElemIndex(int[] n) {
+        if (n.length < dimensions) {
+            throw new IndexOutOfBoundsException("Invalid arguments, the number of index arguments must be equal to the number of dimensions.");
+        }
         int leap = 0;
         for (int i=0; i<n.length; i++) {
             leap += getDimLeap(i+1)*n[i];
@@ -124,37 +194,37 @@ public class Tensor implements Dimensional {
     public void set(double c, int... n) {
         set(n, c);
     }
+    public final void fill(double c) {
+        for (int i=0; i<elements.length; i++) {
+            elements[i] = c;
+        }
+    }
+    public final void zero() {
+        fill(0);
+    }
     @Override
     public String toString() {
         if (dimensions == 0) {
-            return "[]";
+            return "[]\nTensor of dimension 0";
         } else if (dimensions == 1) {
             String string = new String();
             for (int i=0; i<elements.length; i++) { //
                 string += elements[i] + " "; //Separate columns by a space
             }
-            return string;
+            return "_\n" + string + "\n_\nTensor of dimension 1";
         } else if (dimensions == 2) {
-            /*String string = new String();
-            for (int i=0; i<elements.length; i++) { //For all elements
+            String string = new String();
+            string += elements[0] + " ";
+            for (int i=1; i<elements.length; i++) { //For all elements
                 if (i%dimSizes[0] == 0) {
-                    string += "\n";
+                    string += "\n"; //Separate rows by a newline
                 }
                 string += elements[i] + " "; //Separate columns by a space
-            }*/
-            
-            int rows = dimSizes[0];
-            int columns = dimSizes[1];
-            String string = new String();
-            for (int i=0; i<rows; i++) { //For all elements
-                for (int j=0; j<columns; j++) {
-                    string += get(j,i) + " "; //Separate columns by a space
-                }
-                string += (i < rows-1) ? "\n" : ""; //Separate rows by a newline
             }
-            return string;
+            
+            return "_\n" + string + "\n_\nTensor of dimension 2";
         } else {
-            return "Tensor of dimension 3 or more";
+            return "_\n[...]\n_\nTensor of dimension " + dimensions;
         }
     }
 }
