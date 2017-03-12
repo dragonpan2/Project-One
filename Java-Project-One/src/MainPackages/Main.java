@@ -6,11 +6,8 @@
 package MainPackages;
 
 import java.util.Arrays;
-import SLAG.Matrix;
-import SLAG.Vector;
-import SPHY.FMath;
-import SPHY.Vector2;
 import MathExt.Tensor;
+import MathExt.Matrix;
 
 /**
  *
@@ -27,37 +24,56 @@ public class Main {
         //System.out.println("W,A,S,D,UP,DOWN,LEFT,RIGHT to move the vectors");
         //System.out.println("E to change Math mode, fastMath is currently WIP");
         
+        
         double[] d1 = new double[] {1,2,3};
         double[] d2 = new double[] {2,4,6};
         double[] d3 = new double[] {5,10,15};
         double[][] d4 = new double[][] {d1,{4,5,6},{7,8,9}};
         double[][] d5 = new double[][] {d2,d1,d3};
+        double[][] d6 = new double[][] {{3},{3},{3}};
         
         
+        double starttime;
+        double endtime;
         
+            Matrix m1a = new Matrix(d4);
+        starttime = System.nanoTime();
         Tensor t1 = new Tensor(d4);
         Tensor t2 = new Tensor(d5);
         Tensor ta = new Tensor(d1);
         Tensor tb = new Tensor(d2);
         Tensor tc = new Tensor(d3);
+        Object obj = new Object();
+        for (int i=0; i<100; i++) {
+            Matrix test1 = new Matrix(d4);
+        }
+        Matrix m1 = new Matrix(d4);
+        Matrix m2 = new Matrix(d6);
+        Matrix m12 = Matrix.mult(m1, m2);
+        
         
         Tensor tj = Tensor.join(ta, tb, tc);
         Tensor tj2 = Tensor.join(t1, t2);
         Tensor tadd = Tensor.add(tj, tj, ta);
         Tensor[] tsplit = Tensor.split(tj2);
-        System.out.println(tj);
-        System.out.println(tadd);
-        System.out.println(t1);
-        System.out.println(t2);
-        System.out.println(tsplit[0]);
-        System.out.println(Float.MAX_VALUE);
+        
+        endtime = System.nanoTime() - starttime;
+        
+        //System.out.println(m12);
+        //System.out.println(m1.getDimensionSize(1));
+        //System.out.println(m2.getDimensionSize(2));
+        //System.out.println(m1);
+        //System.out.println(m2);
+        //System.out.println(Matrix.transpose(m2));
+        //System.out.println(Matrix.transpose(m1));
+        System.out.println("Tensor operations took "+ endtime/1000000 + "ms");
         
         
         
         
-        double starttime = System.nanoTime();
+        starttime = System.nanoTime();
         double[] audiotest = new double[26460000];
-        double endtime = System.nanoTime() - starttime;
+        endtime = System.nanoTime() - starttime;
         System.out.println("Initialising array takes "+ endtime/1000000 + "ms");
         
         

@@ -32,7 +32,7 @@ public class Tensor implements Dimensional {
         dimensions = sizeArray.length;
         dimSizes = sizeArray.clone();
         dimLeap = getDimLeap();
-        elements = new double[getTotalElements()];
+        elements = new double[totalElements(sizeArray)];
     }
     public Tensor(int[] sizeArray, double fill) {
         this(sizeArray);
@@ -70,12 +70,12 @@ public class Tensor implements Dimensional {
             }
         }
     }
-    public static Tensor clone(Tensor tensor) {
+    final public static Tensor clone(Tensor tensor) {
         Tensor newTensor = new Tensor(tensor.dimSizes, true); //Partial clone
         newTensor.elements = tensor.elements.clone();
         return newTensor;
     }
-    public static Tensor join(Tensor... tensorArray) {
+    final public static Tensor join(Tensor... tensorArray) {
         if (isSameDimensions(tensorArray)) {
             int[] newDimSizes = new int[tensorArray[0].dimensions + 1];
             newDimSizes[0] = tensorArray.length;
@@ -97,7 +97,7 @@ public class Tensor implements Dimensional {
             throw new IndexOutOfBoundsException("Tensor of different sizes.");
         }
     }
-    public static Tensor[] split(Tensor tensor) {
+    final public static Tensor[] split(Tensor tensor) {
         Tensor[] tensorArray = new Tensor[tensor.dimSizes[0]];
         int[] newDimSizes = new int[tensor.dimensions - 1];
         for (int i=0; i<newDimSizes.length; i++) {
@@ -113,7 +113,7 @@ public class Tensor implements Dimensional {
         
         return tensorArray;
     }
-    public static Tensor add(Tensor... tensorArray) {
+    final public static Tensor add(Tensor... tensorArray) {
         /*if (isSameDimensions(tensorArray)) {
             Tensor newTensor = Tensor.clone(tensorArray[0]);
             
@@ -139,14 +139,14 @@ public class Tensor implements Dimensional {
             throw new IndexOutOfBoundsException("Incompatible tensor sizes.");
         }
     }
-    public static Tensor add(Tensor tensor, double c) {
+    final public static Tensor add(Tensor tensor, double c) {
         Tensor newTensor = Tensor.clone(tensor);
         for (int i=0; i<tensor.elements.length; i++) {
             newTensor.elements[i] += c;
         }
         return newTensor;
     }
-    public static Tensor sub(Tensor... tensorArray) {
+    final public static Tensor sub(Tensor... tensorArray) {
         if (isSameSubDimensions(tensorArray)) {
             Tensor newTensor = Tensor.clone(tensorArray[0]);
             
@@ -162,14 +162,14 @@ public class Tensor implements Dimensional {
             throw new IndexOutOfBoundsException("Incompatible tensor sizes.");
         }
     }
-    public static Tensor sub(Tensor tensor, double c) {
+    final public static Tensor sub(Tensor tensor, double c) {
         Tensor newTensor = Tensor.clone(tensor);
         for (int i=0; i<tensor.elements.length; i++) {
             newTensor.elements[i] -= c;
         }
         return newTensor;
     }
-    public static Tensor prod(Tensor... tensorArray) {
+    final public static Tensor prod(Tensor... tensorArray) {
         if (isSameSubDimensions(tensorArray)) {
             Tensor newTensor = Tensor.clone(tensorArray[0]);
             
@@ -185,14 +185,14 @@ public class Tensor implements Dimensional {
             throw new IndexOutOfBoundsException("Incompatible tensor sizes.");
         }
     }
-    public static Tensor prod(Tensor tensor, double c) {
+    final public static Tensor prod(Tensor tensor, double c) {
         Tensor newTensor = Tensor.clone(tensor);
         for (int i=0; i<tensor.elements.length; i++) {
             newTensor.elements[i] *= c;
         }
         return newTensor;
     }
-    public static Tensor div(Tensor... tensorArray) {
+    final public static Tensor div(Tensor... tensorArray) {
         if (isSameSubDimensions(tensorArray)) {
             Tensor newTensor = Tensor.clone(tensorArray[0]);
             
@@ -213,7 +213,7 @@ public class Tensor implements Dimensional {
             throw new IndexOutOfBoundsException("Incompatible tensor sizes.");
         }
     }
-    public static Tensor div(Tensor tensor, double c) {
+    final public static Tensor div(Tensor tensor, double c) {
         Tensor newTensor = Tensor.clone(tensor);
         for (int i=0; i<tensor.elements.length; i++) {
             if (c != 0) {
@@ -224,14 +224,14 @@ public class Tensor implements Dimensional {
         }
         return newTensor;
     }
-    public static Tensor neg(Tensor tensor) {
+    final public static Tensor neg(Tensor tensor) {
         Tensor newTensor = new Tensor(tensor.dimSizes);
         for (int i=0; i<newTensor.elements.length; i++) {
             newTensor.elements[i] = -tensor.elements[i];
         }
         return newTensor;
     }
-    public static boolean isSameDimensions(Tensor... tensorArray) {
+    final public static boolean isSameDimensions(Tensor... tensorArray) {
         int[] firstDimSizes = tensorArray[0].dimSizes;
         
         for (int n=1; n<tensorArray.length; n++) {
@@ -241,7 +241,7 @@ public class Tensor implements Dimensional {
         }
         return true;
     }
-    public static boolean isSameSubDimensions(Tensor... tensorArray) {
+    final public static boolean isSameSubDimensions(Tensor... tensorArray) {
         int[] firstDimSizes = tensorArray[0].dimSizes;
         int firstDimLength = tensorArray[0].dimensions;
         
@@ -277,8 +277,8 @@ public class Tensor implements Dimensional {
         }
         return dimLeap;
     }
-    private int getTotalElements() {
-        return totalElements(dimSizes);
+    public int getElementsLength() {
+        return elements.length;
     }
     public int getDimensions() {
         return dimensions;
@@ -288,7 +288,7 @@ public class Tensor implements Dimensional {
     }
     public int getDimensionSize(int d) {
         if (d > 0 && d <= dimensions) {
-            return dimSizes[d-1];
+            return dimSizes[dimensions-d];
         } else {
             throw new IndexOutOfBoundsException("Invalid tensor dimension index.");
         }
@@ -366,9 +366,22 @@ public class Tensor implements Dimensional {
             return false;
         }
     }
-    protected double get(int i) {
+    final public Tensor getClone() {
+        return Tensor.clone(this);
+    }
+    final public Tensor getNeg() {
+        return Tensor.neg(this);
+    }
+    final protected double get(int i) {
         if (i >= 0 && i < elements.length) {
             return elements[i];
+        } else {
+            throw new IndexOutOfBoundsException("Invalid tensor index.");
+        }
+    }
+    final protected void set(int i, double c) {
+        if (i >= 0 && i < elements.length) {
+            elements[i] = c;
         } else {
             throw new IndexOutOfBoundsException("Invalid tensor index.");
         }
@@ -377,13 +390,6 @@ public class Tensor implements Dimensional {
         if (isWithinBounds(n)) {
             int index = getElemIndex(n);
             return elements[index];
-        } else {
-            throw new IndexOutOfBoundsException("Invalid tensor index.");
-        }
-    }
-    protected void set(int i, double c) {
-        if (i >= 0 && i < elements.length) {
-            elements[i] = c;
         } else {
             throw new IndexOutOfBoundsException("Invalid tensor index.");
         }
@@ -399,20 +405,20 @@ public class Tensor implements Dimensional {
     public void set(double c, int... n) {
         set(n, c);
     }
-    public final void fill(double c) {
+    final public void fill(double c) {
         for (int i=0; i<elements.length; i++) {
             elements[i] = c;
         }
     }
-    public final void zero() {
+    final public void zero() {
         fill(0);
     }
-    public final void negate() {
+    final public void negate() {
         for (int i=0; i<elements.length; i++) {
             elements[i] = -elements[i];
         }
-    }    
-    public final void add(Tensor tensor) {
+    }
+    final public void add(Tensor tensor) {
         if (isSameSubDimensions(new Tensor[] {this, tensor})) {
             int subLength = tensor.elements.length;
             for (int i=0; i<elements.length; i++) {
@@ -421,8 +427,13 @@ public class Tensor implements Dimensional {
         } else {
             throw new IndexOutOfBoundsException("Incompatible tensor sizes.");
         }
-    }    
-    public final void sub(Tensor tensor) {
+    }
+    final public void add(double c) {
+        for (int i=0; i<elements.length; i++) {
+            elements[i] += c;
+        }
+    }
+    final public void sub(Tensor tensor) {
         if (isSameSubDimensions(new Tensor[] {this, tensor})) {
             int subLength = tensor.elements.length;
             for (int i=0; i<elements.length; i++) {
@@ -432,8 +443,13 @@ public class Tensor implements Dimensional {
         } else {
             throw new IndexOutOfBoundsException("Incompatible tensor sizes.");
         }
-    }    
-    public final void prod(Tensor tensor) {
+    }
+    final public void sub(double c) {
+        for (int i=0; i<elements.length; i++) {
+            elements[i] -= c;
+        }
+    }
+    final public void prod(Tensor tensor) {
         if (isSameSubDimensions(new Tensor[] {this, tensor})) {
             int subLength = tensor.elements.length;
             for (int i=0; i<elements.length; i++) {
@@ -443,16 +459,35 @@ public class Tensor implements Dimensional {
         } else {
             throw new IndexOutOfBoundsException("Incompatible tensor sizes.");
         }
-    }    
-    public final void div(Tensor tensor) {
+    }
+    final public void prod(double c) {
+        for (int i=0; i<elements.length; i++) {
+            elements[i] *= c;
+        }
+    }
+    final public void div(Tensor tensor) {
         if (isSameSubDimensions(new Tensor[] {this, tensor})) {
             int subLength = tensor.elements.length;
             for (int i=0; i<elements.length; i++) {
-                elements[i] /= tensor.elements[i%subLength];
+                double divisor = tensor.elements[i%subLength];
+                if (divisor != 0) {
+                    elements[i] /= divisor;
+                } else {
+                    throw new IllegalArgumentException("Divide by zero.");
+                }
             }
 
         } else {
             throw new IndexOutOfBoundsException("Incompatible tensor sizes.");
+        }
+    }
+    final public void div(double c) {
+        for (int i=0; i<elements.length; i++) {             
+            if (c != 0) {
+                elements[i] /= c;
+            } else {
+                throw new IllegalArgumentException("Divide by zero.");
+            }
         }
     }
     @Override
@@ -469,7 +504,7 @@ public class Tensor implements Dimensional {
             String string = new String();
             string += elements[0] + " ";
             for (int i=1; i<elements.length; i++) { //For all elements
-                if (i%dimSizes[0] == 0) {
+                if (i%dimSizes[1] == 0) {
                     string += "\n"; //Separate rows by a newline
                 }
                 string += elements[i] + " "; //Separate columns by a space
