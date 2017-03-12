@@ -31,22 +31,43 @@ public class Main {
         double[] d2 = new double[] {2,4,6};
         double[] d3 = new double[] {5,10,15};
         double[][] d4 = new double[][] {d1,{4,5,6},{7,8,9}};
+        double[][] d5 = new double[][] {d2,d1,d3};
         
         
         
         Tensor t1 = new Tensor(d4);
-        
+        Tensor t2 = new Tensor(d5);
         Tensor ta = new Tensor(d1);
         Tensor tb = new Tensor(d2);
         Tensor tc = new Tensor(d3);
         
         Tensor tj = Tensor.join(ta, tb, tc);
-        Tensor tj2 = Tensor.join(t1, t1);
-        System.out.println(ta);       
-        System.out.println(t1);       
-        System.out.println(tj);      
-        System.out.println(tj2);
+        Tensor tj2 = Tensor.join(t1, t2);
+        Tensor tadd = Tensor.add(tj, tj, ta);
+        Tensor[] tsplit = Tensor.split(tj2);
+        System.out.println(tj);
+        System.out.println(tadd);
+        System.out.println(t1);
+        System.out.println(t2);
+        System.out.println(tsplit[0]);
+        System.out.println(Float.MAX_VALUE);
         
+        
+        
+        
+        double starttime = System.nanoTime();
+        double[] audiotest = new double[26460000];
+        double endtime = System.nanoTime() - starttime;
+        System.out.println("Initialising array takes "+ endtime/1000000 + "ms");
+        
+        
+        starttime = System.nanoTime();
+        for (int i=0; i<audiotest.length; i++) {
+            audiotest[i] = 2.4;
+        }
+        endtime = System.nanoTime() - starttime;
+        System.out.println("Copying array takes "+ endtime/1000000 + "ms");
     }
+    
     
 }
