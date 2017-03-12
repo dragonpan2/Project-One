@@ -5,6 +5,8 @@
  */
 package MathExt;
 
+import java.util.Arrays;
+
 /**
  *
  * @author bowen
@@ -12,11 +14,13 @@ package MathExt;
 public class Tensor implements Dimensional {
     private int dimensions;
     private int[] dimSizes;
+    private int[] dimLeap;
     private double[] elements;
     
     public Tensor(int[] sizeArray) {
         dimensions = sizeArray.length;
         dimSizes = sizeArray.clone();
+        dimLeap = getDimLeap();
         elements = new double[getTotalElements()];
     }
     public Tensor(int[] sizeArray, double fill) {
@@ -81,6 +85,15 @@ public class Tensor implements Dimensional {
             }
         }
         return true;
+    }
+    private int[] getDimLeap() {
+        int prod = 1;
+        int[] dimLeap = new int[dimensions];
+        for (int i=dimensions-1; i>=0; i--) {
+            dimLeap[i] = prod;
+            prod *= dimSizes[i];
+        }
+        return dimLeap;
     }
     private int getTotalElements() {
         int totalElements = 1;
@@ -159,7 +172,7 @@ public class Tensor implements Dimensional {
         }
         int leap = 0;
         for (int i=0; i<n.length; i++) {
-            leap += getDimLeap(i+1)*n[i];
+            leap += dimLeap[i]*n[i];
         }
         return leap;
     }
