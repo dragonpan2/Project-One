@@ -9,8 +9,24 @@ package MathExt;
  *
  * @author bowen
  */
-public class Vector extends Matrix {
+public class Vector extends Tensor {
     public Vector(int n) {
-        super(1, n);
+        super(new int[] {n});
     }
+    public Vector(int n, double fill) {
+        super(new int[] {n}, fill);
+    }
+    public Vector(double[] elementArray) {
+        super(elementArray);
+    }
+    protected Vector(Tensor tensor) {
+        super(tensor);
+    }
+    public static Vector tensorToVector(Tensor tensor1) {
+        if (tensor1.getDimensions() > 1) {
+            throw new IndexOutOfBoundsException("Cannot convert 2rd or higher order tensor into vector.");
+        }
+        return new Vector(tensor1);
+    }
+    
 }

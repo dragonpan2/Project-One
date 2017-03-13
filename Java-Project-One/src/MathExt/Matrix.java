@@ -5,8 +5,6 @@
  */
 package MathExt;
 
-import java.util.Arrays;
-
 /**
  *
  * @author bowen
@@ -35,6 +33,18 @@ public class Matrix extends Tensor {
             throw new IndexOutOfBoundsException("Cannot convert 3rd or higher order tensor into matrix.");
         }
         return new Matrix(tensor2);
+    }
+    public static Matrix vectorToRowMatrix(Tensor tensor1) {
+        if (tensor1.getDimensions() > 1) {
+            throw new IndexOutOfBoundsException("Tensor is not a vector.");
+        }
+        return new Matrix(Tensor.join(tensor1));
+    }
+    public static Matrix vectorToColumnMatrix(Tensor tensor1) {
+        if (tensor1.getDimensions() > 1) {
+            throw new IndexOutOfBoundsException("Tensor is not a vector.");
+        }
+        return Matrix.transpose(new Matrix(Tensor.join(tensor1)));
     }
     public static Matrix shell(Matrix matrix) {
         return new Matrix(matrix.getDimensionSize(2), matrix.getDimensionSize(1));
