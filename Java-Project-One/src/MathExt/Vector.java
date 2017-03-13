@@ -22,11 +22,46 @@ public class Vector extends Tensor {
     protected Vector(Tensor tensor) {
         super(tensor);
     }
-    public static Vector tensorToVector(Tensor tensor1) {
+    public static Vector toVector(Tensor tensor1) {
         if (tensor1.getDimensions() > 1) {
             throw new IndexOutOfBoundsException("Cannot convert 2rd or higher order tensor into vector.");
         }
         return new Vector(tensor1);
     }
-    
+    public static Vector shell(Vector vector) {
+        return new Vector(vector.getDimensionSize(1));
+    }
+    public static Vector clone(Vector vector) {
+        return new Vector(Tensor.clone(vector));
+    }
+    public static Vector neg(Vector vector) {
+        return new Vector(Tensor.neg(vector));
+    }
+    public static Vector add(Vector... vectorArray) {
+        return new Vector(Tensor.add(vectorArray));
+    }
+    public static Vector add(Vector matrix, double c) {
+        return new Vector(Tensor.add(matrix, c));
+    }
+    public static Vector sub(Vector... vectorArray) {
+        return new Vector(Tensor.sub(vectorArray));
+    }
+    public static Vector sub(Vector matrix, double c) {
+        return new Vector(Tensor.sub(matrix, c));
+    }
+    public static Vector prod(Vector... vectorArray) {
+        return new Vector(Tensor.prod(vectorArray));
+    }
+    public static Vector prod(Vector matrix, double c) {
+        return new Vector(Tensor.prod(matrix, c));
+    }
+    public static Vector div(Vector... vectorArray) {
+        return new Vector(Tensor.div(vectorArray));
+    }
+    public static Vector div(Vector matrix, double c) {
+        return new Vector(Tensor.div(matrix, c));
+    }
+    public static Vector mult(Matrix matrix, Vector vector) {
+        return toVector(Matrix.mult(matrix, Matrix.toColumnMatrix(vector)));
+    }
 }

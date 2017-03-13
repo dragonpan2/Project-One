@@ -5,6 +5,8 @@
  */
 package MathExt;
 
+import java.util.Arrays;
+
 /**
  *
  * @author bowen
@@ -28,21 +30,21 @@ public class Matrix extends Tensor {
     protected Matrix(Tensor tensor) {
         super(tensor);
     }
-    public static Matrix tensorToMatrix(Tensor tensor2) {
+    public static Matrix toMatrix(Tensor tensor2) {
         if (tensor2.getDimensions() > 2) {
             throw new IndexOutOfBoundsException("Cannot convert 3rd or higher order tensor into matrix.");
         }
         return new Matrix(tensor2);
     }
-    public static Matrix vectorToRowMatrix(Tensor tensor1) {
+    public static Matrix toRowMatrix(Tensor tensor1) {
         if (tensor1.getDimensions() > 1) {
-            throw new IndexOutOfBoundsException("Tensor is not a vector.");
+            throw new IndexOutOfBoundsException("Tensor is not of 1st order.");
         }
         return new Matrix(Tensor.join(tensor1));
     }
-    public static Matrix vectorToColumnMatrix(Tensor tensor1) {
+    public static Matrix toColumnMatrix(Tensor tensor1) {
         if (tensor1.getDimensions() > 1) {
-            throw new IndexOutOfBoundsException("Tensor is not a vector.");
+            throw new IndexOutOfBoundsException("Tensor is not of 1st order.");
         }
         return Matrix.transpose(new Matrix(Tensor.join(tensor1)));
     }
@@ -134,6 +136,9 @@ public class Matrix extends Tensor {
         }
         return true;
     }
+    public double getNorm(int p, int q) { //Implement PQ norm
+        return 0;
+    }
     final public void add(Matrix matrix) {
         if (isSameDimensions(this, matrix)) {
             for (int i=0, length=getElementsLength(); i<length; i++) {
@@ -180,7 +185,7 @@ public class Matrix extends Tensor {
             int index = m * getDimensionSize(1) + n;
             return get(index);
         } else {
-            throw new IndexOutOfBoundsException("Invalid tensor index.");
+            throw new IndexOutOfBoundsException("Invalid matrix index.");
         }
     }
     public void set(int m, int n, double c) {
@@ -188,8 +193,14 @@ public class Matrix extends Tensor {
             int index = m * getDimensionSize(1) + n;
             set(index, c);
         } else {
-            throw new IndexOutOfBoundsException("Invalid tensor index.");
+            throw new IndexOutOfBoundsException("Invalid matrix index.");
         }
+    }
+    public void setFrom(Matrix matrix) {
+        super.setFrom(matrix);
+    }
+    public void copyFrom(Matrix matrix) {
+        super.copyFrom(matrix);
     }
     private boolean isWithinBounds(int m, int n) {
         if (m >= 0 && m < getDimensionSize(2) && n >= 0 && n < getDimensionSize(1)) {

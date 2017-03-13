@@ -330,9 +330,6 @@ public class Tensor implements Dimensional {
         }
         return max;
     }
-    public double getNorm(int p, int q) { //Implement PQ norm
-        return 0;
-    }
     /*private int getDimLeap(int k) { //Get the leap at the nth dimension
         if (k > dimensions) {
             throw new IndexOutOfBoundsException("Invalid tensor dimension index.");
@@ -366,25 +363,39 @@ public class Tensor implements Dimensional {
             return false;
         }
     }
+    @Override
+    final public Tensor clone() {
+        return Tensor.clone(this);
+    }
     final public Tensor getClone() {
         return Tensor.clone(this);
     }
     final public Tensor getNeg() {
         return Tensor.neg(this);
     }
-    final protected double get(int i) {
+    final public double get(int i) {
         if (i >= 0 && i < elements.length) {
             return elements[i];
         } else {
             throw new IndexOutOfBoundsException("Invalid tensor index.");
         }
     }
-    final protected void set(int i, double c) {
+    final public void set(int i, double c) {
         if (i >= 0 && i < elements.length) {
             elements[i] = c;
         } else {
             throw new IndexOutOfBoundsException("Invalid tensor index.");
         }
+    }
+    public void setFrom(Tensor tensor) {
+        if (Tensor.isSameDimensions(this, tensor)) {
+            elements = tensor.elements;
+        } else {
+            throw new IndexOutOfBoundsException("Different tensor sizes.");
+        }
+    }
+    public void copyFrom(Tensor tensor) {
+        setFrom(tensor.clone());
     }
     public double get(int... n) {
         if (isWithinBounds(n)) {
