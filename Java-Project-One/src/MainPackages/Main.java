@@ -6,8 +6,7 @@
 package MainPackages;
 
 import java.util.Arrays;
-import MathExt.Tensor;
-import MathExt.Matrix;
+import MathExt.*;
 
 /**
  *
@@ -36,6 +35,8 @@ public class Main {
         double starttime;
         double endtime;
         
+        Tensor tensor = new Tensor(d4);
+        
             Matrix m1a = new Matrix(d4);
         starttime = System.nanoTime();
         Tensor t1 = new Tensor(d4);
@@ -49,17 +50,18 @@ public class Main {
         }
         Matrix m1 = new Matrix(d4);
         Matrix m2 = new Matrix(d6);
-        Matrix m12 = Matrix.mult(m1, m2);
+        Matrix m12 = Matrices.mult(m1, m2);
         
         
-        Tensor tj = Tensor.join(ta, tb, tc);
-        Tensor tj2 = Tensor.join(t1, t2);
-        Tensor tadd = Tensor.add(tj, tj, ta);
-        Tensor[] tsplit = Tensor.split(tj2);
+        Tensor tj = Tensors.join(ta, tb, tc);
+        Tensor tj2 = Tensors.join(t1, t2);
+        Tensor tadd = Tensors.add(tj, tj, ta);
+        Tensor[] tsplit = Tensors.split(tj2);
         
         endtime = System.nanoTime() - starttime;
         
-        //System.out.println(m12);
+        
+        System.out.println(m12);
         //System.out.println(m1.getDimensionSize(1));
         //System.out.println(m2.getDimensionSize(2));
         //System.out.println(m1);

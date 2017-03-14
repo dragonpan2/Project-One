@@ -11,9 +11,9 @@ package MathExt;
  */
 public interface Dimensional {
     //Strict Getters
-    int getDimensions(); //Returns num of dimensions
+    int dimensions(); //Returns num of dimensions
     int getDimensionSize(int i); //Returns the size of dimension (num of elements)
-    double getNorm();
+    double norm();
     
     //Returns
     /*Geometric getShell();
