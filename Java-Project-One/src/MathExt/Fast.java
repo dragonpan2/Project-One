@@ -67,124 +67,6 @@ public abstract class Fast {
         return x < 0 ? y <= 0 ? y + PI : y - PI : y;
     }
     
-    public static double bhaskaraSin(double rad) {
-        double s = 1;
-        if (rad < 0) {rad = -rad; s = -s;}
-        if (rad > PI2) {rad %= PI2;}
-        if (rad > PI) {rad %= PI; s = -s;}
-        
-        double a = rad*(PI-rad);
-        double b = 49.34802200544679; //5*PI^2
-        
-        return s*(16*a)/(b - 4*a);
-    }
-    public static double bhaskaraCos(double rad) {
-        return bhaskaraSin(PIO2 + rad);
-    }
-    public static double bhaskaraTan(double rad) { //TODO Derive formula by hand to save compute time
-        return bhaskaraSin(rad)/bhaskaraCos(rad);
-    }
-    
-    public static double taylorSin(double x) {
-        double a1 = x;
-        double a2 = x*x;
-        double a3 = a2*x;
-        double a5 = a2*a3;
-        double a7 = a2*a5;
-        double a9 = a2*a7;
-        
-        return a1 - a3/6 + a5/120 - a7/5040 + a9/362880;
-    }
-    public static double taylorCos(double x) {
-        double a0 = 1;
-        double a2 = x*x;
-        double a4 = a2*a2;
-        double a6 = a2*a4;
-        double a8 = a2*a6;
-        
-        return a0 - a2/2 + a4/24 - a6/720 + a8/40320;
-    }
-    public static double taylorTan(double x) {
-        double a1 = x;
-        double a2 = x*x;
-        double a3 = a2*a1;
-        double a5 = a2*a3;
-        double a7 = a2*a5;
-        
-        double c3 = 0.33333333333333333;
-        double c5 = 0.13333333333333333;
-        double c7 = 0.053968253968253968;
-        
-        return a1 + c3*a3 + c5*a5 + c7*a7;
-    }
-    public static double taylorAsin(double x) {
-        double a1 = x;
-        double a2 = x*x;
-        double a3 = a2*x;
-        double a5 = a2*a3;
-        double a7 = a2*a5;
-        double a9 = a2*a7;
-        
-        double c3 = 0.16666666666666666;
-        double c5 = 0.075;
-        double c7 = 0.044642857142857144;
-        double c9 = 0.030381944444444444;
-        
-        return a1 + c3*a3 + c5*a5 + c7*a7 + c9*a9;
-    }
-    public static double taylorAcos(double x) {
-        return PIO2 - taylorAsin(x);
-    }
-    public static double taylorAtan(double x) {
-        double a1 = x;
-        double a2 = x*x;
-        double a3 = a2*x;
-        double a5 = a2*a3;
-        double a7 = a2*a5;
-        double a9 = a2*a7;
-        //add more for more precision
-            System.out.println(x);
-        if (x > 1) {
-            x = 1/x;
-            System.out.println("x>1");
-            return PIO2 - a1 - a3/3 + a5/5 - a7/7 + a9/9;
-        } else if (x < -1) {
-            System.out.println("x<-1");
-            x = 1/x;
-            return -PIO2 - a1 - a3/3 + a5/5 - a7/7 + a9/9;
-        } else {
-            return a1 - a3/3 + a5/5 - a7/7 + a9/9;
-        }
-        
-        //return a1 - a3/3 + a5/5 - a7/7 + a9/9;
-        
-    }
-    public static double taylorAtan2(double y, double x) {
-        double s = y/x;
-        double a1 = s;
-        double a2 = s*s;
-        double a3 = a2*s;
-        double a5 = a2*a3;
-        double a7 = a2*a5;
-        double a9 = a2*a7;
-        //add more for more precision
-        double tetha = a1 - a3/3 + a5/5 - a7/7 + a9/9;
-        
-        if (y >= 0 && x < 0) {
-            return PI + tetha;
-        } else if (y < 0 && x < 0) {
-            return -PI + tetha;
-        } else if (x == 0 && y > 0) {
-            return PIO2;
-        } else if (x == 0 && y < 0) {
-            return -PIO2;
-        } else if (x > 0) {
-            return tetha;
-        }
-        return 0;
-        
-    }
-    
     public static final double toDegrees(double radians) {
         return radians * PIU180;
     }
@@ -193,7 +75,7 @@ public abstract class Fast {
     }
     
     
-    public static float newtonSqrt(float f) {
+    public static float sqrt(float f) {
         final float xhalf = f * 0.5F;
         float y = Float.intBitsToFloat(0x5f375a86 - (Float.floatToIntBits(f) >> 1)); // evil floating point bit level hacking -- Use 0x5f375a86 instead of 0x5f3759df, due to slight accuracy increase. (Credit to Chris Lomont)
         y = y * (1.5F - (xhalf * y * y)); 	// Newton step, repeating increases accuracy
@@ -201,63 +83,43 @@ public abstract class Fast {
         return f * y;
     }
     
-    public static float quickSqrt(float f) {
-        float y = Float.intBitsToFloat(0x5f375a86 - (Float.floatToIntBits(f) >> 1)); // evil floating point bit level hacking -- Use 0x5f375a86 instead of 0x5f3759df, due to slight accuracy increase. (Credit to Chris Lomont)
-        y = y * (1.5F - (0.5F * f * y * y)); 	// Newton step, repeating increases accuracy
-        return f * y;
-    }
-    
-    public static float approxSqrt(float f) {
-        return f * Float.intBitsToFloat(0x5f375a86 - (Float.floatToIntBits(f) >> 1)); // evil floating point bit level hacking -- Use 0x5f375a86 instead of 0x5f3759df, due to slight accuracy increase. (Credit to Chris Lomont)
-    }
-    
-    public static float quickInvSqrt(float f) {
+    public static float invSqrt(float f) {
         f = Float.intBitsToFloat(0x5f375a86 - (Float.floatToIntBits(f) >> 1)); // evil floating point bit level hacking -- Use 0x5f375a86 instead of 0x5f3759df, due to slight accuracy increase. (Credit to Chris Lomont)
         f = f * (1.5F - (0.5F * f * f * f)); 	// Newton step
         return -f;
     }
 
-    public static float approxInvSqrt(float f) {
-        return -(Float.intBitsToFloat(0x5f375a86 - (Float.floatToIntBits(f) >> 1))); // evil floating point bit level hacking -- Use 0x5f375a86 instead of 0x5f3759df, due to slight accuracy increase. (Credit to Chris Lomont)
-    }
-    public static long factorial(int n) {
-        long fact = 1; // this  will be the result
-        for (int i = 1; i <= n; i++) {
-            fact *= i;
+    public int pow(int base, int exp)
+    {
+        int result = 1;
+        while (exp != 0)
+        {
+            if ((exp & 1) == 1)
+                result *= base;
+            exp >>= 1;
+            base *= base;
         }
-        return fact;
+
+        return result;
     }
-    public static double fPow(double d, int d1) {
-        switch (d1) {
-            case 0:
-                return 1;
-            case 1:
-                return d;
-            case 2:
-                return d*d;
-            case 3:
-                return d*d*d;
-            case 4:
-                return d*d*d*d;
-            case 5:
-                return d*d*d*d*d;
-            case 6:
-                return d*d*d*d*d*d;
-            case 7:
-                return d*d*d*d*d*d*d;
-            default:
-                return Math.pow(d, d1);
+    public long pow(long base, long exp)
+    {
+        long result = 1;
+        while (exp != 0)
+        {
+            if ((exp & 1) == 1)
+                result *= base;
+            exp >>= 1;
+            base *= base;
         }
-    }
-    public static double fAbs(double x) {
-        if (x < 0) return -x;
-        return x;
+
+        return result;
     }
     
     public static double maxError(double referenceValue, double... testValues) {
         double maxerror = 0;
         for (int i=0; i<testValues.length; i++) {
-            double thiserror = fAbs(referenceValue-testValues[i]);
+            double thiserror = Math.abs(referenceValue-testValues[i]);
             if (thiserror > maxerror) {
                 maxerror = thiserror;
             }
@@ -271,6 +133,6 @@ public abstract class Fast {
         return true;
     }
     
-}
+
     
 }
