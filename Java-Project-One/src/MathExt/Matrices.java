@@ -10,13 +10,13 @@ package MathExt;
  * @author bowen
  */
 public abstract class Matrices {
-    public static Matrix shell(Matrix matrix) {
+    final public static Matrix shell(Matrix matrix) {
         return new Matrix(matrix.getDimensionSize(2), matrix.getDimensionSize(1));
     }
-    public static Matrix neg(Matrix matrix) {
+    final public static Matrix neg(Matrix matrix) {
         return new Matrix(Tensors.neg(matrix));
     }
-    public static Matrix transpose(Matrix matrix) {
+    final public static Matrix transpose(Matrix matrix) {
         int rows = matrix.getDimensionSize(1); //swap dimension 1 and 2
         int columns = matrix.getDimensionSize(2);
         Matrix newMatrix = new Matrix(rows, columns);
@@ -28,31 +28,31 @@ public abstract class Matrices {
         }
         return newMatrix;
     }
-    public static Matrix add(Matrix... matrixArray) {
+    final public static Matrix add(Matrix... matrixArray) {
         return new Matrix(Tensors.add(matrixArray));
     }
-    public static Matrix add(Matrix matrix, double c) {
+    final public static Matrix add(Matrix matrix, double c) {
         return new Matrix(Tensors.add(matrix, c));
     }
-    public static Matrix sub(Matrix... matrixArray) {
+    final public static Matrix sub(Matrix... matrixArray) {
         return new Matrix(Tensors.sub(matrixArray));
     }
-    public static Matrix sub(Matrix matrix, double c) {
+    final public static Matrix sub(Matrix matrix, double c) {
         return new Matrix(Tensors.sub(matrix, c));
     }
-    public static Matrix prod(Matrix... matrixArray) {
+    final public static Matrix prod(Matrix... matrixArray) {
         return new Matrix(Tensors.prod(matrixArray));
     }
-    public static Matrix prod(Matrix matrix, double c) {
+    final public static Matrix prod(Matrix matrix, double c) {
         return new Matrix(Tensors.prod(matrix, c));
     }
-    public static Matrix div(Matrix... matrixArray) {
+    final public static Matrix div(Matrix... matrixArray) {
         return new Matrix(Tensors.div(matrixArray));
     }
-    public static Matrix div(Matrix matrix, double c) {
+    final public static Matrix div(Matrix matrix, double c) {
         return new Matrix(Tensors.div(matrix, c));
     }
-    public static Matrix mult(Matrix... matrixArray) {
+    final public static Matrix mult(Matrix... matrixArray) {
         Matrix multMatrix = matrixArray[0].clone(); //save the leftmost matrix
         int multMatrixRows = multMatrix.getDimensionSize(2);
         int multMatrixColumns = multMatrix.getDimensionSize(1);

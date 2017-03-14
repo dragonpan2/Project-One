@@ -52,6 +52,11 @@ public abstract class Tensors {
         
         return tensorArray;
     }
+    final public static Tensor neg(Tensor tensor) {
+        Tensor newTensor = tensor.clone();
+        newTensor.negate();
+        return newTensor;
+    }
     final public static Tensor add(Tensor... tensorArray) {
         Tensor newTensor = tensorArray[0].clone();
         for (int n=1; n<tensorArray.length; n++) {
@@ -98,11 +103,6 @@ public abstract class Tensors {
     final public static Tensor div(Tensor tensor, double c) {
         Tensor newTensor = tensor.clone();
         newTensor.div(c);
-        return newTensor;
-    }
-    final public static Tensor neg(Tensor tensor) {
-        Tensor newTensor = tensor.clone();
-        newTensor.negate();
         return newTensor;
     }
     final public static boolean isSameDimensions(Tensor... tensorArray) {
