@@ -5,9 +5,12 @@
  */
 package MainPackages;
 
+import MathExt.Algebra.Matrices;
+import MathExt.Algebra.Tensor;
+import MathExt.Algebra.Matrix;
+import MathExt.Algebra.Tensors;
 import java.util.Arrays;
-import MathExt.*;
-
+import static java.lang.Math.*;
 /**
  *
  * @author Lin-Li
@@ -22,7 +25,7 @@ public class Main {
         //window.world.thread.start();
         //System.out.println("W,A,S,D,UP,DOWN,LEFT,RIGHT to move the vectors");
         //System.out.println("E to change Math mode, fastMath is currently WIP");
-        
+        sin(3);
         
         double[] d1 = new double[] {1,2,3};
         double[] d2 = new double[] {2,4,6};

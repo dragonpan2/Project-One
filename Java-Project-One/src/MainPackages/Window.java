@@ -1,6 +1,6 @@
 package MainPackages;
 
-import SPHY.Vector2;
+import Deprec.SPHY.Vector2;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.JFrame;

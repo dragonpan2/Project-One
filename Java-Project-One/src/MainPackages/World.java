@@ -8,7 +8,7 @@ package MainPackages;
 import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.JPanel;
-import SPHY.Vector2;
+import Deprec.SPHY.Vector2;
 
 /**
  *

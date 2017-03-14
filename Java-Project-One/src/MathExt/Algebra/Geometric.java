@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package SPHY;
+package MathExt.Algebra;
 
 /**
  *
  * @author bowen
  */
-public class Matrix2 {
+public interface Geometric extends Dimensional {
     
 }
