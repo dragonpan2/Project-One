@@ -9,6 +9,7 @@ import MathExt.Algebra.Matrices;
 import MathExt.Algebra.Tensor;
 import MathExt.Algebra.Matrix;
 import MathExt.Algebra.Tensors;
+import MathExt.Approx;
 import java.util.Arrays;
 import MathExt.Ext;
 import MathExt.Fast;
@@ -36,9 +37,8 @@ public class Main {
         System.out.println(Ext.factorial(fac));
         System.out.println(Ext.log10Factorial(fac));
         double sin = 0.7;
-        System.out.println(Fast.cos(sin));
-        System.out.println(Fast.cos2(sin));
-        System.out.println(Math.cos(sin));
+        System.out.println(Fast.sin(sin));
+        System.out.println(Math.sin(sin));
         
         
         
@@ -52,34 +52,47 @@ public class Main {
         }*/
         
         starttime = System.nanoTime();
-        for (int i=0; i<1000000; i++) {
-            Fast.cos2(Math.random());
-        }
-        endtime = System.nanoTime() - starttime;
-        System.out.println("Fast operations took "+ endtime/1000000 + "ms");
-        
-        
-        starttime = System.nanoTime();
-        for (int i=0; i<1000000; i++) {
+        for (int i=0; i<100000000; i++) {
             Fast.cos(Math.random());
         }
         endtime = System.nanoTime() - starttime;
-        System.out.println("Math operations took "+ endtime/1000000 + "ms");
+        System.out.println("Fast Cos took "+ endtime/1000000 + "ms");
+        
         
         starttime = System.nanoTime();
-        for (int i=0; i<1000000; i++) {
-            Fast.cos(Math.random());
+        for (int i=0; i<100000000; i++) {
+            Approx.cos(Math.random());
         }
         endtime = System.nanoTime() - starttime;
-        System.out.println("Math operations took "+ endtime/1000000 + "ms");
+        System.out.println("Approx Cos took "+ endtime/1000000 + "ms");
+        /*
+        starttime = System.nanoTime();
+        for (int i=0; i<100000000; i++) {
+            Fast.tan(Math.random());
+        }
+        endtime = System.nanoTime() - starttime;
+        System.out.println("Fast Tan took "+ endtime/1000000 + "ms");
         
         starttime = System.nanoTime();
-        for (int i=0; i<1000000; i++) {
-            Fast.cos2(Math.random());
+        for (int i=0; i<100000000; i++) {
+            Math.tan(Math.random());
         }
         endtime = System.nanoTime() - starttime;
-        System.out.println("Fast operations took "+ endtime/1000000 + "ms");
+        System.out.println("Math Tan took "+ endtime/1000000 + "ms");
+        */
+        starttime = System.nanoTime();
+        for (int i=0; i<100000000; i++) {
+            Fast.sqrt(Math.random());
+        }
+        endtime = System.nanoTime() - starttime;
+        System.out.println("Fast Sqrt took "+ endtime/1000000 + "ms");
         
+        starttime = System.nanoTime();
+        for (int i=0; i<100000000; i++) {
+            Approx.sqrt(Math.random());
+        }
+        endtime = System.nanoTime() - starttime;
+        System.out.println("Approx Sqrt took "+ endtime/1000000 + "ms");
         
         
         starttime = System.nanoTime();

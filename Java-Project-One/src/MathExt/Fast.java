@@ -31,53 +31,9 @@ public abstract class Fast {
     public static final double PIS2U4 = 4/PIS2;
     
     public static double sin(double d) {
-        if (d < -PI) {
-            d += PI2;
-        } else if (d > PI) {
-            d -= PI2;
-        }
-        double result;
-        //compute sine
-        if (d < 0) {
-            result = PIU4 * d + PIS2U4 * d * d;
-
-            if (result < 0)
-                result = .225 * (result * -result - result) + result;
-            else
-                result = .225 * (result * result - result) + result;
-        } else {
-            result = PIU4 * d - PIS2U4 * d * d;
-
-            if (result < 0)
-                result = .225 * (result * -result - result) + result;
-            else
-                result = .225 * (result * result - result) + result;
-        }
-        return result;
+        return cos(PIO2-d);
     }
     public static double cos(double d) {
-        //d%= PI2;
-        d += PIO2;
-        if (d > PI) d -= PI2;
-        double result;
-        if (d < 0) {
-            result = PIU4 * d + PIS2U4 * d * d;
-
-            if (result < 0)
-                result = .225 * (result *-result - result) + result;
-            else
-                result = .225 * (result * result - result) + result;
-        } else {
-            result = PIU4 * d - PIS2U4 * d * d;
-
-            if (result < 0)
-                result = .225 * (result *-result - result) + result;
-            else
-                result = .225 * (result * result - result) + result;
-        }
-        return result;
-    }
-    public static double cos2(double d){
         int quad; // what quadrant are we in?
         if (d < 0) d = -d;
         if (d > PI2) d %= PI2;
