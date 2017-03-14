@@ -11,6 +11,7 @@ import MathExt.Algebra.Matrix;
 import MathExt.Algebra.Tensors;
 import java.util.Arrays;
 import MathExt.Ext;
+import MathExt.Fast;
 /**
  *
  * @author Lin-Li
@@ -27,15 +28,16 @@ public class Main {
         //System.out.println("E to change Math mode, fastMath is currently WIP");
         
         System.out.println(5.53263465e-105);
-        System.out.println(Math.pow(51.4, 7854));
-        System.out.println(Ext.hugePowString(51.4, 7854));
-        double fac = 300000;
+        double base = 51.4;
+        double exp = 7856.1;
+        System.out.println(Math.pow(base, exp));
+        System.out.println(Ext.hugePow(base, exp));
+        double fac = 143;
         System.out.println(Ext.factorial(fac));
-        System.out.println(Ext.hugeFactorialString(fac));
-        
-        
-        
-        
+        System.out.println(Ext.hugeFactorial(fac));
+        double sin = -0.2;
+        System.out.println(Fast.sinAlt(sin));
+        System.out.println(Fast.sin(sin));
         
         
         
@@ -43,15 +45,27 @@ public class Main {
         
         double starttime;
         double endtime;
+        for (int i=0; i<100000; i++) {
+            Math.sqrt(Math.random());
+            Fast.sqrt(Math.random());
+        }
         
         starttime = System.nanoTime();
-
-        
+        for (int i=0; i<100000; i++) {
+            Math.sqrt(Math.random());
+        }
         endtime = System.nanoTime() - starttime;
+        System.out.println("Math operations took "+ endtime/1000000 + "ms");
+        
+        starttime = System.nanoTime();
+        for (int i=0; i<100000; i++) {
+            Fast.sqrt(Math.random());
+        }
+        endtime = System.nanoTime() - starttime;
+        System.out.println("Fast operations took "+ endtime/1000000 + "ms");
         
         
-        System.out.println("Tensor operations took "+ endtime/1000000 + "ms");
-        
+
         
         
         
