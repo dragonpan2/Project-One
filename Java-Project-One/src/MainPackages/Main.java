@@ -32,40 +32,53 @@ public class Main {
         double exp = 7856.1;
         System.out.println(Math.pow(base, exp));
         System.out.println(Ext.hugePow(base, exp));
-        double fac = 143;
+        double fac = 15;
         System.out.println(Ext.factorial(fac));
-        System.out.println(Ext.hugeFactorial(fac));
-        double sin = -0.2;
-        System.out.println(Fast.sinAlt(sin));
-        System.out.println(Fast.sin(sin));
-        
+        System.out.println(Ext.log10Factorial(fac));
+        double sin = 0.7;
+        System.out.println(Fast.cos(sin));
+        System.out.println(Fast.cos2(sin));
+        System.out.println(Math.cos(sin));
         
         
         
         
         double starttime;
         double endtime;
-        for (int i=0; i<100000; i++) {
-            Math.sqrt(Math.random());
-            Fast.sqrt(Math.random());
-        }
+        /*
+        for (int i=0; i<10000000; i++) {
+            Math.tan(Math.random());
+            Fast.tan(Math.random());
+        }*/
         
         starttime = System.nanoTime();
-        for (int i=0; i<100000; i++) {
-            Math.sqrt(Math.random());
-        }
-        endtime = System.nanoTime() - starttime;
-        System.out.println("Math operations took "+ endtime/1000000 + "ms");
-        
-        starttime = System.nanoTime();
-        for (int i=0; i<100000; i++) {
-            Fast.sqrt(Math.random());
+        for (int i=0; i<1000000; i++) {
+            Fast.cos2(Math.random());
         }
         endtime = System.nanoTime() - starttime;
         System.out.println("Fast operations took "+ endtime/1000000 + "ms");
         
         
-
+        starttime = System.nanoTime();
+        for (int i=0; i<1000000; i++) {
+            Fast.cos(Math.random());
+        }
+        endtime = System.nanoTime() - starttime;
+        System.out.println("Math operations took "+ endtime/1000000 + "ms");
+        
+        starttime = System.nanoTime();
+        for (int i=0; i<1000000; i++) {
+            Fast.cos(Math.random());
+        }
+        endtime = System.nanoTime() - starttime;
+        System.out.println("Math operations took "+ endtime/1000000 + "ms");
+        
+        starttime = System.nanoTime();
+        for (int i=0; i<1000000; i++) {
+            Fast.cos2(Math.random());
+        }
+        endtime = System.nanoTime() - starttime;
+        System.out.println("Fast operations took "+ endtime/1000000 + "ms");
         
         
         

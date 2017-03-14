@@ -4,7 +4,8 @@
  * and open the template in the editor.
  */
 package MathExt;
-
+//SEE APPROX PDF
+//http://nnp.ucsd.edu/phy120b/student_dirs/shared/gnarly/misc_docs/trig_approximations.pdf
 /**
  *
  * @author bowen
@@ -21,6 +22,7 @@ public abstract class Fast {
     public static final double PI4 = PI*4; // pi*4
     public static final double PIO2 = PI/2; // pi/2
     public static final double PIO4 = PI/4; // pi/4
+    public static final double PI32 = (3*PI/2); // 3/2 pi
     
     //1.27323954  = 4/pi
     //0.405284735 = 4/(pi^2)
@@ -53,31 +55,6 @@ public abstract class Fast {
         }
         return result;
     }
-    public static double sinAlt(double d) {
-        if (d < -PI) {
-            d += PI2;
-        } else if (d > PI) {
-            d -= PI2;
-        }
-        double result;
-        //compute sine
-        if (d < 0) {
-            result = PIU4 * d + PIS2U4 * d * d;
-
-            if (result < 0)
-                result = -0.225 * result * result - 0.225 * result + result;
-            else
-                result = 1000;
-        } else {
-            result = PIU4 * d - PIS2U4 * d * d;
-
-            if (result < 0)
-                result = 1000;
-            else
-                result = 1000;
-        }
-        return result;
-    }
     public static double cos(double d) {
         //d%= PI2;
         d += PIO2;
@@ -100,31 +77,81 @@ public abstract class Fast {
         }
         return result;
     }
-    //public static double tan(double d) {
+    public static double cos2(double d){
+        int quad; // what quadrant are we in?
+        if (d < 0) d = -d;
+        if (d > PI2) d %= PI2;
         
-    //}
+        quad=(int)(d/PIO2); // Get quadrant # (0 to 3) 
+        switch (quad){
+            case 0: return mxcos(d);
+            case 1: return -mxcos(PI-d);
+            case 2: return -mxcos(d-PI);
+            case 3: return mxcos(PI2-d);
+            default: return 0;
+        }
+        
+    }
+    private static double mxcos(double x) {
+        final double c1 = 0.999999953464;
+        final double c2 =-0.4999999053455;
+        final double c3 = 0.0416635846769;
+        final double c4 =-0.0013853704264;
+        final double c5 = 0.00002315393167;
+        final double x2 = x * x;
+        return (c1 + x2*(c2 + x2*(c3 + x2*(c4 + c5*x2))));
+    }
+
+    
+    
+    public static double tan(double d){
+        int octant; // what octant are we in?
+        if (d < 0) d = d + (-2*d);
+        if (d > PI2) d %= PI2;
+        octant=(int)(d/PIO4); // Get octant # (0 to 7)
+        switch (octant){
+            case 0: return mxtan(d *PIU4);
+            case 1: return 1.0/mxtan((PIO2-d) *PIU4);
+            case 2: return -1.0/mxtan((d-PIO2) *PIU4);
+            case 3: return - mxtan((PI-d) *PIU4);
+            case 4: return mxtan((d-PI) *PIU4);
+            case 5: return 1.0/mxtan((PI32-d)*PIU4);
+            case 6: return -1.0/mxtan((d-PI32)*PIU4);
+            case 7: return - mxtan((PI2-d) *PIU4);
+            default: return 0;
+        }
+    }
+    private static double mxtan(double x) {
+        final double c1= 211.849369664121;
+        final double c2=- 12.5288887278448 ;
+        final double c3= 269.7350131214121;
+        final double c4=- 71.4145309347748;
+        double x2; // The input argument squared
+        x2=x * x;
+        return (x*(c1 + c2 * x2)/(c3 + x2*(c4 + x2)));
+    }
     
     private static double mxatan(double d) { //taylor approx
-        double p4 = .161536412982230228262e2;
-        double p3 = .26842548195503973794141e3;
-        double p2 = .11530293515404850115428136e4;
-        double p1 = .178040631643319697105464587e4;
-        double p0 = .89678597403663861959987488e3;
+        final double p4 = .161536412982230228262e2;
+        final double p3 = .26842548195503973794141e3;
+        final double p2 = .11530293515404850115428136e4;
+        final double p1 = .178040631643319697105464587e4;
+        final double p0 = .89678597403663861959987488e3;
         
-        double q4 = .5895697050844462222791e2;
-        double q3 = .536265374031215315104235e3;
-        double q2 = .16667838148816337184521798e4;
-        double q1 = .207933497444540981287275926e4;
-        double q0 = .89678597403663861962481162e3;
+        final double q4 = .5895697050844462222791e2;
+        final double q3 = .536265374031215315104235e3;
+        final double q2 = .16667838148816337184521798e4;
+        final double q1 = .207933497444540981287275926e4;
+        final double q0 = .89678597403663861962481162e3;
         
-        double asq = d * d;
+        final double asq = d * d;
         double value = ((((p4 * asq + p3) * asq + p2) * asq + p1) * asq + p0);
         value = value / (((((asq + q4) * asq + q3) * asq + q2) * asq + q1) * asq + q0);
         return value * d;
     }
     private static double msatan(double a) {
-        double sq2p1 = 2.414213562373095048802e0;
-        double sq2m1 = .414213562373095048802e0;
+        final double sq2p1 = 2.414213562373095048802e0;
+        final double sq2m1 = .414213562373095048802e0;
         if (a < sq2m1) {
             return mxatan(a);
         } else if (a > sq2p1) {

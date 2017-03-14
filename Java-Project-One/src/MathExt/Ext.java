@@ -49,18 +49,26 @@ public class Ext {
         return gamma(n + 1);
     }
     public static String hugeFactorial(double n) {
-        if (n < 0) {
-            throw new IllegalArgumentException("Factorial out of bounds, must be positive.");
-        } else if (n < 142) {
+        if (n < 142) {
             return factorial(n) + "";
         }
-        //return  hugePow(hugePow(Math.sqrt(2*Math.PI*n), 1/n)*(n/Math.E), n);
-        double base = n/Math.E;
-        double exp = n;
-        final double expb10 = Math.log10(base) * exp + Math.log10(Math.sqrt(2*Math.PI*n));
-        final double significand = (exp >= 0) ? Math.pow(10, expb10%1) : Math.pow(10, expb10%1+1);
+        final double expb10 = log10Factorial(n);
+        final double significand = (n >= 0) ? Math.pow(10, expb10%1) : Math.pow(10, expb10%1+1);
         final long base10 = (long)Math.floor(expb10);
         return significand + ((base10 != 0) ? "E" + base10 : "");
+    }
+    public static double logFactorial(double n) {
+        if (n < 0) {
+            throw new IllegalArgumentException("Factorial out of bounds, must be positive.");
+        } 
+        return (Math.log(n) - 1) * n + Math.log(Math.sqrt(2*Math.PI*n));
+    }
+    public static double log10Factorial(double n) {
+        if (n < 0) {
+            throw new IllegalArgumentException("Factorial out of bounds, must be positive.");
+        } 
+        double base = n/Math.E;
+        return Math.log10(base) * n + Math.log10(Math.sqrt(2*Math.PI*n));
     }
     private static double gamma(double z) {
         if (z > 150) {
@@ -101,5 +109,11 @@ public class Ext {
     }
     public static final double toRadians(double degrees) {
         return degrees * PIO180;
+    }
+    public static final double log(double d, double b) {
+        return Math.log(d)/Math.log(b);
+    }
+    public static final double log(double d, int b) {
+        return Math.log(d)/Math.log(b);
     }
 }
