@@ -84,7 +84,7 @@ public class World extends JPanel implements Runnable {
             vec4.set(Vectors2.rej(vec1, vec2));
             vec5.set(Vectors2.proj(vec2, vec1));
             vec6.set(Vectors2.rej(vec2, vec1));
-            int1.update(10D/1000, 1E17);
+            int1.update(10D/1000, 1E12);
             
             
             
