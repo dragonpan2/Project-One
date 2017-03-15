@@ -13,6 +13,9 @@ import Physics2D.Objects.Body;
  */
 public class SpaceIntegrator {
     final public static double G = 6.67408E-11; //m^3 * kg^-1 * s^-2
+    final private static int stepsLength = 40;
+    private static int stepsSum = 0;
+    private static int stepsCount = 0;
     
     private Body[] objects;
     private double momentumSum;
@@ -94,6 +97,50 @@ public class SpaceIntegrator {
             }
             momentumSum = newMomentum;
         }
-        System.out.println("Ministeps: |" + steps + "|");
+        //System.out.println("Ministeps: |" + steps + "|");
+        printLoad(steps);
+    }
+    
+    public static void printLoad(int steps) {
+        stepsSum += steps;
+        stepsCount++;
+        if (stepsCount > stepsLength) {
+            stepsCount = 0;
+            stepsSum /= 2500;
+            int graphLength = (int)stepsSum;
+            //System.out.println(stepsSum);
+            if (graphLength > 25) {
+                printRed(graphLength);
+            } else if (graphLength > 10) {
+                printYellow(graphLength);
+            } else if (graphLength > 1) {
+                printGreen(graphLength);
+            } else {
+                printCyan();
+            }
+            stepsSum = 0;
+        }
+        
+    }
+    public static void printRed(int length) {
+        for (int i=0; i<length; i++) {
+            System.out.print((char)27 + "[31;40m█");
+        }
+        System.out.println("");
+    }
+    public static void printYellow(int length) {
+        for (int i=0; i<length; i++) {
+            System.out.print((char)27 + "[33;40m█");
+        }
+        System.out.println("");
+    }
+    public static void printGreen(int length) {
+        for (int i=0; i<length; i++) {
+            System.out.print((char)27 + "[32;40m█");
+        }
+        System.out.println("");
+    }
+    public static void printCyan() {
+        System.out.println((char)27 + "[36;40m█");
     }
 }
