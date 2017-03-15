@@ -5,9 +5,14 @@
  */
 package MainPackages;
 
+import MathExt.Algebra.Matrices;
+import MathExt.Algebra.Tensor;
+import MathExt.Algebra.Matrix;
+import MathExt.Algebra.Tensors;
+import MathExt.Approx;
 import java.util.Arrays;
-import MathExt.*;
-
+import MathExt.Ext;
+import MathExt.Fast;
 /**
  *
  * @author Lin-Li
@@ -18,59 +23,75 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        //Window window = new Window();
-        //window.world.thread.start();
-        //System.out.println("W,A,S,D,UP,DOWN,LEFT,RIGHT to move the vectors");
+        Window window = new Window();
+        System.out.println("W,A,S,D,UP,DOWN,LEFT,RIGHT to move the vectors");
         //System.out.println("E to change Math mode, fastMath is currently WIP");
+        /*
+        System.out.println(5.53263465e-105);
+        double base = 51.4;
+        double exp = 7856.1;
+        System.out.println(Math.pow(base, exp));
+        System.out.println(Ext.hugePow(base, exp));
+        double fac = 15;
+        System.out.println(Ext.factorial(fac));
+        System.out.println(Ext.log10Factorial(fac));
+        double sin = 0.7;
+        System.out.println(Fast.sin(sin));
+        System.out.println(Math.sin(sin));
         
         
-        double[] d1 = new double[] {1,2,3};
-        double[] d2 = new double[] {2,4,6};
-        double[] d3 = new double[] {5,10,15};
-        double[][] d4 = new double[][] {d1,{4,5,6},{7,8,9}};
-        double[][] d5 = new double[][] {d2,d1,d3};
-        double[][] d6 = new double[][] {{3},{3},{3}};
         
         
         double starttime;
         double endtime;
         
-        Tensor tensor = new Tensor(d4);
-        
-            Matrix m1a = new Matrix(d4);
-        starttime = System.nanoTime();
-        Tensor t1 = new Tensor(d4);
-        Tensor t2 = new Tensor(d5);
-        Tensor ta = new Tensor(d1);
-        Tensor tb = new Tensor(d2);
-        Tensor tc = new Tensor(d3);
-        Object obj = new Object();
-        for (int i=0; i<100; i++) {
-            Matrix test1 = new Matrix(d4);
+        for (int i=0; i<10000000; i++) {
+            Math.tan(Math.random());
+            Fast.tan(Math.random());
         }
-        Matrix m1 = new Matrix(d4);
-        Matrix m2 = new Matrix(d6);
-        Matrix m12 = Matrices.mult(m1, m2);
         
-        
-        Tensor tj = Tensors.join(ta, tb, tc);
-        Tensor tj2 = Tensors.join(t1, t2);
-        Tensor tadd = Tensors.add(tj, tj, ta);
-        Tensor[] tsplit = Tensors.split(tj2);
-        
+        starttime = System.nanoTime();
+        for (int i=0; i<100000000; i++) {
+            Fast.cos(Math.random());
+        }
         endtime = System.nanoTime() - starttime;
+        System.out.println("Fast Cos took "+ endtime/1000000 + "ms");
         
         
-        System.out.println(m12);
-        //System.out.println(m1.getDimensionSize(1));
-        //System.out.println(m2.getDimensionSize(2));
-        //System.out.println(m1);
-        //System.out.println(m2);
-        //System.out.println(Matrix.transpose(m2));
-        //System.out.println(Matrix.transpose(m1));
-        System.out.println("Tensor operations took "+ endtime/1000000 + "ms");
+        starttime = System.nanoTime();
+        for (int i=0; i<100000000; i++) {
+            Approx.cos(Math.random());
+        }
+        endtime = System.nanoTime() - starttime;
+        System.out.println("Approx Cos took "+ endtime/1000000 + "ms");
         
+        starttime = System.nanoTime();
+        for (int i=0; i<100000000; i++) {
+            Fast.tan(Math.random());
+        }
+        endtime = System.nanoTime() - starttime;
+        System.out.println("Fast Tan took "+ endtime/1000000 + "ms");
         
+        starttime = System.nanoTime();
+        for (int i=0; i<100000000; i++) {
+            Math.tan(Math.random());
+        }
+        endtime = System.nanoTime() - starttime;
+        System.out.println("Math Tan took "+ endtime/1000000 + "ms");
+        
+        starttime = System.nanoTime();
+        for (int i=0; i<100000000; i++) {
+            Fast.sqrt(Math.random());
+        }
+        endtime = System.nanoTime() - starttime;
+        System.out.println("Fast Sqrt took "+ endtime/1000000 + "ms");
+        
+        starttime = System.nanoTime();
+        for (int i=0; i<100000000; i++) {
+            Approx.sqrt(Math.random());
+        }
+        endtime = System.nanoTime() - starttime;
+        System.out.println("Approx Sqrt took "+ endtime/1000000 + "ms");
         
         
         starttime = System.nanoTime();
@@ -85,6 +106,7 @@ public class Main {
         }
         endtime = System.nanoTime() - starttime;
         System.out.println("Copying array takes "+ endtime/1000000 + "ms");
+        */
     }
     
     

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package MathExt;
+package MathExt.Algebra;
 
 /**
  *
@@ -50,7 +50,7 @@ public class Vector extends Tensor {
         }
     }
     @Override
-    final public Vector clone() {
+    public Vector clone() {
         Vector newVector = new Vector(super.clone());
         return newVector;
     }

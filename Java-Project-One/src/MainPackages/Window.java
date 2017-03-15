@@ -1,6 +1,7 @@
 package MainPackages;
 
-import SPHY.Vector2;
+import Physics2D.Vector2;
+import Physics2D.Vectors2;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.JFrame;
@@ -32,30 +33,30 @@ public class Window extends JFrame {
                     //System.out.println("Triggered");
                  switch(e.getKeyCode()) {
                     case KeyEvent.VK_W :
-                        world.vec1.addToNorm(10);
+                        world.vec1.addNorm(10);
                         break;
                     case KeyEvent.VK_S :
-                        world.vec1.addToNorm(-10);
+                        world.vec1.addNorm(-10);
                         break;
                     case KeyEvent.VK_A :
-                         world.vec1.addToRot(-Math.PI/20);
+                         world.vec1.addRot(-Math.PI/20);
                         break;
                     case KeyEvent.VK_D :
-                         world.vec1.addToRot(Math.PI/20);
+                         world.vec1.addRot(Math.PI/20);
                         break;
                     case KeyEvent.VK_UP :
-                        world.vec2.addToNorm(10);
+                        world.vec2.addNorm(10);
                         break;
                     case KeyEvent.VK_DOWN :
-                        world.vec2.addToNorm(-10);
+                        world.vec2.addNorm(-10);
                         break;
                     case KeyEvent.VK_LEFT :
-                         world.vec2.addToRot(-Math.PI/20);
+                         world.vec2.addRot(-Math.PI/20);
                         break;
                     case KeyEvent.VK_RIGHT :
-                         world.vec2.addToRot(Math.PI/20);
+                         world.vec2.addRot(Math.PI/20);
                         break;
-                    case KeyEvent.VK_E :
+                    /*case KeyEvent.VK_E :
                         if (Vector2.useFastMath) {
                             Vector2.useFastMath = false;
                             System.out.println("Now using precise maths");
@@ -63,12 +64,12 @@ public class Window extends JFrame {
                             Vector2.useFastMath = true;
                             System.out.println("Now using fast math approximation");
                         }
-                        break;
+                        break;*/
                     default :
                         break;
                  }
-                world.vec3.setElements(world.vec1.getProjVec(world.vec2));
-                world.vec4.setElements(world.vec1.getRejVec(world.vec2));
+                world.vec3.set(Vectors2.proj(world.vec1, world.vec2));
+                world.vec4.set(Vectors2.rej(world.vec1, world.vec2));
             }
         });
         

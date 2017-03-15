@@ -8,7 +8,8 @@ package MainPackages;
 import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.JPanel;
-import SPHY.Vector2;
+import Physics2D.Vector2;
+import Physics2D.Vectors2;
 
 /**
  *
@@ -18,10 +19,10 @@ public class World extends JPanel implements Runnable {
     
     TestBall ball = new TestBall();
     
-    Vector2 vec1 = new Vector2(new double[]{35, 100});
-    Vector2 vec2 = new Vector2(new double[]{90, 30});
-    Vector2 vec3 = vec1.getProjVec(vec2);
-    Vector2 vec4 = vec1.getRejVec(vec2);
+    Vector2 vec1 = new Vector2(new double[]{35, 100}, false);
+    Vector2 vec2 = new Vector2(new double[]{90, 30}, false);
+    Vector2 vec3 = Vectors2.proj(vec1, vec2);
+    Vector2 vec4 = Vectors2.rej(vec1, vec2);
     
     TestLine line1 = new TestLine(vec1, Color.red, 2);
     TestLine line2 = new TestLine(vec2, Color.red, 2);
@@ -44,6 +45,7 @@ public class World extends JPanel implements Runnable {
         this.thread = new Thread(this);
         this.setVisible(true);
         this.setBackground(Color.black);
+        thread.start();
     }
 
     @Override
@@ -53,8 +55,8 @@ public class World extends JPanel implements Runnable {
             
             
             //vec1.addToRot(Math.PI/200);
-            vec3.setElements(vec1.getProjVec(vec2));
-            vec4.setElements(vec1.getRejVec(vec2));
+            vec3.set(Vectors2.proj(vec1, vec2));
+            vec4.set(Vectors2.rej(vec1, vec2));
             
             
             

@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package SPHY;
+package MathExt;
 
 /**
- * Fast math function approximation library
+ *
  * @author bowen
  */
-public class FMath {
+public abstract class Fast2 {
     
     public static final double PI = 3.141592653589793;
     public static final double PI2 = 6.283185307179586; // pi*2
@@ -57,13 +57,13 @@ public class FMath {
         }
     }
 
-    public static double quickAtan(double a) {
+    public static double atan(double a) {
         return a > 0 ? msatan(a) : -msatan(-a);
     }
 
-    public static double quickAtan2(double y, double x) {
+    public static double atan2(double y, double x) {
         if (y + x == y) return y >= 0 ? PIO2 : -PIO2;
-        y = quickAtan(y / x);
+        y = atan(y / x);
         return x < 0 ? y <= 0 ? y + PI : y - PI : y;
     }
     
@@ -246,7 +246,7 @@ public class FMath {
             case 7:
                 return d*d*d*d*d*d*d;
             default:
-                return Math.pow(d, d1);
+                return Ext.pow(d, d1);
         }
     }
     public static double fAbs(double x) {
@@ -272,80 +272,5 @@ public class FMath {
     }
     
 }
-
-
-// Modern CPUs have assembly square-roots, it is slower to implement in software
-//    private static double newtonSqrt(double x) {
-//        double c = x;
-//        double s = x/40;
-//        s = s - (s*s - c) / (2*s);
-//        s = s - (s*s - c) / (2*s);
-//        s = s - (s*s - c) / (2*s);
-//        //repeat as necessary for more precision
-//        return s;
-//    }
-//    private static float quakeSqrt(float x) {
-//        float xhalf = 0.5f * x;
-//        int i = Float.floatToIntBits(x);
-//        i = 0x5f3759df - (i >> 1);
-//        x = Float.intBitsToFloat(i);
-//        x *= (1.5f - xhalf * x * x);
-//        return 1/x;
-//    }
-//    private static double quakeSqrt(double x) {
-//        double xhalf = 0.5d * x;
-//        long i = Double.doubleToLongBits(x);
-//        i = 0x5fe6ec85e7de30daL - (i >> 1);
-//        x = Double.longBitsToDouble(i);
-//        x *= (1.5d - xhalf * x * x);
-//        return 1/x;
-//    }
-                               
-    /* Sine
-    5 * 1/30
-    5 * 1/600
-    5 * 1/1008
-    5 * 1/1814400
-    See Java Implementation : http://code.metager.de/source/xref/openjdk/jdk7/jdk/src/share/native/java/lang/fdlibm/src/k_sin.c
-    Other fast approx : http://krisgarrett.net/papers/l2approx.pdf
-    http://lab.polygonal.de/2007/07/18/fast-and-accurate-sinecosine-approximation/
-    https://github.com/Fishrock123/Optimized-Java/tree/master/src/com/fishrock123/math
-    */
     
-//        for (int i=0; i<9; i++) { //get the constants from i
-//            double c = FMath.factorial(2*i) / (Math.pow(4, i) * FMath.factorial(i)* FMath.factorial(i) * (2*i+1));
-//            System.out.println(c);
-//        }
-    /*
-    private static double polynomialSin(double rad) {
-        double s = 1;
-        if (rad < 0) {rad = -rad; s = -s;}
-        if (rad > PI2) {rad %= PI2;}
-        if (rad > PI) {rad %= PI; s = -s;}
-        double a = 1.273239544735163; // 4/pi
-        double b = 0.4052847345693511; // 4/(pi^2)
-        
-        return s*(a * rad - b * rad * rad);
-    }
-    public static double polynomialSin2(double rad) {
-        double sin = polynomialSin(rad); //get first precision
-        if (sin < 0){
-            sin = .225 * (sin *-sin - sin) + sin;
-        } else {
-            sin = .225 * (sin * sin - sin) + sin;
-        }
-        return sin;
-    }
-    private static double polynomialCos(double rad) {
-        return polynomialSin(PIh + rad);
-    }
-    public static double polynomialCos2(double rad) {
-        return polynomialSin2(PIh + rad);
-    }
-    public static double polynomialTan(double rad) {
-        return polynomialSin(rad)/polynomialCos(rad);
-    }
-    public static double polynomialTan2(double rad) {
-        return polynomialSin2(rad)/polynomialCos2(rad);
-    }
-    */
+}

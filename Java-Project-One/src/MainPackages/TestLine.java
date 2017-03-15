@@ -10,7 +10,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.BasicStroke;
 import javax.swing.JComponent;
-import SPHY.Vector2;
+import Physics2D.Vector2;
 
 /**
  *
@@ -34,7 +34,7 @@ public class TestLine extends JComponent {
         Graphics2D g2 = (Graphics2D) g;
         g.setColor(this.colour);
         g2.setStroke(new BasicStroke(this.thickness));
-        g2.drawLine(500, 500, 500+(int)vec.getElement(0), 500+(int)vec.getElement(1));
+        g2.drawLine(500, 500, 500+(int)vec.get(0), 500+(int)vec.get(1));
     }
     
 }
