@@ -47,6 +47,7 @@ public class SpaceIntegrator {
     }
     
     public void update(double time, double precision) {
+        int steps = 0;
         double remainingTime = time;
         while (remainingTime > 0) {
             for (int i=0; i<objects.length; i++) {
@@ -69,7 +70,6 @@ public class SpaceIntegrator {
             double newMomentum = getMomentumSum();
             if (Math.abs(momentumSum - newMomentum) > precision) {
                 
-                if (time == remainingTime) System.out.print("|Oops, timeStep too big, using Ministeps!|");
                 
                 double newTime = remainingTime;
                 while (Math.abs(momentumSum - newMomentum) > precision) {
@@ -85,14 +85,15 @@ public class SpaceIntegrator {
                     newMomentum = getMomentumSum();
                 }
                 remainingTime -= newTime;
-                System.out.print("|Ministep|");
+                steps++;
                 //System.out.print(newTime + "|");
                 //System.out.println("|Ministep, remaining time: " + remainingTime + "|");
             } else {
+                steps++;
                 remainingTime = 0;
-                System.out.println("|Full Step|");
             }
             momentumSum = newMomentum;
         }
+        System.out.println("Ministeps: |" + steps + "|");
     }
 }

@@ -36,18 +36,21 @@ public class World extends JPanel implements Runnable {
     TestLine line5 = new TestLine(vec5, Color.green, 3);
     TestLine line6 = new TestLine(vec6, Color.yellow, 3);
     
-    Vector2 vecPos1 = new Vector2(new double[]{400, 400});
-    Vector2 vecVel1 = new Vector2(new double[]{30, -60});
+    Vector2 vecPos1 = new Vector2(new double[]{900, 430});
+    Vector2 vecVel1 = new Vector2(new double[]{-100, 0});
     TestObject obj1 = new TestObject(vecPos1, vecVel1, 1E17D);
-    Vector2 vecPos2 = new Vector2(new double[]{600, 600});
-    Vector2 vecVel2 = new Vector2(new double[]{0, 80});
+    Vector2 vecPos2 = new Vector2(new double[]{900, 570});
+    Vector2 vecVel2 = new Vector2(new double[]{100, 0});
     TestObject obj2 = new TestObject(vecPos2, vecVel2, 1E17D);
-    Vector2 vecPos3 = new Vector2(new double[]{800, 800});
-    Vector2 vecVel3 = new Vector2(new double[]{0, -80});
-    TestObject obj3 = new TestObject(vecPos3, vecVel3, 1E16D);
+    Vector2 vecPos3 = new Vector2(new double[]{900, 200});
+    Vector2 vecVel3 = new Vector2(new double[]{-220, 0});
+    TestObject obj3 = new TestObject(vecPos3, vecVel3, 1E8D);
+    Vector2 vecPos4 = new Vector2(new double[]{0, 0});
+    Vector2 vecVel4 = new Vector2(new double[]{0, 0});
+    TestObject obj4 = new TestObject(vecPos4, vecVel4, 1E9D);
     
     
-    SpaceIntegrator int1 = new SpaceIntegrator(obj1, obj2, obj3);
+    SpaceIntegrator int1 = new SpaceIntegrator(obj1, obj2, obj3, obj4);
     
     Thread thread;
 
@@ -59,6 +62,7 @@ public class World extends JPanel implements Runnable {
         this.add(obj1.displayComponent);
         this.add(obj2.displayComponent);
         this.add(obj3.displayComponent);
+        this.add(obj4.displayComponent);
         this.add(line1);
         this.add(line2);
         this.add(line3);
@@ -92,7 +96,7 @@ public class World extends JPanel implements Runnable {
             vec6.set(Vectors2.rej(vec2, vec1));
             
             startTime = System.nanoTime();
-            int1.update(desiredSleepsec, 1E17);
+            int1.update(desiredSleepsec, 1E16);
             invalidate();
             repaint();
             endTime = System.nanoTime();
