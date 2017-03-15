@@ -5,7 +5,9 @@
  */
 package MainPackages;
 
+import Physics2D.Objects.Body;
 import Physics2D.Objects.TestObject;
+import Physics2D.SpaceIntegrator;
 import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.JPanel;
@@ -34,9 +36,18 @@ public class World extends JPanel implements Runnable {
     TestLine line5 = new TestLine(vec5, Color.green, 3);
     TestLine line6 = new TestLine(vec6, Color.yellow, 3);
     
-    Vector2 vecPos = new Vector2(new double[]{200, 200});
-    Vector2 vecVel = new Vector2(new double[]{100, 50});
-    TestObject obj1 = new TestObject(vecPos, vecVel, 1);
+    Vector2 vecPos1 = new Vector2(new double[]{400, 400});
+    Vector2 vecVel1 = new Vector2(new double[]{30, -60});
+    TestObject obj1 = new TestObject(vecPos1, vecVel1, 1E17D);
+    Vector2 vecPos2 = new Vector2(new double[]{600, 600});
+    Vector2 vecVel2 = new Vector2(new double[]{0, 80});
+    TestObject obj2 = new TestObject(vecPos2, vecVel2, 1E17D);
+    Vector2 vecPos3 = new Vector2(new double[]{800, 800});
+    Vector2 vecVel3 = new Vector2(new double[]{0, -80});
+    TestObject obj3 = new TestObject(vecPos3, vecVel3, 1E16D);
+    
+    
+    SpaceIntegrator int1 = new SpaceIntegrator(obj1, obj2, obj3);
     
     Thread thread;
 
@@ -46,6 +57,8 @@ public class World extends JPanel implements Runnable {
         this.setLayout(null);
         //this.add(ball);
         this.add(obj1.displayComponent);
+        this.add(obj2.displayComponent);
+        this.add(obj3.displayComponent);
         this.add(line1);
         this.add(line2);
         this.add(line3);
@@ -71,7 +84,7 @@ public class World extends JPanel implements Runnable {
             vec4.set(Vectors2.rej(vec1, vec2));
             vec5.set(Vectors2.proj(vec2, vec1));
             vec6.set(Vectors2.rej(vec2, vec1));
-            obj1.update(10F/1000);
+            int1.update(10D/1000, 1E17);
             
             
             

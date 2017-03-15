@@ -5,6 +5,7 @@
  */
 package Physics2D;
 
+import MathExt.Algebra.Tensor;
 import MathExt.Algebra.Tensors;
 import MathExt.Algebra.Vector;
 
@@ -14,6 +15,17 @@ import MathExt.Algebra.Vector;
  */
 public class Vectors2 {
     
+    public static Vector2 tensorToVector2(Tensor tensor1) {
+        return tensorToVector2(tensor1, true);
+    }
+    public static Vector2 tensorToVector2(Tensor tensor1, boolean isCartesian) {
+        if (tensor1.dimensions() > 1) {
+            throw new IndexOutOfBoundsException("Cannot convert 2rd or higher order tensor into vector2.");
+        } else if (tensor1.length() != 2) {
+            throw new IndexOutOfBoundsException("Cannot convert non-2D vector into vector2.");
+        }
+        return new Vector2(tensor1, isCartesian);
+    }
     public static Vector2 shell(Vector2 vector2) {
         return new Vector2(vector2.getDimensionSize(1), vector2.isCartesian());
     }

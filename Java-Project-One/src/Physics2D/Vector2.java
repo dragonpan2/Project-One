@@ -38,6 +38,10 @@ public class Vector2 extends Vector {
         super(elementArray);
         this.isCartesian = isCartesian;
     }
+    protected Vector2(Tensor tensor) {
+        super(tensor);
+        this.isCartesian = true;
+    }
     protected Vector2(Tensor tensor, boolean isCartesian) {
         super(tensor);
         this.isCartesian = isCartesian;

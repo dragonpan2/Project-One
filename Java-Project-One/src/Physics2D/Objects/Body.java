@@ -5,7 +5,10 @@
  */
 package Physics2D.Objects;
 
+import MathExt.Algebra.Tensor;
+import MathExt.Algebra.Tensors;
 import Physics2D.Vector2;
+import Physics2D.Vectors2;
 
 /**
  *
@@ -18,12 +21,16 @@ public class Body implements LinearMotion {
     private Vector2 force;
     final private double mass;
     
+    private Tensor lastTime; //backup of position, velocity and acceleration in case of physics error
+    
     public Body() {
         position = new Vector2(0);
         velocity = new Vector2(0);
         acceleration = new Vector2(0);
         force = new Vector2(0);
         mass = 1;
+        
+        lastTime = Tensors.join(this.position, this.velocity, this.acceleration);
     }
     public Body(double mass) {
         position = new Vector2(0);
@@ -31,6 +38,8 @@ public class Body implements LinearMotion {
         acceleration = new Vector2(0);
         force = new Vector2(0);
         this.mass = mass;
+        
+        lastTime = Tensors.join(this.position, this.velocity, this.acceleration);
     }
     public Body(Vector2 position, double mass) {
         this.position = position.clone();
@@ -38,6 +47,8 @@ public class Body implements LinearMotion {
         acceleration = new Vector2(0);
         force = new Vector2(0);
         this.mass = mass;
+        
+        lastTime = Tensors.join(this.position, this.velocity, this.acceleration);
     }
     public Body(Vector2 position, Vector2 velocity, double mass) {
         this.position = position.clone();
@@ -45,21 +56,35 @@ public class Body implements LinearMotion {
         acceleration = new Vector2(0);
         force = new Vector2(0);
         this.mass = mass;
+        
+        lastTime = Tensors.join(this.position, this.velocity, this.acceleration);
     }
     
     public void update(double time) {
+        lastTime = Tensors.join(this.position, this.velocity, this.acceleration);
+        
         Vector2 newAcceleration = force.clone();
         newAcceleration.div(mass);
+        acceleration.set(newAcceleration);
         
         Vector2 changeVelocity = acceleration.clone();
         changeVelocity.prod(time);
+        velocity.add(changeVelocity);
         
         Vector2 changePosition = velocity.clone();
         changePosition.prod(time);
+        //System.out.println(changePosition);
         
-        acceleration.set(newAcceleration);
-        velocity.add(changeVelocity);
         position.add(changePosition);
+    }
+    public void revert() {
+        Tensor[] backup = Tensors.split(lastTime);
+        Vector2 lastPosition = Vectors2.tensorToVector2(backup[0], position.isCartesian());
+        Vector2 lastVelocity = Vectors2.tensorToVector2(backup[1], velocity.isCartesian());
+        Vector2 lastAcceleration = Vectors2.tensorToVector2(backup[2], acceleration.isCartesian());
+        position.set(lastPosition);
+        velocity.set(lastVelocity);
+        acceleration.set(lastAcceleration);
     }
     
     @Override
