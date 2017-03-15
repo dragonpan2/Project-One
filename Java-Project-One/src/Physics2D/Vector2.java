@@ -42,6 +42,16 @@ public class Vector2 extends Vector {
         super(tensor);
         this.isCartesian = isCartesian;
     }
+    public boolean isCartesian() {
+        return isCartesian;
+    }
+    public double normSquared() {
+        if (isCartesian) {
+            return super.get(0) * super.get(0) + super.get(1) * super.get(1);
+        } else {
+            return super.get(0) * super.get(0);
+        }
+    }
     @Override
     public double norm() {
         if (isCartesian) {

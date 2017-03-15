@@ -5,6 +5,7 @@
  */
 package MainPackages;
 
+import Physics2D.Objects.TestObject;
 import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.JPanel;
@@ -33,6 +34,10 @@ public class World extends JPanel implements Runnable {
     TestLine line5 = new TestLine(vec5, Color.green, 3);
     TestLine line6 = new TestLine(vec6, Color.yellow, 3);
     
+    Vector2 vecPos = new Vector2(new double[]{200, 200});
+    Vector2 vecVel = new Vector2(new double[]{100, 50});
+    TestObject obj1 = new TestObject(vecPos, vecVel, 1);
+    
     Thread thread;
 
     public World() {
@@ -40,6 +45,7 @@ public class World extends JPanel implements Runnable {
         this.setPreferredSize(new Dimension(1200,1000));
         this.setLayout(null);
         //this.add(ball);
+        this.add(obj1.displayComponent);
         this.add(line1);
         this.add(line2);
         this.add(line3);
@@ -65,7 +71,7 @@ public class World extends JPanel implements Runnable {
             vec4.set(Vectors2.rej(vec1, vec2));
             vec5.set(Vectors2.proj(vec2, vec1));
             vec6.set(Vectors2.rej(vec2, vec1));
-            
+            obj1.update(10F/1000);
             
             
             
