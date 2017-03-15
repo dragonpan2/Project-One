@@ -13,6 +13,8 @@ import Physics2D.Objects.Body;
  */
 public class SpaceIntegrator {
     final public static double G = 6.67408E-11; //m^3 * kg^-1 * s^-2
+    final private static int lineWidth = 40;
+    private static int lineWidthCount = 0;
     
     private Body[] objects;
     private double momentumSum;
@@ -94,6 +96,26 @@ public class SpaceIntegrator {
             }
             momentumSum = newMomentum;
         }
-        System.out.println("Ministeps: |" + steps + "|");
+        //System.out.println("Ministeps: |" + steps + "|");
+        printLoad(steps);
+    }
+    
+    public static void printLoad(int steps) {
+        if (steps > 1) {
+            if (steps > 1000) {
+                System.out.print((char)27 + "[31;40m█");
+            } else if (steps > 200) {
+                System.out.print((char)27 + "[33;40m█");
+            } else {
+                System.out.print((char)27 + "[32;40m█");
+            }
+        } else {
+            System.out.print((char)27 + "[44;40m█");
+        }
+        lineWidthCount++;
+        if (lineWidthCount > lineWidth) {
+            System.out.println("");
+            lineWidthCount = 0;
+        }
     }
 }
