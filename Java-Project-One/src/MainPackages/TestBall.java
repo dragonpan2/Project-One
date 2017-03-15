@@ -9,11 +9,13 @@ import javax.swing.JComponent;
  * @author Lin-Li
  */
 public class TestBall extends JComponent {
-
+    
+    int x;
+    int y;
+    
     public TestBall() {
         
         this.setSize(100, 100);
-        
     }
     
     @Override
@@ -21,6 +23,15 @@ public class TestBall extends JComponent {
         super.paintComponent(g);
         g.setColor(Color.white);
         g.fillOval(0, 0, 20, 20);
+        this.setLocation(x, y);
+    }
+    public void setPos(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+    public void setPos(double x, double y) {
+        this.x = (int)(x+0.5);
+        this.y = (int)(y+0.5);
     }
     
 }

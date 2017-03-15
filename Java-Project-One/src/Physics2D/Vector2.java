@@ -38,9 +38,23 @@ public class Vector2 extends Vector {
         super(elementArray);
         this.isCartesian = isCartesian;
     }
+    protected Vector2(Tensor tensor) {
+        super(tensor);
+        this.isCartesian = true;
+    }
     protected Vector2(Tensor tensor, boolean isCartesian) {
         super(tensor);
         this.isCartesian = isCartesian;
+    }
+    public boolean isCartesian() {
+        return isCartesian;
+    }
+    public double normSquared() {
+        if (isCartesian) {
+            return super.get(0) * super.get(0) + super.get(1) * super.get(1);
+        } else {
+            return super.get(0) * super.get(0);
+        }
     }
     @Override
     public double norm() {
@@ -161,7 +175,7 @@ public class Vector2 extends Vector {
         if (isCartesian) {
             return super.get(i);
         } else {
-            switch (i) {
+            switch(i) {
                 case 0:
                     return norm()*Math.cos(rot());
                 case 1:
@@ -187,7 +201,7 @@ public class Vector2 extends Vector {
             super.set(i, c);
         } else {
             double x,y;
-            switch (i) {
+            switch(i) {
                 case 0:
                     x = c;
                     y = get(1);
