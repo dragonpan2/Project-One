@@ -75,6 +75,12 @@ public class World extends JPanel implements Runnable {
 
     @Override
     public void run() {
+        int desiredFPS = 60;
+        double desiredSleepsec = 1D/desiredFPS;
+        double desiredSleepms = 1000D/desiredFPS;
+        long startTime;
+        long endTime;
+        long sleepTime;
         
         while (true) {
             
@@ -84,14 +90,22 @@ public class World extends JPanel implements Runnable {
             vec4.set(Vectors2.rej(vec1, vec2));
             vec5.set(Vectors2.proj(vec2, vec1));
             vec6.set(Vectors2.rej(vec2, vec1));
-            int1.update(10D/1000, 1E12);
             
-            
-            
+            startTime = System.nanoTime();
+            int1.update(desiredSleepsec, 1E17);
             invalidate();
             repaint();
+            endTime = System.nanoTime();
+            
+            sleepTime = (long)(desiredSleepms*1000000) - (endTime-startTime);
+            if (sleepTime < 0) {
+                sleepTime = 0;
+            }
+            long sleepms = Math.floorDiv(sleepTime, 1000000);
+            int sleepns = (int)Math.floorMod(sleepTime, 1000000);
+            
             try {
-                Thread.sleep(10);
+                Thread.sleep(sleepms, sleepns);
                 
             } catch (InterruptedException ex) {
                 System.out.println("Thread Error");
