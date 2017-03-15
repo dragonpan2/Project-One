@@ -49,7 +49,6 @@ public class SpaceIntegrator {
     public void update(double time, double precision) {
         double remainingTime = time;
         while (remainingTime > 0) {
-            System.out.println(remainingTime);
             for (int i=0; i<objects.length; i++) {
                 Vector2[] forceVectors = new Vector2[objects.length];
                 for (int n=0; n<objects.length; n++) {
@@ -69,6 +68,9 @@ public class SpaceIntegrator {
 
             double newMomentum = getMomentumSum();
             if (Math.abs(momentumSum - newMomentum) > precision) {
+                
+                if (time == remainingTime) System.out.print("|Oops, timeStep too big, using Ministeps!|");
+                
                 double newTime = remainingTime;
                 while (Math.abs(momentumSum - newMomentum) > precision) {
                     //System.out.println(Math.abs(momentumSum - newMomentum));
@@ -76,16 +78,19 @@ public class SpaceIntegrator {
                         objects[i].revert();
                     }
                     newTime /= 2;
-                    System.out.println(newTime);
+                    //System.out.println(newTime);
                     for (int i=0; i<objects.length; i++) {
                         objects[i].update(newTime);
                     }
                     newMomentum = getMomentumSum();
                 }
                 remainingTime -= newTime;
-                System.out.println("step");
+                System.out.print("|Ministep|");
+                //System.out.print(newTime + "|");
+                //System.out.println("|Ministep, remaining time: " + remainingTime + "|");
             } else {
                 remainingTime = 0;
+                System.out.println("|Full Step|");
             }
             momentumSum = newMomentum;
         }
