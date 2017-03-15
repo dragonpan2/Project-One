@@ -23,11 +23,15 @@ public class World extends JPanel implements Runnable {
     Vector2 vec2 = new Vector2(new double[]{90, 30}, false);
     Vector2 vec3 = Vectors2.proj(vec1, vec2);
     Vector2 vec4 = Vectors2.rej(vec1, vec2);
+    Vector2 vec5 = Vectors2.proj(vec2, vec1);
+    Vector2 vec6 = Vectors2.rej(vec2, vec1);
     
     TestLine line1 = new TestLine(vec1, Color.red, 2);
     TestLine line2 = new TestLine(vec2, Color.red, 2);
     TestLine line3 = new TestLine(vec3, Color.green, 3);
     TestLine line4 = new TestLine(vec4, Color.yellow, 3);
+    TestLine line5 = new TestLine(vec5, Color.green, 3);
+    TestLine line6 = new TestLine(vec6, Color.yellow, 3);
     
     Thread thread;
 
@@ -36,10 +40,12 @@ public class World extends JPanel implements Runnable {
         this.setPreferredSize(new Dimension(1200,1000));
         this.setLayout(null);
         //this.add(ball);
-        this.add(line3);
-        this.add(line4);
         this.add(line1);
         this.add(line2);
+        this.add(line3);
+        this.add(line4);
+        this.add(line5);
+        this.add(line6);
         this.setLocation(500, 500);
         
         this.thread = new Thread(this);
@@ -54,9 +60,11 @@ public class World extends JPanel implements Runnable {
         while (true) {
             
             
-            //vec1.addToRot(Math.PI/200);
+            vec1.addRot(Math.PI/200);
             vec3.set(Vectors2.proj(vec1, vec2));
             vec4.set(Vectors2.rej(vec1, vec2));
+            vec5.set(Vectors2.proj(vec2, vec1));
+            vec6.set(Vectors2.rej(vec2, vec1));
             
             
             

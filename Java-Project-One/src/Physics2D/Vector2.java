@@ -161,7 +161,7 @@ public class Vector2 extends Vector {
         if (isCartesian) {
             return super.get(i);
         } else {
-            switch (i) {
+            switch(i) {
                 case 0:
                     return norm()*Math.cos(rot());
                 case 1:
@@ -187,7 +187,7 @@ public class Vector2 extends Vector {
             super.set(i, c);
         } else {
             double x,y;
-            switch (i) {
+            switch(i) {
                 case 0:
                     x = c;
                     y = get(1);
