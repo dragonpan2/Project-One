@@ -60,8 +60,8 @@ public class Vector2 extends Vector {
     public void setNorm(double c) {
         if (isCartesian) {
             double rot = rot();
-            super.set(0, c*Math.sin(rot));
-            super.set(1, c*Math.cos(rot));
+            super.set(0, c*Math.cos(rot));
+            super.set(1, c*Math.sin(rot));
         } else {
             super.set(0, c);
         }
@@ -69,8 +69,8 @@ public class Vector2 extends Vector {
     public void setRot(double rad) {
         if (isCartesian) {
             double norm = norm();
-            super.set(0, norm*Math.sin(rad));
-            super.set(1, norm*Math.cos(rad));
+            super.set(0, norm*Math.cos(rad));
+            super.set(1, norm*Math.sin(rad));
         } else {
             super.set(1, rad);
         }
@@ -163,9 +163,9 @@ public class Vector2 extends Vector {
         } else {
             switch (i) {
                 case 0:
-                    return norm()*Math.sin(rot());
-                case 1:
                     return norm()*Math.cos(rot());
+                case 1:
+                    return norm()*Math.sin(rot());
                 default:
                     throw new IndexOutOfBoundsException("Vector2 out of bounds.");
             }
@@ -193,11 +193,13 @@ public class Vector2 extends Vector {
                     y = get(1);
                     super.set(0, Math.sqrt(x*x + y*y));
                     super.set(1, Math.atan2(y, x));
+                    break;
                 case 1:
                     x = get(0);
                     y = c;
                     super.set(0, Math.sqrt(x*x + y*y));
                     super.set(1, Math.atan2(y, x));
+                    break;
                 default:
                     throw new IndexOutOfBoundsException("Vector2 out of bounds.");
             }
@@ -207,8 +209,10 @@ public class Vector2 extends Vector {
         switch(i) {
             case 0:
                 setNorm(c);
+                break;
             case 1:
                 setRot(c);
+                break;
             default:
                 throw new IndexOutOfBoundsException("Vector2 out of bounds.");
         }
@@ -224,8 +228,10 @@ public class Vector2 extends Vector {
     }
     public void set(Vector2 vector2) {
         if (isCartesian == vector2.isCartesian) {
-            super.set(0, ((Vector)vector2).get(0));
-            super.set(1, ((Vector)vector2).get(1));
+            super.set(0, ((Tensor)vector2).get(0));
+            super.set(1, ((Tensor)vector2).get(1));
+            set(0, vector2.get(0));
+            set(1, vector2.get(1));
         } else {
             set(0, vector2.get(0));
             set(1, vector2.get(1));
@@ -235,7 +241,7 @@ public class Vector2 extends Vector {
         if (isCartesian) {
             super.proj(vector2);
         } else {
-            setNorm(norm() * Math.sin(Math.abs(rot() - vector2.rot())));
+            setNorm(norm() * Math.cos(Math.abs(rot() - vector2.rot())));
             setRot(vector2.rot());
         }
     }
@@ -247,7 +253,7 @@ public class Vector2 extends Vector {
             double otherRot = vector2.rot();
             double diffRot = Math.abs(myRot - otherRot);
             double remRot = (Math.PI/2) - diffRot;
-            setNorm(norm() * Math.cos(diffRot));
+            setNorm(norm() * Math.sin(diffRot));
             if (myRot > otherRot) {
                 setRot(myRot + remRot);
             } else {
