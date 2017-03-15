@@ -50,7 +50,7 @@ public class Vector extends Tensor {
         }
     }
     @Override
-    final public Vector clone() {
+    public Vector clone() {
         Vector newVector = new Vector(super.clone());
         return newVector;
     }

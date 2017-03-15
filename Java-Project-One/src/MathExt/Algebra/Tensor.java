@@ -172,7 +172,7 @@ public class Tensor implements Dimensional {
             throw new IndexOutOfBoundsException("Invalid tensor dimension index.");
         }
     }
-    final public double get(int i) {
+    public double get(int i) {
         if (i >= 0 && i < elements.length) {
             return elements[i];
         } else {
@@ -187,7 +187,7 @@ public class Tensor implements Dimensional {
             throw new IndexOutOfBoundsException("Invalid tensor index.");
         }
     }
-    final public void set(int i, double c) {
+    public void set(int i, double c) {
         if (i >= 0 && i < elements.length) {
             elements[i] = c;
         } else {
