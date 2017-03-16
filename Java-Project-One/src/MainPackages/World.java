@@ -95,7 +95,7 @@ public class World extends JPanel implements Runnable {
             vec6.set(Vectors2.rej(vec2, vec1));
             
             startTime = System.nanoTime();
-            int1.update(desiredSleepsec, 100000D);
+            int1.update(desiredSleepsec, 1);
             invalidate();
             repaint();
             endTime = System.nanoTime();

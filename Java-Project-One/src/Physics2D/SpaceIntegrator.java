@@ -21,10 +21,12 @@ public class SpaceIntegrator {
     
     private PointBody[] objects;
     private double momentumSum;
+    private double energySum;
     
     public SpaceIntegrator(PointBody... objects) {
         this.objects = objects;
         momentumSum = getMomentumSum(objects);
+        energySum = getEnergySum(objects);
     }
     
     public static Vector2 getForce(PointBody other, PointBody target) {
@@ -34,6 +36,10 @@ public class SpaceIntegrator {
         double scalar = (-G * other.mass() * target.mass())/normSquared;
         forceVector.prod(scalar);
         return forceVector;
+    }
+    public static double getPotentialEnergy(PointBody other, PointBody target) {
+        double distance = Vectors2.sub(target.position(), other.position()).norm();
+        return (-G * other.mass() * target.mass())/distance;
     }
     
     public static void computeForces(PointBody[] objects) {
@@ -68,6 +74,19 @@ public class SpaceIntegrator {
         return Statistics.norm(xSum, ySum);
     }
     
+    private static double getEnergySum(PointBody[] objects) {
+        double sum = 0;
+        for (int i=0; i<objects.length; i++) {
+            sum += objects[i].kineticEnergy();
+            for (int n=0; n<objects.length; n++) {
+                if (i != n) {
+                    sum += getPotentialEnergy(objects[n], objects[i]);
+                }
+            }
+        }
+        return sum;
+    }
+    
     private static double getFutureMomentumSum(PointBody[] objects, double time) {
         double xSum = 0;
         double ySum = 0;
@@ -82,57 +101,36 @@ public class SpaceIntegrator {
     private double getMomentumSum() {
         return getMomentumSum(objects);
     }
+    private double getEnergySum() {
+        return getEnergySum(objects);
+    }
     public void update(double time) {
         update(time, 2000);
     }
-    public void update(double time, double precision) {
-        if (precision < 0.1) {
-            precision = 0.1;
-        }
+    public void update(double time, int subDiv) {
         
-        int steps = 0;
+        double divTime = time/subDiv;
         
-        double futureMomentum = getFutureMomentumSum(objects, time);
+        //double futureMomentum = getFutureMomentumSum(objects, time);
         
-        if (Math.abs(futureMomentum - momentumSum) < precision) {
+        //double oldEnergySum = getEnergySum();
+        for (int i=0; i<subDiv; i++) {
             computeForces(objects);
-            computeMotion(objects, time);
-            steps++;
-        } else {
-            double remainingTime = time;
-            while(remainingTime > 0) {
-                computeForces(objects);
-                
-                futureMomentum = getFutureMomentumSum(objects, remainingTime);
-                
-                if (Math.abs(futureMomentum - momentumSum) > precision) {
-                    double newTime = remainingTime;
-                    while(Math.abs(futureMomentum - momentumSum) > precision) {
-                        newTime /= 2;
-                        futureMomentum = getFutureMomentumSum(objects, newTime);
-                        //System.out.println(Math.abs(newTime));
-                        //System.out.println(Math.abs(momentumSum - futureMomentum));
-                        if (newTime <= 1E-12) {
-                            newTime = 1E-12;
-                            break;
-                        }
-                    }
-                    computeMotion(objects, newTime);
-                    remainingTime -= newTime;
-                } else {
-                    computeMotion(objects, remainingTime);
-                    remainingTime = 0;
-
-                }
-
-                steps++;
-                momentumSum = futureMomentum;
-                
-            }
-            
+            computeMotion(objects, divTime);
         }
         
-        printLoad(steps);
+        
+        
+        double newMomentumSum = getMomentumSum();
+        double newEnergySum = getEnergySum();
+        System.out.println(newMomentumSum - momentumSum);
+        //System.out.println(newEnergySum - energySum);
+        
+        
+        //momentumSum = newMomentumSum;
+        
+        
+        //printLoad(subDiv);
         
         
     }

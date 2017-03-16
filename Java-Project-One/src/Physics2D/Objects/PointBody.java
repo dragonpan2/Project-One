@@ -7,6 +7,7 @@ package Physics2D.Objects;
 
 import MathExt.Algebra.Tensor;
 import MathExt.Algebra.Tensors;
+import MathExt.Algebra.Vectors;
 import Physics2D.Vector2;
 import Physics2D.Vectors2;
 
@@ -62,6 +63,9 @@ public class PointBody implements LinearMotion {
     
     @Override
     public void update(double time) {
+        semiImplicitEuler(time);
+    }
+    private void semiImplicitEuler(double time) {
         lastTime = Tensors.join(this.position, this.velocity, this.acceleration);
         
         Vector2 newAcceleration = force.clone();
@@ -74,8 +78,43 @@ public class PointBody implements LinearMotion {
         
         Vector2 changePosition = velocity.clone();
         changePosition.prod(time);
-        //System.out.println(changePosition);
+        position.add(changePosition);
+    }
+    private void explicitEuler(double time) {
+        lastTime = Tensors.join(this.position, this.velocity, this.acceleration);
         
+        Vector2 newAcceleration = force.clone();
+        newAcceleration.div(mass);
+        acceleration.set(newAcceleration);
+        
+        Vector2 changeVelocity = acceleration.clone();
+        Vector2 changePosition = velocity.clone();
+        changeVelocity.prod(time);
+        changePosition.prod(time);
+        
+        velocity.add(changeVelocity);
+        position.add(changePosition);
+    }
+    private void leapFrog(double time) {
+        lastTime = Tensors.join(this.position, this.velocity, this.acceleration);
+        
+        Vector2 newAcceleration = force.clone();
+        newAcceleration.div(mass);
+        acceleration.set(newAcceleration);
+        
+        
+        Vector2 velocity12 = Vectors2.add(velocity, Vectors2.prod(acceleration, time/2));
+        
+        position.add(Vectors.prod(velocity12, time));
+        //velocity = Vectors2.add(velocity12, )
+        
+        
+        Vector2 changeVelocity = acceleration.clone();
+        Vector2 changePosition = velocity.clone();
+        changeVelocity.prod(time);
+        changePosition.prod(time);
+        
+        velocity.add(changeVelocity);
         position.add(changePosition);
     }
     @Override
@@ -114,6 +153,14 @@ public class PointBody implements LinearMotion {
     
     public double futureMomentum(int i, double time) {
         return (velocity(i)+acceleration(i)*time) * mass;
+    }
+    public double speed() {
+        return velocity.norm();
+    }
+    
+    public double kineticEnergy() {
+        double speed = velocity.norm();
+        return 0.5*mass*speed*speed;
     }
 
     @Override
