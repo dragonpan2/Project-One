@@ -31,8 +31,7 @@ public class TestObject extends PointBody {
         super(position, velocity, mass);
     }
     @Override
-    public void update(double time) {
-        super.update(time);
-        displayComponent.setPos(position(0), position(1));
+    public void update() {
+        displayComponent.setPos(position().get(0), position().get(1));
     }
 }

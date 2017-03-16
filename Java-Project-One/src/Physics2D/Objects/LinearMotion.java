@@ -12,15 +12,20 @@ import Physics2D.Vector2;
  * @author bowen
  */
 public interface LinearMotion {
-    double position(int i); //m
-    double velocity(int i); //m/s
-    double acceleration(int i); //m/s^2
-    double force(int i); //N
+    Vector2 position(); //m
+    Vector2 velocity(); //m/s
+    //double acceleration(int i); //m/s^2
+    //double force(int i); //N
     
     double momentum(int i); //kg*m/s
     double mass(); //kg
     
-    void setForce(Vector2 vector2);
-    void update(double time);
-    void revert();
+    void setPosition(Vector2 position);
+    void setVelocity(Vector2 velocity);
+    
+    void addPosition(Vector2 position);
+    void addVelocity(Vector2 velocity);
+    //void setForce(Vector2 vector2);
+    //void revert();
+    void update();
 }

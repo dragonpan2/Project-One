@@ -20,6 +20,7 @@ public class SpaceIntegrator {
     private static int stepsCount = 0;
     
     private PointBody[] objects;
+    private Vector2[] leapFrogCurrentAccel;
     private double momentumSum;
     private double energySum;
     
@@ -37,12 +38,18 @@ public class SpaceIntegrator {
         forceVector.prod(scalar);
         return forceVector;
     }
+    public static Vector2 getAcceleration(PointBody other, PointBody target) {
+        Vector2 forceVector = getForce(other, target);
+        forceVector.div(target.mass());
+        return forceVector;
+    }
     public static double getPotentialEnergy(PointBody other, PointBody target) {
         double distance = Vectors2.sub(target.position(), other.position()).norm();
         return (-G * other.mass() * target.mass())/distance;
     }
     
-    public static void computeForces(PointBody[] objects) {
+    public static Vector2[] computeForces(PointBody[] objects) {
+        Vector2[] objectForces = new Vector2[objects.length];
         for (int i=0; i<objects.length; i++) {
             Vector2[] forceVectors = new Vector2[objects.length];
             for (int n=0; n<objects.length; n++) {
@@ -53,13 +60,69 @@ public class SpaceIntegrator {
                 }
             }
             Vector2 sumForces = Vectors2.add(forceVectors);
-            objects[i].setForce(sumForces);
+            objectForces[i] = sumForces;
+            //objects[i].setForce(sumForces);
         }
+        return objectForces;
     }
-    
+    public static Vector2[] computeAccelerations(PointBody[] objects) {
+        Vector2[] objectAccelerations = new Vector2[objects.length];
+        for (int i=0; i<objects.length; i++) {
+            Vector2[] forceVectors = new Vector2[objects.length];
+            for (int n=0; n<objects.length; n++) {
+                if (i != n) {
+                    forceVectors[n] = getAcceleration(objects[n], objects[i]);
+                } else {
+                    forceVectors[n] = new Vector2(0);
+                }
+            }
+            Vector2 sumAccelerations = Vectors2.add(forceVectors);
+            objectAccelerations[i] = sumAccelerations;
+        }
+        return objectAccelerations;
+    }
+    /*
     public static void computeMotion(PointBody[] objects, double time) {
         for (int i=0; i<objects.length; i++) {
             objects[i].update(time);
+        }
+    }*/
+    
+    public static void integrateLeapFrog(PointBody[] objects, double time) {
+        Vector2[] currentAccel = computeAccelerations(objects);
+        Vector2[] velocityHalfArray = new Vector2[objects.length];
+        
+        for (int i=0; i<objects.length; i++) {
+            Vector2 velocityHalf = Vectors2.add(objects[i].velocity(), Vectors2.prod(currentAccel[i], time/2));
+            objects[i].addPosition(Vectors2.prod(velocityHalf, time));
+            velocityHalfArray[i] = velocityHalf;
+        }
+        
+        Vector2[] newAccel = computeAccelerations(objects);
+        
+        for (int i=0; i<objects.length; i++) {
+            objects[i].setVelocity(Vectors2.add(velocityHalfArray[i], Vectors2.prod(newAccel[i], time/2)));
+        }
+    }
+    
+    public void integrateLeapFrog(double time) {
+        if (leapFrogCurrentAccel == null) {
+            leapFrogCurrentAccel = computeAccelerations(objects);
+        } else if (leapFrogCurrentAccel.length != objects.length) {
+            leapFrogCurrentAccel = computeAccelerations(objects);
+        }
+        Vector2[] velocityHalfArray = new Vector2[objects.length];
+        
+        for (int i=0; i<objects.length; i++) {
+            Vector2 velocityHalf = Vectors2.add(objects[i].velocity(), Vectors2.prod(leapFrogCurrentAccel[i], time/2));
+            objects[i].addPosition(Vectors2.prod(velocityHalf, time));
+            velocityHalfArray[i] = velocityHalf;
+        }
+        
+        leapFrogCurrentAccel = computeAccelerations(objects);
+        
+        for (int i=0; i<objects.length; i++) {
+            objects[i].setVelocity(Vectors2.add(velocityHalfArray[i], Vectors2.prod(leapFrogCurrentAccel[i], time/2)));
         }
     }
     
@@ -86,7 +149,7 @@ public class SpaceIntegrator {
         }
         return sum;
     }
-    
+    /*
     private static double getFutureMomentumSum(PointBody[] objects, double time) {
         double xSum = 0;
         double ySum = 0;
@@ -96,7 +159,7 @@ public class SpaceIntegrator {
             ySum += objects[i].futureMomentum(1, time);
         }
         return Statistics.norm(xSum, ySum);
-    }
+    }*/
     
     private double getMomentumSum() {
         return getMomentumSum(objects);
@@ -105,34 +168,31 @@ public class SpaceIntegrator {
         return getEnergySum(objects);
     }
     public void update(double time) {
-        update(time, 2000);
+        update(time);
     }
     public void update(double time, int subDiv) {
         
         double divTime = time/subDiv;
         
         //double futureMomentum = getFutureMomentumSum(objects, time);
-        
         //double oldEnergySum = getEnergySum();
+        
         for (int i=0; i<subDiv; i++) {
-            computeForces(objects);
-            computeMotion(objects, divTime);
+            integrateLeapFrog(divTime);
+        }
+        for (int i=0; i<objects.length; i++) {
+            objects[i].update();
         }
         
-        
-        
-        double newMomentumSum = getMomentumSum();
+        //double newMomentumSum = getMomentumSum();
         double newEnergySum = getEnergySum();
-        System.out.println(newMomentumSum - momentumSum);
-        //System.out.println(newEnergySum - energySum);
         
+        //System.out.println(newMomentumSum - momentumSum);
+        System.out.println(newEnergySum - energySum);
         
         //momentumSum = newMomentumSum;
         
-        
         //printLoad(subDiv);
-        
-        
     }
     
     
