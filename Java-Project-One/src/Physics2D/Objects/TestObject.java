@@ -7,13 +7,12 @@ package Physics2D.Objects;
 
 import MainPackages.TestBall;
 import Physics2D.Vector2;
-import javax.swing.JComponent;
 
 /**
  *
  * @author bowen
  */
-public class TestObject extends Body {
+public class TestObject extends PointBody {
     
     public TestBall displayComponent = new TestBall();
     

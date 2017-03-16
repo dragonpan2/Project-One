@@ -14,7 +14,7 @@ import Physics2D.Vectors2;
  *
  * @author bowen
  */
-public class Body implements LinearMotion {
+public class PointBody implements LinearMotion {
     private Vector2 position;
     private Vector2 velocity;
     private Vector2 acceleration;
@@ -23,7 +23,7 @@ public class Body implements LinearMotion {
     
     private Tensor lastTime; //backup of position, velocity and acceleration in case of physics error
     
-    public Body() {
+    public PointBody() {
         position = new Vector2(0);
         velocity = new Vector2(0);
         acceleration = new Vector2(0);
@@ -32,7 +32,7 @@ public class Body implements LinearMotion {
         
         lastTime = Tensors.join(this.position, this.velocity, this.acceleration);
     }
-    public Body(double mass) {
+    public PointBody(double mass) {
         position = new Vector2(0);
         velocity = new Vector2(0);
         acceleration = new Vector2(0);
@@ -41,7 +41,7 @@ public class Body implements LinearMotion {
         
         lastTime = Tensors.join(this.position, this.velocity, this.acceleration);
     }
-    public Body(Vector2 position, double mass) {
+    public PointBody(Vector2 position, double mass) {
         this.position = position.clone();
         velocity = new Vector2(0);
         acceleration = new Vector2(0);
@@ -50,7 +50,7 @@ public class Body implements LinearMotion {
         
         lastTime = Tensors.join(this.position, this.velocity, this.acceleration);
     }
-    public Body(Vector2 position, Vector2 velocity, double mass) {
+    public PointBody(Vector2 position, Vector2 velocity, double mass) {
         this.position = position.clone();
         this.velocity = velocity.clone();
         acceleration = new Vector2(0);
@@ -60,6 +60,7 @@ public class Body implements LinearMotion {
         lastTime = Tensors.join(this.position, this.velocity, this.acceleration);
     }
     
+    @Override
     public void update(double time) {
         lastTime = Tensors.join(this.position, this.velocity, this.acceleration);
         
@@ -77,6 +78,7 @@ public class Body implements LinearMotion {
         
         position.add(changePosition);
     }
+    @Override
     public void revert() {
         Tensor[] backup = Tensors.split(lastTime);
         Vector2 lastPosition = Vectors2.tensorToVector2(backup[0], position.isCartesian());
@@ -106,8 +108,8 @@ public class Body implements LinearMotion {
     }
 
     @Override
-    public double momentum() {
-        return velocity.norm() * mass;
+    public double momentum(int i) {
+        return velocity(i) * mass;
     }
 
     @Override
@@ -119,6 +121,7 @@ public class Body implements LinearMotion {
     public double force(int i) {
         return force.get(i);
     }
+    @Override
     public void setForce(Vector2 vector2) {
         force.set(vector2);
     }

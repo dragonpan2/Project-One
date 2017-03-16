@@ -18,7 +18,11 @@ public class Window extends JFrame {
 
         this.add(world);
         this.setTitle("ProjectOne");
-        this.setSize(1800, 1000);
+        this.setSize(1920, 1080);
+        
+        //this.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+        //this.setUndecorated(true);
+        
         this.setVisible(true);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         keyEventAdd();

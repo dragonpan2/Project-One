@@ -10,5 +10,15 @@ package World2D;
  * @author bowen
  */
 public class Camera {
+    private Scene currentScene;
     
+    public Scene currentScene() {
+        return currentScene;
+    }
+    public void refresh() {
+        
+    }
+    public void setScene(Scene scene) {
+        currentScene = scene;
+    }
 }

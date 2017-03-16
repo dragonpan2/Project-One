@@ -5,7 +5,8 @@
  */
 package Physics2D;
 
-import Physics2D.Objects.Body;
+import MathExt.Statistics;
+import Physics2D.Objects.PointBody;
 
 /**
  *
@@ -17,15 +18,15 @@ public class SpaceIntegrator {
     private static int stepsSum = 0;
     private static int stepsCount = 0;
     
-    private Body[] objects;
+    private PointBody[] objects;
     private double momentumSum;
     
-    public SpaceIntegrator(Body... objects) {
+    public SpaceIntegrator(PointBody... objects) {
         this.objects = objects;
         momentumSum = getMomentumSum(objects);
     }
     
-    public static Vector2 getForce(Body other, Body target) {
+    public static Vector2 getForce(PointBody other, PointBody target) {
         Vector2 forceVector = Vectors2.sub(target.position(), other.position());
         double normSquared = forceVector.normSquared();
         forceVector.setNorm(1);
@@ -34,19 +35,22 @@ public class SpaceIntegrator {
         return forceVector;
     }
     
-    private static double getMomentumSum(Body[] objects) {
-        double sum = 0;
+    private static double getMomentumSum(PointBody[] objects) {
+        double xSum = 0;
+        double ySum = 0;
+        
         for (int i=0; i<objects.length; i++) {
-            sum += objects[i].momentum();
+            xSum += objects[i].momentum(0);
+            ySum += objects[i].momentum(1);
         }
-        return sum;
+        return Statistics.norm(xSum, ySum);
     }
     
     private double getMomentumSum() {
         return getMomentumSum(objects);
     }
     public void update(double time) {
-        update(time, 1E20);
+        update(time, 1E5);
     }
     
     public void update(double time, double precision) {
@@ -76,7 +80,7 @@ public class SpaceIntegrator {
                 
                 double newTime = remainingTime;
                 while (Math.abs(momentumSum - newMomentum) > precision) {
-                    //System.out.println(Math.abs(momentumSum - newMomentum));
+                    
                     for (int i=0; i<objects.length; i++) {
                         objects[i].revert();
                     }
@@ -95,7 +99,13 @@ public class SpaceIntegrator {
                 steps++;
                 remainingTime = 0;
             }
-            momentumSum = newMomentum;
+            if (Math.abs(momentumSum - newMomentum) == 0) {
+                //momentumSum = newMomentum;
+                return;
+            }
+            System.out.println(Math.abs(momentumSum - newMomentum));
+            //System.out.println(remainingTime);
+            //momentumSum = newMomentum;
         }
         //System.out.println("Ministeps: |" + steps + "|");
         printLoad(steps);

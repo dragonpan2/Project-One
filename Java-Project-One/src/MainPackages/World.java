@@ -5,7 +5,6 @@
  */
 package MainPackages;
 
-import Physics2D.Objects.Body;
 import Physics2D.Objects.TestObject;
 import Physics2D.SpaceIntegrator;
 import java.awt.Color;
@@ -38,16 +37,16 @@ public class World extends JPanel implements Runnable {
     
     Vector2 vecPos1 = new Vector2(new double[]{900, 430});
     Vector2 vecVel1 = new Vector2(new double[]{-100, 0});
-    TestObject obj1 = new TestObject(vecPos1, vecVel1, 1E17D);
+    TestObject obj1 = new TestObject(vecPos1, vecVel1, 1E17);
     Vector2 vecPos2 = new Vector2(new double[]{900, 570});
     Vector2 vecVel2 = new Vector2(new double[]{100, 0});
-    TestObject obj2 = new TestObject(vecPos2, vecVel2, 1E17D);
+    TestObject obj2 = new TestObject(vecPos2, vecVel2, 1E17);
     Vector2 vecPos3 = new Vector2(new double[]{900, 200});
     Vector2 vecVel3 = new Vector2(new double[]{-220, 0});
-    TestObject obj3 = new TestObject(vecPos3, vecVel3, 1E8D);
+    TestObject obj3 = new TestObject(vecPos3, vecVel3, 1E8);
     Vector2 vecPos4 = new Vector2(new double[]{0, 0});
     Vector2 vecVel4 = new Vector2(new double[]{0, 0});
-    TestObject obj4 = new TestObject(vecPos4, vecVel4, 1E9D);
+    TestObject obj4 = new TestObject(vecPos4, vecVel4, 1E9);
     
     
     SpaceIntegrator int1 = new SpaceIntegrator(obj1, obj2, obj3, obj4);
@@ -56,7 +55,7 @@ public class World extends JPanel implements Runnable {
 
     public World() {
          
-        this.setPreferredSize(new Dimension(1200,1000));
+        //this.setPreferredSize(new Dimension(120,1000));
         this.setLayout(null);
         //this.add(ball);
         this.add(obj1.displayComponent);
@@ -96,21 +95,22 @@ public class World extends JPanel implements Runnable {
             vec6.set(Vectors2.rej(vec2, vec1));
             
             startTime = System.nanoTime();
-            int1.update(desiredSleepsec, 1E16);
+            int1.update(desiredSleepsec, 300D);
             invalidate();
             repaint();
             endTime = System.nanoTime();
             
+            
             sleepTime = (long)(desiredSleepms*1000000) - (endTime-startTime);
             if (sleepTime < 0) {
                 sleepTime = 0;
+                System.out.println("Thread Overload");
             }
             long sleepms = Math.floorDiv(sleepTime, 1000000);
             int sleepns = (int)Math.floorMod(sleepTime, 1000000);
             
             try {
                 Thread.sleep(sleepms, sleepns);
-                
             } catch (InterruptedException ex) {
                 System.out.println("Thread Error");
             }
