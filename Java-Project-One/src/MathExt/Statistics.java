@@ -13,9 +13,9 @@ public abstract class Statistics {
     public static double norm(double... doubleArray) {
         double sum = 0;
         for (int i=0; i<doubleArray.length; i++) {
-            sum += doubleArray[i];
+            sum += doubleArray[i] * doubleArray[i];
         }
-        return sum;
+        return Math.sqrt(sum);
     }
     public static double mean(double... doubleArray) {
         int n = doubleArray.length;

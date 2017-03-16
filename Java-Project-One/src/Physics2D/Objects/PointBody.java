@@ -111,6 +111,10 @@ public class PointBody implements LinearMotion {
     public double momentum(int i) {
         return velocity(i) * mass;
     }
+    
+    public double futureMomentum(int i, double time) {
+        return (velocity(i)+acceleration(i)*time) * mass;
+    }
 
     @Override
     public double mass() {

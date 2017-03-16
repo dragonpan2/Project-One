@@ -13,7 +13,8 @@ import Physics2D.Objects.PointBody;
  * @author bowen
  */
 public class SpaceIntegrator {
-    final public static double G = 6.67408E-11; //m^3 * kg^-1 * s^-2
+    final public static double G = 6.67408E-11; //m^3 * kg^-1 * s^-2 Gravitational Constant
+    final public static double tp = 5.39116E-44; //Planck time
     final private static int stepsLength = 40;
     private static int stepsSum = 0;
     private static int stepsCount = 0;
@@ -35,6 +36,27 @@ public class SpaceIntegrator {
         return forceVector;
     }
     
+    public static void computeForces(PointBody[] objects) {
+        for (int i=0; i<objects.length; i++) {
+            Vector2[] forceVectors = new Vector2[objects.length];
+            for (int n=0; n<objects.length; n++) {
+                if (i != n) {
+                    forceVectors[n] = getForce(objects[n], objects[i]);
+                } else {
+                    forceVectors[n] = new Vector2(0);
+                }
+            }
+            Vector2 sumForces = Vectors2.add(forceVectors);
+            objects[i].setForce(sumForces);
+        }
+    }
+    
+    public static void computeMotion(PointBody[] objects, double time) {
+        for (int i=0; i<objects.length; i++) {
+            objects[i].update(time);
+        }
+    }
+    
     private static double getMomentumSum(PointBody[] objects) {
         double xSum = 0;
         double ySum = 0;
@@ -46,84 +68,88 @@ public class SpaceIntegrator {
         return Statistics.norm(xSum, ySum);
     }
     
+    private static double getFutureMomentumSum(PointBody[] objects, double time) {
+        double xSum = 0;
+        double ySum = 0;
+        
+        for (int i=0; i<objects.length; i++) {
+            xSum += objects[i].futureMomentum(0, time);
+            ySum += objects[i].futureMomentum(1, time);
+        }
+        return Statistics.norm(xSum, ySum);
+    }
+    
     private double getMomentumSum() {
         return getMomentumSum(objects);
     }
     public void update(double time) {
-        update(time, 1E5);
+        update(time, 2000);
+    }
+    public void update(double time, double precision) {
+        if (precision < 0.1) {
+            precision = 0.1;
+        }
+        
+        int steps = 0;
+        
+        double futureMomentum = getFutureMomentumSum(objects, time);
+        
+        if (Math.abs(futureMomentum - momentumSum) < precision) {
+            computeForces(objects);
+            computeMotion(objects, time);
+            steps++;
+        } else {
+            double remainingTime = time;
+            while(remainingTime > 0) {
+                computeForces(objects);
+                
+                futureMomentum = getFutureMomentumSum(objects, remainingTime);
+                
+                if (Math.abs(futureMomentum - momentumSum) > precision) {
+                    double newTime = remainingTime;
+                    while(Math.abs(futureMomentum - momentumSum) > precision) {
+                        newTime /= 2;
+                        futureMomentum = getFutureMomentumSum(objects, newTime);
+                        //System.out.println(Math.abs(newTime));
+                        //System.out.println(Math.abs(momentumSum - futureMomentum));
+                        if (newTime <= 1E-12) {
+                            newTime = 1E-12;
+                            break;
+                        }
+                    }
+                    computeMotion(objects, newTime);
+                    remainingTime -= newTime;
+                } else {
+                    computeMotion(objects, remainingTime);
+                    remainingTime = 0;
+
+                }
+
+                steps++;
+                momentumSum = futureMomentum;
+                
+            }
+            
+        }
+        
+        printLoad(steps);
+        
+        
     }
     
-    public void update(double time, double precision) {
-        int steps = 0;
-        double remainingTime = time;
-        while (remainingTime > 0) {
-            for (int i=0; i<objects.length; i++) {
-                Vector2[] forceVectors = new Vector2[objects.length];
-                for (int n=0; n<objects.length; n++) {
-                    if (i != n) {
-                        forceVectors[n] = getForce(objects[n], objects[i]);
-                    } else {
-                        forceVectors[n] = new Vector2(0);
-                    }
-                }
-                Vector2 sumForces = Vectors2.add(forceVectors);
-                objects[i].setForce(sumForces);
-            }
-
-            for (int i=0; i<objects.length; i++) {
-                objects[i].update(remainingTime);
-            }
-
-            double newMomentum = getMomentumSum();
-            if (Math.abs(momentumSum - newMomentum) > precision) {
-                
-                
-                double newTime = remainingTime;
-                while (Math.abs(momentumSum - newMomentum) > precision) {
-                    
-                    for (int i=0; i<objects.length; i++) {
-                        objects[i].revert();
-                    }
-                    newTime /= 2;
-                    //System.out.println(newTime);
-                    for (int i=0; i<objects.length; i++) {
-                        objects[i].update(newTime);
-                    }
-                    newMomentum = getMomentumSum();
-                }
-                remainingTime -= newTime;
-                steps++;
-                //System.out.print(newTime + "|");
-                //System.out.println("|Ministep, remaining time: " + remainingTime + "|");
-            } else {
-                steps++;
-                remainingTime = 0;
-            }
-            if (Math.abs(momentumSum - newMomentum) == 0) {
-                //momentumSum = newMomentum;
-                return;
-            }
-            System.out.println(Math.abs(momentumSum - newMomentum));
-            //System.out.println(remainingTime);
-            //momentumSum = newMomentum;
-        }
-        //System.out.println("Ministeps: |" + steps + "|");
-        printLoad(steps);
-    }
     
     public static void printLoad(int steps) {
         stepsSum += steps;
         stepsCount++;
-        if (stepsCount > stepsLength) {
+        if (stepsCount >= stepsLength) {
             stepsCount = 0;
-            stepsSum /= 2500;
-            int graphLength = (int)stepsSum;
             //System.out.println(stepsSum);
+            int graphLength = (int)(stepsSum/40);
             if (graphLength > 25) {
                 printRed(graphLength);
             } else if (graphLength > 10) {
                 printYellow(graphLength);
-            } else if (graphLength > 1) {
+            } else if (stepsSum > 40) {
                 printGreen(graphLength);
             } else {
                 printCyan();
