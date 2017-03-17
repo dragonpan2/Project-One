@@ -21,7 +21,7 @@ public class NBodyIntegrator {
     private static int stepsCount = 0;
     
     public enum Integrator {
-        NOFORCE, EXPLICITEULER, SEMIIMPLICITEULER, EXPLICITMIDPOINT, LEAPFROG, RK4
+        NOFORCE, EXPLICITEULER, SEMIIMPLICITEULER, EXPLICITMIDPOINT, LEAPFROG, RK4, SYM1, SYM2, SYM3, SYM4
     }
     
     private PointBody[] objects;
@@ -171,6 +171,7 @@ public class NBodyIntegrator {
         }
     }
     
+    
     protected void integrateLeapFrog(double time) {
         if (leapFrogCurrentAccel == null) {
             leapFrogCurrentAccel = computeAccelerations(objects);
@@ -211,19 +212,164 @@ public class NBodyIntegrator {
             objects[i].setVelocity(newVelocity);
         }
     }
-    
-    protected void integrateSemiImplicitEuler(double time) {
-        Vector2[] currentAccel = computeAccelerations(objects);
-        
+    private void sympleticPositionStep(double c, double time) {
+        double cT = time * c;
         for (int i=0; i<objects.length; i++) {
-            objects[i].addVelocity(Vectors2.prod(currentAccel[i], time));
+            objects[i].addPosition(Vectors2.prod(objects[i].velocity(), cT));
+        }
+    }
+    
+    private void sympleticVelocityStep(double d, double time) {
+        double cT = time * d;
+        Vector2[] currentAccel = computeAccelerations(objects);
+        for (int i=0; i<objects.length; i++) {
+            objects[i].addVelocity(Vectors2.prod(currentAccel[i], cT));
+        }
+    }
+    protected void integrateSym4(double time) {
+        /* numbers by Candy and Rozmus (1991), Forest and Ruth (1990)
+        double a1 = (1D/6) * (2 + Math.pow(2, 1D/3) + Math.pow(2, -1D/3));
+        double a2 = (1D/6) * (1 - Math.pow(2, 1D/3) - Math.pow(2, -1D/3));
+        double a3 = a2;
+        double a4 = a1;
+        
+        double b1 = 0;
+        double b2 = 1/(2 - Math.pow(2, 1D/3));
+        double b3 = 1/(1 - Math.pow(2, 2D/3));
+        double b4 = b2;
+        */
+        
+        //Computer generated optimal solution
+        double a1 = 0.5153528374311229364D;
+        double a2 =-0.0857820194129736460D;
+        double a3 = 0.4415830236164665242D;
+        double a4 = 0.1288461583653841854D;
+        
+        double b1 = 0.1344961992774310892D;
+        double b2 =-0.2248198030794208058D;
+        double b3 = 0.7562300005156682911D;
+        double b4 = 0.3340036032863214255D;
+        
+        double[] c = new double[] {a4, a3, a2, a1};
+        double[] d = new double[] {b4, b3, b2, b1};
+        
+        if (time > 0) {
+            sympleticPositionStep(c[0], time);
+            sympleticVelocityStep(d[0], time);
+
+            sympleticPositionStep(c[1], time);
+            sympleticVelocityStep(d[1], time);
+
+            sympleticPositionStep(c[2], time);
+            sympleticVelocityStep(d[2], time);
+            
+            sympleticPositionStep(c[3], time);
+            sympleticVelocityStep(d[3], time);
+        } else {
+            sympleticVelocityStep(d[3], time);
+            sympleticPositionStep(c[3], time);
+            
+            sympleticVelocityStep(d[2], time);
+            sympleticPositionStep(c[2], time);
+            
+            sympleticVelocityStep(d[1], time);
+            sympleticPositionStep(c[1], time);
+            
+            sympleticVelocityStep(d[0], time);
+            sympleticPositionStep(c[0], time);
+        }
+    }
+    protected void integrateSym3(double time) {
+        /* numbers by Ruth (1983)
+        double[] c = new double[] {1, -2D/3, 2D/3};
+        double[] d = new double[] {-1D/24, 3D/4, 7D/24};
+        */
+        
+        //Computer generated optimal solution
+        double a1 = 0.919661532017399854D;
+        double a2 = (1/(4*a1))-(a1/2);
+        double a3 = 1-a1-a2;
+        
+        double[] c = new double[] {a3, a2, a1};
+        double[] d = new double[] {a1, a2, a3};
+        
+        if (time > 0) {
+            sympleticPositionStep(c[0], time);
+            sympleticVelocityStep(d[0], time);
+
+            sympleticPositionStep(c[1], time);
+            sympleticVelocityStep(d[1], time);
+
+            sympleticPositionStep(c[2], time);
+            sympleticVelocityStep(d[2], time);
+        } else {
+            sympleticVelocityStep(d[2], time);
+            sympleticPositionStep(c[2], time);
+            
+            sympleticVelocityStep(d[1], time);
+            sympleticPositionStep(c[1], time);
+            
+            sympleticVelocityStep(d[0], time);
+            sympleticPositionStep(c[0], time);
+        }
+    }
+    protected void integrateSym2(double time) {
+        //sympleticPositionStep(0, time);
+        sympleticVelocityStep(0.5, time);
+
+        sympleticPositionStep(1, time);
+        sympleticVelocityStep(0.5, time);
+        
+    }
+    protected void integrateSym2b(double time) {
+        //This algorithm in reverse has exactly the same steps, no need for negative time case.
+        //{
+            //objects[i].addPosition(Vectors2.prod(objects[i].velocity(), time));
+        //}
+
+        Vector2[] currentAccel = computeAccelerations(objects);
+
+        for (int i=0; i<objects.length; i++) {
+            objects[i].addVelocity(Vectors2.prod(currentAccel[i], time/2));
+        }
+
+        for (int i=0; i<objects.length; i++) {
             objects[i].addPosition(Vectors2.prod(objects[i].velocity(), time));
+        }
+        Vector2[] currentAccel2 = computeAccelerations(objects);
+
+        for (int i=0; i<objects.length; i++) {
+            objects[i].addVelocity(Vectors2.prod(currentAccel2[i], time/2));
+        }
+    }
+    protected void integrateSym1(double time) {
+        integrateSemiImplicitEuler(time);
+    }
+    protected void integrateSemiImplicitEuler(double time) {
+        if (time > 0) {
+            Vector2[] currentAccel = computeAccelerations(objects);
+
+            for (int i=0; i<objects.length; i++) {
+                objects[i].addVelocity(Vectors2.prod(currentAccel[i], time));
+                objects[i].addPosition(Vectors2.prod(objects[i].velocity(), time));
+            }
+        } else {
+            
+            for (int i=0; i<objects.length; i++) {
+                objects[i].addPosition(Vectors2.prod(objects[i].velocity(), time));
+            }
+
+            Vector2[] newAccelerations = computeAccelerations(objects);
+
+            for (int i=0; i<objects.length; i++) {
+                objects[i].addVelocity(Vectors2.prod(newAccelerations[i], time));
+            }
         }
     }
     
     protected void integrateExplicitEuler(double time) {
         Vector2[] currentAccel = computeAccelerations(objects);
-        
+
         for (int i=0; i<objects.length; i++) {
             objects[i].addPosition(Vectors2.prod(objects[i].velocity(), time));
             objects[i].addVelocity(Vectors2.prod(currentAccel[i], time));
@@ -306,6 +452,26 @@ public class NBodyIntegrator {
             case EXPLICITMIDPOINT:
                 for (int i=0; i<subDiv; i++) {
                     integrateExplicitMidpoint(divTime);
+                }
+                break;
+            case SYM4:
+                for (int i=0; i<subDiv; i++) {
+                    integrateSym4(divTime);
+                }
+                break;
+            case SYM3:
+                for (int i=0; i<subDiv; i++) {
+                    integrateSym3(divTime);
+                }
+                break;
+            case SYM2:
+                for (int i=0; i<subDiv; i++) {
+                    integrateSym2(divTime);
+                }
+                break;
+            case SYM1:
+                for (int i=0; i<subDiv; i++) {
+                    integrateSym1(divTime);
                 }
                 break;
             case SEMIIMPLICITEULER:

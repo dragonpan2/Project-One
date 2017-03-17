@@ -139,17 +139,17 @@ public class World extends JPanel implements Runnable {
             vec6.set(Vectors2.rej(vec2, vec1));
             
             startTime = System.nanoTime();
-            if (steps%1000 < 500) {
-                int1.update(desiredSleepsec, 1, Integrator.RK4);
-                int2.update(desiredSleepsec, 1, Integrator.LEAPFROG);
-                int3.update(desiredSleepsec, 1, Integrator.EXPLICITMIDPOINT);
+            if (steps%2000 < 1000) {
+                int1.update(desiredSleepsec, 100, Integrator.SYM4);
+                int2.update(desiredSleepsec, 1, Integrator.SYM3);
+                int3.update(desiredSleepsec, 10, Integrator.SYM2);
             } else {
-                int1.update(-desiredSleepsec, 1, Integrator.RK4);
-                int2.update(-desiredSleepsec, 1, Integrator.LEAPFROG);
-                int3.update(-desiredSleepsec, 1, Integrator.EXPLICITMIDPOINT);
+                int1.update(-desiredSleepsec, 100, Integrator.SYM4);
+                int2.update(-desiredSleepsec, 1, Integrator.SYM3);
+                int3.update(-desiredSleepsec, 10, Integrator.SYM2);
             }
             steps++;
-            if (steps > 1000) {
+            if (steps > 2000) {
                 steps = 0;
             }
             System.out.println(steps);
