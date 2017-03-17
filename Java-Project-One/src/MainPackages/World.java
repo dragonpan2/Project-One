@@ -140,11 +140,11 @@ public class World extends JPanel implements Runnable {
             
             startTime = System.nanoTime();
             if (steps%1000 < 500) {
-                int1.update(desiredSleepsec, 500, Integrator.RK4);
+                int1.update(desiredSleepsec, 1, Integrator.RK4);
                 int2.update(desiredSleepsec, 1, Integrator.LEAPFROG);
                 int3.update(desiredSleepsec, 1, Integrator.EXPLICITMIDPOINT);
             } else {
-                int1.update(-desiredSleepsec, 500, Integrator.RK4);
+                int1.update(-desiredSleepsec, 1, Integrator.RK4);
                 int2.update(-desiredSleepsec, 1, Integrator.LEAPFROG);
                 int3.update(-desiredSleepsec, 1, Integrator.EXPLICITMIDPOINT);
             }
