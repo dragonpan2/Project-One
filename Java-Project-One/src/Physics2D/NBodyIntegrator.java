@@ -21,7 +21,8 @@ public class NBodyIntegrator {
     private static int stepsCount = 0;
     
     public enum Integrator {
-        NOFORCE, EXPLICITEULER, SEMIIMPLICITEULER, EXPLICITMIDPOINT, LEAPFROG, RK4, SYM1, SYM2, SYM3, SYM4
+        NOFORCE, EXPLICITEULER, EXPLICITMIDPOINT, LEAPFROG, RK4, 
+        SYMPLECTIC1, SYMPLECTIC2, SYMPLECTIC3, SYMPLECTIC4
     }
     
     private PointBody[] objects;
@@ -254,29 +255,15 @@ public class NBodyIntegrator {
         double[] d = new double[] {b4, b3, b2, b1};
         
         if (time > 0) {
-            sympleticPositionStep(c[0], time);
-            sympleticVelocityStep(d[0], time);
-
-            sympleticPositionStep(c[1], time);
-            sympleticVelocityStep(d[1], time);
-
-            sympleticPositionStep(c[2], time);
-            sympleticVelocityStep(d[2], time);
-            
-            sympleticPositionStep(c[3], time);
-            sympleticVelocityStep(d[3], time);
+            for (int i=0; i<4; i++) {
+                sympleticPositionStep(c[i], time);
+                sympleticVelocityStep(d[i], time);
+            }
         } else {
-            sympleticVelocityStep(d[3], time);
-            sympleticPositionStep(c[3], time);
-            
-            sympleticVelocityStep(d[2], time);
-            sympleticPositionStep(c[2], time);
-            
-            sympleticVelocityStep(d[1], time);
-            sympleticPositionStep(c[1], time);
-            
-            sympleticVelocityStep(d[0], time);
-            sympleticPositionStep(c[0], time);
+            for (int i=3; i>-1; i--) {
+                sympleticVelocityStep(d[i], time);
+                sympleticPositionStep(c[i], time);
+            }
         }
     }
     protected void integrateSym3(double time) {
@@ -286,9 +273,9 @@ public class NBodyIntegrator {
         */
         
         //Computer generated optimal solution
-        double a1 = 0.919661532017399854D;
+        double a1 = 0.919661532017399857D;
         double a2 = (1/(4*a1))-(a1/2);
-        double a3 = 1-a1-a2;
+        double a3 = 1+(-a1)+(-a2);
         
         double[] c = new double[] {a3, a2, a1};
         double[] d = new double[] {a1, a2, a3};
@@ -314,6 +301,28 @@ public class NBodyIntegrator {
         }
     }
     protected void integrateSym2(double time) {
+        double a1 = 0.7071067811865475244008443621048490392848359376884740365883D;
+        double a2 = 1 - a1;
+        double b1 = a1;
+        double b2 = 1 - b1;
+        
+        if (time > 0) {
+            sympleticPositionStep(a2, time);
+            sympleticVelocityStep(b2, time);
+
+            sympleticPositionStep(a1, time);
+            sympleticVelocityStep(b1, time);
+        } else {
+            sympleticVelocityStep(b1, time);
+            sympleticPositionStep(a1, time);
+            
+            sympleticVelocityStep(b2, time);
+            sympleticPositionStep(a2, time);
+        }
+        
+    }
+    protected void integrateSym2a(double time) {
+
         //sympleticPositionStep(0, time);
         sympleticVelocityStep(0.5, time);
 
@@ -454,29 +463,24 @@ public class NBodyIntegrator {
                     integrateExplicitMidpoint(divTime);
                 }
                 break;
-            case SYM4:
+            case SYMPLECTIC4:
                 for (int i=0; i<subDiv; i++) {
                     integrateSym4(divTime);
                 }
                 break;
-            case SYM3:
+            case SYMPLECTIC3:
                 for (int i=0; i<subDiv; i++) {
                     integrateSym3(divTime);
                 }
                 break;
-            case SYM2:
+            case SYMPLECTIC2:
                 for (int i=0; i<subDiv; i++) {
                     integrateSym2(divTime);
                 }
                 break;
-            case SYM1:
+            case SYMPLECTIC1:
                 for (int i=0; i<subDiv; i++) {
                     integrateSym1(divTime);
-                }
-                break;
-            case SEMIIMPLICITEULER:
-                for (int i=0; i<subDiv; i++) {
-                    integrateSemiImplicitEuler(divTime);
                 }
                 break;
             case EXPLICITEULER:
