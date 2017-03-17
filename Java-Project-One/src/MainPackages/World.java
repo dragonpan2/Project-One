@@ -6,7 +6,8 @@
 package MainPackages;
 
 import Physics2D.Objects.TestObject;
-import Physics2D.SpaceIntegrator;
+import Physics2D.NBodyIntegrator;
+import Physics2D.NBodyIntegrator.Integrator;
 import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.JPanel;
@@ -48,13 +49,35 @@ public class World extends JPanel implements Runnable {
     Vector2 vecVel4 = new Vector2(new double[]{0, 0});
     TestObject obj4 = new TestObject(vecPos4, vecVel4, 1E9);
     
+    TestObject obj1a = obj1.clone();
+    TestObject obj2a = obj2.clone();
+    TestObject obj3a = obj3.clone();
+    TestObject obj4a = obj4.clone();
     
-    SpaceIntegrator int1 = new SpaceIntegrator(obj1, obj2, obj3, obj4);
+    
+    TestObject obj1b = obj1.clone();
+    TestObject obj2b = obj2.clone();
+    TestObject obj3b = obj3.clone();
+    TestObject obj4b = obj4.clone();
+    
+    
+    NBodyIntegrator int1 = new NBodyIntegrator(obj1, obj2, obj3, obj4);
+    NBodyIntegrator int2 = new NBodyIntegrator(obj1a, obj2a, obj3a, obj4a);
+    NBodyIntegrator int3 = new NBodyIntegrator(obj1b, obj2b, obj3b, obj4b);
     
     Thread thread;
 
     public World() {
          
+        obj1a.setColour(Color.yellow);
+        obj2a.setColour(Color.yellow);
+        obj3a.setColour(Color.yellow);
+        obj4a.setColour(Color.yellow);
+        obj1b.setColour(Color.red);
+        obj2b.setColour(Color.red);
+        obj3b.setColour(Color.red);
+        obj4b.setColour(Color.red);
+        
         //this.setPreferredSize(new Dimension(120,1000));
         this.setLayout(null);
         //this.add(ball);
@@ -62,6 +85,14 @@ public class World extends JPanel implements Runnable {
         this.add(obj2.displayComponent);
         this.add(obj3.displayComponent);
         this.add(obj4.displayComponent);
+        this.add(obj1a.displayComponent);
+        this.add(obj2a.displayComponent);
+        this.add(obj3a.displayComponent);
+        this.add(obj4a.displayComponent);
+        this.add(obj1b.displayComponent);
+        this.add(obj2b.displayComponent);
+        this.add(obj3b.displayComponent);
+        this.add(obj4b.displayComponent);
         this.add(line1);
         this.add(line2);
         this.add(line3);
@@ -85,6 +116,19 @@ public class World extends JPanel implements Runnable {
         long endTime;
         long sleepTime;
         
+        int steps = 0;
+        
+        Vector2 v1 = new Vector2(new double[] {4,9});
+        Vector2 v2 = new Vector2(new double[] {100, 10});
+        Vector2 v3 = v2.clone();
+        v3.add(v1);
+        System.out.println(v2);
+        System.out.println(v3);
+        System.out.println(Vectors2.prod(v1, v2, v1));
+        System.out.println(Vectors2.prod(v1, 3.3D));
+        System.out.println(Vectors2.add(v1, v2, v1));
+        
+        
         while (true) {
             
             
@@ -95,7 +139,20 @@ public class World extends JPanel implements Runnable {
             vec6.set(Vectors2.rej(vec2, vec1));
             
             startTime = System.nanoTime();
-            int1.update(desiredSleepsec);
+            if (steps%1000 < 500) {
+                int1.update(desiredSleepsec, 1, Integrator.RK4);
+                int2.update(desiredSleepsec, 1, Integrator.EXPLICITMIDPOINT);
+                int3.update(desiredSleepsec, 1, Integrator.EXPLICITEULER);
+            } else {
+                int1.update(-desiredSleepsec, 1, Integrator.RK4);
+                int2.update(-desiredSleepsec, 1, Integrator.EXPLICITMIDPOINT);
+                int3.update(-desiredSleepsec, 1, Integrator.EXPLICITEULER);
+            }
+            steps++;
+            if (steps > 1000) {
+                steps = 0;
+            }
+            System.out.println(steps);
             invalidate();
             repaint();
             endTime = System.nanoTime();

@@ -12,18 +12,22 @@ public class TestBall extends JComponent {
     
     int x;
     int y;
+    Color color;
     
     public TestBall() {
-        
         this.setSize(100, 100);
+        color = Color.white;
     }
     
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.setColor(Color.white);
+        g.setColor(color);
         g.fillOval(0, 0, 20, 20);
         this.setLocation(x, y);
+    }
+    public void setColor(Color color) {
+        this.color = color;
     }
     public void setPos(int x, int y) {
         this.x = x;
