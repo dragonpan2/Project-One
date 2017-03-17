@@ -139,8 +139,9 @@ public class NBodyIntegrator {
             objects[i].addPosition(Vectors2.prod(Vectors2.add(rk1[i]), H));
         }
     }
+    
     protected void integrateRK4(double time) {
-        
+        // try http://web.mit.edu/pkrein/Public/Final%20Paper%20UW324.pdf
         final double H = time;
         final double HO2 = H/2;
         final double HO6 = H/6;
@@ -162,48 +163,47 @@ public class NBodyIntegrator {
             currentPositions[i] = objects[i].position().clone();
         }
         
-        
             vk1 = computeAccelerations(objects);
         for (int i=0; i<objects.length; i++) {
             rk1[i] = currentVelocities[i].clone();
         }
         
         for (int i=0; i<objects.length; i++) {
-            objects[i].addPosition(Vectors2.prod(rk1[i], HO2));
+            objects[i].setPosition(Vectors2.add(currentPositions[i], Vectors2.prod(rk1[i], HO2)));
         }
             vk2 = computeAccelerations(objects);
+            
         for (int i=0; i<objects.length; i++) {
-            rk2[i] = Vectors2.prod(Vectors2.prod(rk1[i], vk1[i]), HO2);
+            rk2[i] = Vectors2.prod(vk1[i], HO2);
         }
         
+        
         for (int i=0; i<objects.length; i++) {
-            objects[i].addPosition(Vectors2.prod(rk2[i], HO2));
+            objects[i].setPosition(Vectors2.add(currentPositions[i], Vectors2.prod(rk2[i], HO2)));
         }
             vk3 = computeAccelerations(objects);
+            
         for (int i=0; i<objects.length; i++) {
-            rk3[i] = Vectors2.prod(Vectors2.prod(rk1[i], vk2[i]), HO2);
+            rk3[i] = Vectors2.prod(vk2[i], HO2);
         }
         
+        
         for (int i=0; i<objects.length; i++) {
-            objects[i].addPosition(Vectors2.prod(rk3[i], H));
+            objects[i].setPosition(Vectors2.add(currentPositions[i], Vectors2.prod(rk3[i], H)));
         }
             vk4 = computeAccelerations(objects);
+            
         for (int i=0; i<objects.length; i++) {
-            rk4[i] = Vectors2.prod(Vectors2.prod(rk1[i], vk3[i]), H);
+            rk4[i] = Vectors2.prod(vk3[i], H);
         }
         
-        for (int i=0; i<objects.length; i++) {
-            objects[i].setVelocity(currentVelocities[i]);
-            objects[i].setPosition(currentPositions[i]);
-        }
         
         for (int i=0; i<objects.length; i++) {
-            objects[i].addVelocity(Vectors2.prod(Vectors2.add(vk1[i], Vectors2.prod(vk2[i], 2), Vectors2.prod(vk3[i], 2), vk4[i]), HO6));
-            objects[i].addPosition(Vectors2.prod(Vectors2.add(rk1[i], Vectors2.prod(rk2[i], 2), Vectors2.prod(rk3[i], 2), rk4[i]), HO6));
+            objects[i].setVelocity(Vectors2.add(currentVelocities[i], Vectors2.prod(Vectors2.add(vk1[i], Vectors2.prod(vk2[i], 2), Vectors2.prod(vk3[i], 2), vk4[i]), HO6)));
+            objects[i].setPosition(Vectors2.add(currentPositions[i], Vectors2.prod(Vectors2.add(rk1[i], Vectors2.prod(rk2[i], 2), Vectors2.prod(rk3[i], 2), rk4[i]), HO6)));
         }
     }
-    
-    protected void integrateRK4(double time) {
+    protected void integrateRK44(double time) {
         
         final double H = time;
         final double HO2 = H/2;

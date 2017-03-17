@@ -125,7 +125,7 @@ public class World extends JPanel implements Runnable {
         System.out.println(v2);
         System.out.println(v3);
         System.out.println(Vectors2.prod(v1, v2, v1));
-        System.out.println(Vectors2.prod(v1, 3.3D));
+        System.out.println(Vectors2.prod(v1, 0));
         System.out.println(Vectors2.add(v1, v2, v1));
         
         
@@ -140,13 +140,13 @@ public class World extends JPanel implements Runnable {
             
             startTime = System.nanoTime();
             if (steps%1000 < 500) {
-                int1.update(desiredSleepsec, 1, Integrator.RK4);
-                int2.update(desiredSleepsec, 1, Integrator.EXPLICITMIDPOINT);
-                int3.update(desiredSleepsec, 1, Integrator.EXPLICITEULER);
+                int1.update(desiredSleepsec, 500, Integrator.RK4);
+                int2.update(desiredSleepsec, 1, Integrator.LEAPFROG);
+                int3.update(desiredSleepsec, 1, Integrator.EXPLICITMIDPOINT);
             } else {
-                int1.update(-desiredSleepsec, 1, Integrator.RK4);
-                int2.update(-desiredSleepsec, 1, Integrator.EXPLICITMIDPOINT);
-                int3.update(-desiredSleepsec, 1, Integrator.EXPLICITEULER);
+                int1.update(-desiredSleepsec, 500, Integrator.RK4);
+                int2.update(-desiredSleepsec, 1, Integrator.LEAPFROG);
+                int3.update(-desiredSleepsec, 1, Integrator.EXPLICITMIDPOINT);
             }
             steps++;
             if (steps > 1000) {
