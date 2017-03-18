@@ -46,8 +46,8 @@ public class Main {
         SpaceObject neptune = generateBody("Mercury", 0, 0, 0, 0, 0);
         
         
-        NBodyFuturePath futureIntegrator = new NBodyFuturePath(IntegratorType.SYMPLECTIC4, 1E5, 100, 10, 5, sun, mercury, venus, earth, mars);
-        NBodySimulation space = new NBodySimulation(IntegratorType.SYMPLECTIC4, 1E5, 15, 1, futureIntegrator, sun, mercury, venus, earth, mars);
+        NBodyFuturePath futureIntegrator = new NBodyFuturePath(IntegratorType.SYMPLECTIC1, 1E8, 30000, 1, sun, mercury, venus, earth, mars);
+        NBodySimulation space = new NBodySimulation(IntegratorType.SYMPLECTIC4, 1E5, 30, 1, futureIntegrator, sun, mercury, venus, earth, mars);
         
         Scene scene = new Scene(60, 1920, 1080, space);
         Viewport viewport = new Viewport(1920, 1080, scene);

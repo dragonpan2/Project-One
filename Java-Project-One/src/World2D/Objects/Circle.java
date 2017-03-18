@@ -16,35 +16,38 @@ import javax.swing.JComponent;
  */
 public class Circle implements DisplayObject, Interpolable {
 
-    double x;
-    double y;
-    double radius;
+    private double x;
+    private double y;
+    private double radius;
     
-    long stepsWithoutUpdate;
+    private long stepsWithoutUpdate;
     
-    double vx;
-    double vy;
-    double dst;
-    double dft;
+    private double vx;
+    private double vy;
+    private double dst;
+    private double dft;
     
-    double xoffset;
-    double yoffset;
-    double scaleoffset;
+    private double xoffset;
+    private double yoffset;
+    private double scaleoffset;
     
-    double xscroffset;
-    double yscroffset;
+    private double xscroffset;
+    private double yscroffset;
     
-    int dix;
-    int diy;
+    private int dix;
+    private int diy;
     
-    String name;
-    Color color;
+    private boolean isHidden;
+    
+    private String name;
+    private Color color;
     
     public Circle(String name, int r) {
         this(name, Color.WHITE, r);
     }
     public Circle(String name, Color color, int r) {
         //this.setSize(r*2, r*2);
+        this.isHidden = false;
         this.name = name;
         this.radius = r;
         this.color = color;
@@ -140,5 +143,19 @@ public class Circle implements DisplayObject, Interpolable {
         this.vy = vy;
     }
 
+    @Override
+    public void hide() {
+        isHidden = true;
+    }
+
+    @Override
+    public void show() {
+        isHidden = false;
+    }
+    @Override
+    public boolean isHidden() {
+        return isHidden;
+    }
+    
     
 }

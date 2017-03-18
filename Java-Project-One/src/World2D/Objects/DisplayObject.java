@@ -30,4 +30,9 @@ public interface DisplayObject {
     
     public Color getColor();
     
+    public boolean isHidden();
+    
+    public void hide();
+    public void show();
+    
 }

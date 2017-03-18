@@ -28,8 +28,7 @@ public class NBodyFuturePath implements Runnable, World, FutureSimulation {
     private Integrator integrator;
     
     private double updatesPerSecond; //How many "Calculations" per second
-    private int futureRatioSteps; //How many steps in the future does the integrator calculate
-    private int stepsPerRatioTime;
+    private int futureTimeSteps; //How many steps does the integrator calculate for the amount of time
     private double totalFutureTime;
     
     private double ratio; //Ratio between simulated time and real time, higher is faster (same as initialRatio * accel from NBodySimulation)
@@ -38,16 +37,15 @@ public class NBodyFuturePath implements Runnable, World, FutureSimulation {
     private boolean isPaused;
     
     
-    public NBodyFuturePath(IntegratorType integrator, double totalFutureTime, int futureRatioSteps, int stepsPerRatioTime, double updatesPerSecond, SpaceObject... objects) {
+    public NBodyFuturePath(IntegratorType integrator, double totalFutureTime, int futureTimeSteps, double updatesPerSecond, SpaceObject... objects) {
         this.isPaused = true;
         this.objects = objects;
-        this.futureRatioSteps = futureRatioSteps;
-        this.stepsPerRatioTime = stepsPerRatioTime;
+        this.futureTimeSteps = futureTimeSteps;
         this.updatesPerSecond = updatesPerSecond;
         this.totalFutureTime = totalFutureTime;
         this.ratio = totalFutureTime;
         
-        lines = new Line[(futureRatioSteps*stepsPerRatioTime-1)*objects.length];
+        lines = new Line[(futureTimeSteps-1)*objects.length];
         for (int i=0; i<lines.length; i++) {
             lines[i] = new Line();
         }
@@ -74,12 +72,37 @@ public class NBodyFuturePath implements Runnable, World, FutureSimulation {
     public void compute() {
         //Vector2[][] positionTime = integrator.getFuture(objects, ratio/stepsPerRatioTime, futureRatioSteps*stepsPerRatioTime);
     }
+    private static boolean isWithinThreshold(double x0, double y0, double x, double y, double threshold) {
+        return ((Math.abs(x-x0) < threshold) && (Math.abs(y-y0) < threshold));
+    }
+    
     private void updateSpatialPositions() {
-        Vector2[][] positionTime = integrator.getFuture(objects, ratio/stepsPerRatioTime, futureRatioSteps*stepsPerRatioTime);
+        Vector2[][] positionTime = integrator.getFuture(objects, totalFutureTime/futureTimeSteps, futureTimeSteps);
         int linei = 0;
+        
+        final double orbitThreshold = 1E9;
+        final int timeTriggerThreshold = 100;
+        final int timeOverlapThreshold = 10;
+        
         for (int n=0; n<positionTime.length; n++) {
+            boolean isPeriodic = false;
+            int timeOverlapCounter = 0;
             for (int i=0; i<positionTime[n].length-1; i++) {
-                lines[linei].setPos(positionTime[n][i].get(0), positionTime[n][i].get(1), positionTime[n][i+1].get(0), positionTime[n][i+1].get(1));
+                if (i > timeTriggerThreshold) {
+                    if (isWithinThreshold(positionTime[n][0].get(0), positionTime[n][1].get(1), positionTime[n][i].get(0), positionTime[n][i].get(1), orbitThreshold)) {
+                        isPeriodic = true;
+                    }
+                }
+                if (isPeriodic && timeOverlapCounter > timeOverlapThreshold) {
+                    lines[linei].hide();
+                } else {
+                    if (isPeriodic) {
+                        timeOverlapCounter++;
+                    }
+                    lines[linei].setPos(positionTime[n][i].get(0), positionTime[n][i].get(1), positionTime[n][i+1].get(0), positionTime[n][i+1].get(1));
+                    lines[linei].show();
+                }
+                
                 linei++;
             }
         }
@@ -121,7 +144,6 @@ public class NBodyFuturePath implements Runnable, World, FutureSimulation {
                 if (sleepTime < 0) {
                     sleepTime = 0;
                     System.out.println("FutureSimulation Thread Overload");
-                    speedDown();
                 }
                 long sleepms = Math.floorDiv(sleepTime, 1000000);
                 int sleepns = (int)Math.floorMod(sleepTime, 1000000);

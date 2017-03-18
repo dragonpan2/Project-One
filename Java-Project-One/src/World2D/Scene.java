@@ -151,7 +151,9 @@ public class Scene extends JPanel implements Runnable {
     }
     private void updateCameraToObjects() {
         for (int i=0; i<displayObjects.length; i++) {
-            this.displayObjects[i].update(camera);
+            if (!displayObjects[i].isHidden()) {
+                this.displayObjects[i].update(camera);
+            }
         }
     }
     
@@ -220,7 +222,7 @@ public class Scene extends JPanel implements Runnable {
     
     private void drawAllObjects(Graphics g) {
         for (int i=0; i<displayObjects.length; i++) {
-            if (displayObjects[i].isInView(-50, -50, 1920+50, 1080+50)) {
+            if (displayObjects[i].isInView(-50, -50, 1920+50, 1080+50) && !displayObjects[i].isHidden()) {
                 switch(displayObjects[i].getType()) {
                     case Circle:
                         drawCircle(g, (Circle)displayObjects[i]);
@@ -260,23 +262,23 @@ public class Scene extends JPanel implements Runnable {
                 
                 startTime = System.nanoTime();
                 updateCameraToObjects();
-                invalidate();
+                //invalidate();
                 repaint();
                 checkKeys();
                 endTime = System.nanoTime();
                 
                 sleepTime = (long)(desiredSleepms*1000000) - (endTime-startTime);
                 if (sleepTime < 0) {
-                    sleepTime = 0;
-                    System.out.println("Thread Overload");
-                }
-                long sleepms = Math.floorDiv(sleepTime, 1000000);
-                int sleepns = (int)Math.floorMod(sleepTime, 1000000);
-                
-                try {
-                    Thread.sleep(sleepms, sleepns);
-                } catch (InterruptedException ex) {
-                    System.out.println("Thread Error");
+                    System.out.println("Graphics Thread Overload");
+                } else {
+                    long sleepms = Math.floorDiv(sleepTime, 1000000);
+                    int sleepns = (int)Math.floorMod(sleepTime, 1000000);
+
+                    try {
+                        Thread.sleep(sleepms, sleepns);
+                    } catch (InterruptedException ex) {
+                        System.out.println("Thread Error");
+                    }
                 }
             }
         }

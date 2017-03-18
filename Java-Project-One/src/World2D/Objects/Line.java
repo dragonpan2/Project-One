@@ -14,22 +14,24 @@ import java.awt.Color;
  */
 public class Line implements DisplayObject {
     
-    double x0;
-    double y0;
-    double x1;
-    double y1;
+    private double x0;
+    private double y0;
+    private double x1;
+    private double y1;
     
-    int dix0;
-    int diy0;
-    int dix1;
-    int diy1;
+    private int dix0;
+    private int diy0;
+    private int dix1;
+    private int diy1;
     
-    double xoffset;
-    double yoffset;
-    double scaleoffset;
+    private double xoffset;
+    private double yoffset;
+    private double scaleoffset;
     
-    double xscroffset;
-    double yscroffset;
+    private double xscroffset;
+    private double yscroffset;
+    
+    private boolean isHidden;
     
     Color color;
 
@@ -38,6 +40,7 @@ public class Line implements DisplayObject {
     }
     public Line(Color color) {
         this.color = color;
+        this.isHidden = false;
     }
     @Override
     public void update(Camera camera) {
@@ -100,6 +103,21 @@ public class Line implements DisplayObject {
     @Override
     public Color getColor() {
         return color;
+    }
+
+    @Override
+    public void hide() {
+        isHidden = true;
+    }
+
+    @Override
+    public void show() {
+        isHidden = false;
+    }
+
+    @Override
+    public boolean isHidden() {
+        return isHidden;
     }
     
 }

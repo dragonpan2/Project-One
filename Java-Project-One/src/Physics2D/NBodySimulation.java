@@ -39,7 +39,7 @@ public class NBodySimulation implements Runnable, World, Simulation {
     private boolean isPaused;
     
     public NBodySimulation(IntegratorType integrator, double ratio, double updatesPerSecond, int miniSteps, SpaceObject... objects) {
-        this(integrator, ratio, updatesPerSecond, miniSteps, new NBodyFuturePath(integrator, ratio, 10, 10, updatesPerSecond/2, objects), objects);
+        this(integrator, ratio, updatesPerSecond, miniSteps, new NBodyFuturePath(integrator, ratio, 100, updatesPerSecond/2, objects), objects);
     }
     public NBodySimulation(IntegratorType integrator, double ratio, double updatesPerSecond, int miniSteps, FutureSimulation futureSimulation, SpaceObject... objects) {
         this.isPaused = true;
@@ -147,21 +147,23 @@ public class NBodySimulation implements Runnable, World, Simulation {
                 sleepTime = (long)(desiredSleepms*1000000) - (endTime-startTime);
                 realLagRatio = desiredSleepns/(endTime-startTime)*ratio;
                 //realLagRatio = 0;
-                if (sleepTime < 0) {
-                    sleepTime = 0;
-                    System.out.println("Thread Overload");
-                    speedDown();
-                }
-                long sleepms = Math.floorDiv(sleepTime, 1000000);
-                int sleepns = (int)Math.floorMod(sleepTime, 1000000);
-                
-                try {
-                    Thread.sleep(sleepms, sleepns);
-                } catch (InterruptedException ex) {
-                    System.out.println("Thread Error");
-                }
-                //updateInterpolationSimulationTime(0);
                 updateInterpolationSimulationTime((realLagRatio > ratio) ? ratio : realLagRatio);
+                if (sleepTime < 0) {
+                    //sleepTime = 0;
+                    System.out.println("Simulation Thread Overload");
+                    //speedDown();
+                } else {
+                  
+                    long sleepms = Math.floorDiv(sleepTime, 1000000);
+                    int sleepns = (int)Math.floorMod(sleepTime, 1000000);
+
+                    try {
+                        Thread.sleep(sleepms, sleepns);
+                    } catch (InterruptedException ex) {
+                        System.out.println("Thread Error");
+                    }
+                    //updateInterpolationSimulationTime(0);
+                }
                 
             }
         }
