@@ -100,7 +100,6 @@ public class PointBody implements LinearMotion {
         return new PointBody(position, velocity, mass);
     }
 
-    @Override
     public void update() {
         throw new UnsupportedOperationException("No graphic component to update.");
     }

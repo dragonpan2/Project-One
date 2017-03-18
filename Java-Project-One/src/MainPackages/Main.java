@@ -52,7 +52,7 @@ public class Main {
         Scene scene = new Scene(60);
         Viewport viewport = new Viewport(scene);
         
-        Simulation space = new Simulation(IntegratorType.SYMPLECTIC1, 1D/10, 1D/20, obj1, obj2, obj3, obj4);
+        Simulation space = new Simulation(IntegratorType.SYMPLECTIC1, 1, 30, 10, obj1, obj2, obj3, obj4);
         
         scene.setDisplayObjects(space.getDisplayObjects());
         

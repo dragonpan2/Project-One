@@ -18,6 +18,7 @@ public interface Integrator {
         SYMPLECTIC1, SYMPLECTIC2, SYMPLECTIC3, SYMPLECTIC4
     }
     public void apply(PointBody[] bodies, double dt);
+    public Vector2[] getCurrentAccelerations();
     public PointBody[] get(PointBody[] bodies, double dt, int steps);
     public Vector2[][] getFuture(PointBody[] bodies, double dt, int steps);
 }

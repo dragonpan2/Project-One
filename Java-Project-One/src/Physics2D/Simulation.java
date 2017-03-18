@@ -21,16 +21,23 @@ public class Simulation implements Runnable, World {
     private Thread thread;
     private SpaceObject[] objects;
     private Integrator integrator;
-    private double secondsPerStep;
-    private double secondsBetweenSteps;
+    
+    private double updatesPerSecond; //How many "Big steps" per second
+    private int miniSteps; //How many "Small Steps" per Big step
+    private double secondsPerMiniStep; //How many seconds pass in each "Small Steps"
+    private double ratio; //Ratio between simulated time and real time, higher is faster
+    
     
     private boolean isPaused;
     
-    public Simulation(IntegratorType integrator, double timePerStep, double timeBetweenSteps, SpaceObject... objects) {
+    public Simulation(IntegratorType integrator, double ratio, double updatesPerSecond, int miniSteps, SpaceObject... objects) {
         this.isPaused = true;
         this.objects = objects;
-        this.secondsPerStep = timePerStep;
-        this.secondsBetweenSteps = timeBetweenSteps;
+        this.ratio = ratio;
+        this.updatesPerSecond = updatesPerSecond;
+        this.secondsPerMiniStep = ratio/updatesPerSecond/miniSteps;
+        this.miniSteps = (miniSteps > 0) ? miniSteps : 1;
+        System.out.println(secondsPerMiniStep);
         switch(integrator) {
             case NOFORCE:
                 break;
@@ -42,28 +49,28 @@ public class Simulation implements Runnable, World {
                 break;
         }
         this.thread = new Thread(this);
-        updateInterpolationSimulationTime(); //TODO if simulation lags behind change the Interpolation Simulation time
     }
     public void forward(int steps) {
         for (int i=0; i<steps; i++) {
-            integrator.apply(objects, secondsPerStep);
+            integrator.apply(objects, secondsPerMiniStep);
         }
     }
     public double forward(double seconds) { //takes the wished time, returns the time that passed in reality
-        int steps = (int)(seconds/secondsPerStep);
+        int steps = (int)(seconds/secondsPerMiniStep);
         for (int i=0; i<steps; i++) {
-            integrator.apply(objects, secondsPerStep);
+            integrator.apply(objects, secondsPerMiniStep);
         }
-        return seconds * secondsPerStep;
+        return seconds * secondsPerMiniStep;
     }
     public void updateGraphicalPositions() {
+        Vector2[] currentAccelerations = integrator.getCurrentAccelerations();
         for (int i=0; i<objects.length; i++) {
-            objects[i].update();
+            objects[i].update(currentAccelerations[i].get(0), currentAccelerations[i].get(1));
         }
     }
-    public void updateInterpolationSimulationTime() {
+    public void updateInterpolationSimulationTime(double time) { //Total time to interpolate before next physics Big Step
         for (int i=0; i<objects.length; i++) {
-            objects[i].displayComponent.setInterpolationSimulationTime(secondsPerStep/secondsBetweenSteps);
+            objects[i].displayComponent.setInterpolationSimulationTime(time);
         }
     }
     public void start() {
@@ -79,23 +86,26 @@ public class Simulation implements Runnable, World {
     @Override
     public void run() {
         
-        double desiredSleepms = 1000*secondsBetweenSteps;
+        double desiredSleepms = 1000D/updatesPerSecond; //Desired sleep time in miliseconds
+        double desiredSleepns = 1000000000D/updatesPerSecond;
         
         long startTime;
         long endTime;
         long sleepTime;
         
+        double realLagRatio;
+        
         while (true) {
             if (!isPaused) {
                 
-                
                 startTime = System.nanoTime();
-                forward(1);
+                forward(miniSteps);
                 updateGraphicalPositions();
                 endTime = System.nanoTime();
                 
                 
                 sleepTime = (long)(desiredSleepms*1000000) - (endTime-startTime);
+                realLagRatio = desiredSleepns/(endTime-startTime);
                 if (sleepTime < 0) {
                     sleepTime = 0;
                     System.out.println("Thread Overload");
@@ -108,6 +118,7 @@ public class Simulation implements Runnable, World {
                 } catch (InterruptedException ex) {
                     System.out.println("Thread Error");
                 }
+                updateInterpolationSimulationTime((realLagRatio > ratio) ? ratio : realLagRatio);
                 
             }
         }

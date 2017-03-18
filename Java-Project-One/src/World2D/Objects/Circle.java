@@ -24,6 +24,8 @@ public class Circle extends JComponent implements DisplayObject {
     
     double vx;
     double vy;
+    double ax;
+    double ay;
     double dst;
     double dft;
     
@@ -55,23 +57,28 @@ public class Circle extends JComponent implements DisplayObject {
     private void interpolationStep() {
         int r = (int)this.radius;
         double idt = dst * dft;
-        double ipx = x + stepsWithoutUpdate * idt * vx;
-        double ipy = y + stepsWithoutUpdate * idt * vy;
+        
+        double ivx = vx + (0.5)*ax*(idt*stepsWithoutUpdate*idt*stepsWithoutUpdate);
+        double ivy = vy + (0.5)*ay*(idt*stepsWithoutUpdate*idt*stepsWithoutUpdate);
+        
+        double ipx = x + stepsWithoutUpdate * idt * ivx;
+        double ipy = y + stepsWithoutUpdate * idt * ivy;
         
         dispx = (int)(((ipx+xoffset)*scaleoffset)-r+0.5);
         dispy = (int)(((ipy+yoffset)*scaleoffset)-r+0.5);
         stepsWithoutUpdate++;
-        
     }
     public void setColor(Color color) {
         this.color = color;
     }
-    public void updateCoordinates(double x, double y, double vx, double vy) {
+    public void updateCoordinates(double x, double y, double vx, double vy, double ax, double ay) {
         stepsWithoutUpdate = 0;
         this.x = x;
         this.y = y;
         this.vx = vx;
         this.vy = vy;
+        this.ax = ax;
+        this.ay = ay;
     }
     @Override
     public void setInterpolationFrameTime(double dft) {

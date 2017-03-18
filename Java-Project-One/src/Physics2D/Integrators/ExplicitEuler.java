@@ -14,6 +14,9 @@ import Physics2D.Vectors2;
  * @author bowen
  */
 public class ExplicitEuler implements Integrator {
+    
+    private Vector2[] accelerations;
+    
     public void apply(PointBody[] bodies, double dt) {
         Vector2[] currentAcc = NBody.getAccelerations(bodies);
         
@@ -21,6 +24,11 @@ public class ExplicitEuler implements Integrator {
             bodies[i].addPosition(Vectors2.prod(bodies[i].velocity(), dt));
             bodies[i].addVelocity(Vectors2.prod(currentAcc[i], dt));
         }
+        accelerations = currentAcc;
+    }
+    @Override
+    public Vector2[] getCurrentAccelerations() {
+        return accelerations;
     }
     public PointBody[] get(PointBody[] bodies, double dt, int steps) {
         PointBody[] bodiesClone = new PointBody[bodies.length];
@@ -52,4 +60,5 @@ public class ExplicitEuler implements Integrator {
         return positionTime;
         
     }
+
 }

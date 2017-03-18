@@ -22,11 +22,12 @@ public abstract class Symplectic {
         }
     }
     
-    protected static void applySympleticVelocityStep(PointBody[] bodies, double d, double time) {
+    protected static Vector2[] applySympleticVelocityStep(PointBody[] bodies, double d, double time) {
         double cT = time * d;
         Vector2[] currentAccel = NBody.getAccelerations(bodies);
         for (int i=0; i<bodies.length; i++) {
             bodies[i].addVelocity(Vectors2.prod(currentAccel[i], cT));
         }
+        return currentAccel;
     }
 }

@@ -15,17 +15,24 @@ import Physics2D.Vectors2;
  */
 public class Symplectic1 implements Integrator {
     
-    
+    private Vector2[] accelerations;
     
     public void apply(PointBody[] bodies, double dt) {
         if (dt > 0) {
-            Symplectic.applySympleticVelocityStep(bodies, 1, dt);
+            accelerations = Symplectic.applySympleticVelocityStep(bodies, 1, dt);
             Symplectic.applySympleticPositionStep(bodies, 1, dt);
         } else {
             Symplectic.applySympleticPositionStep(bodies, 1, dt);
-            Symplectic.applySympleticVelocityStep(bodies, 1, dt);
+            accelerations =  Symplectic.applySympleticVelocityStep(bodies, 1, dt);
         }
+        
     }
+
+    @Override
+    public Vector2[] getCurrentAccelerations() {
+        return accelerations;
+    }
+    
     public PointBody[] get(PointBody[] bodies, double dt, int steps) {
         PointBody[] bodiesClone = new PointBody[bodies.length];
         
