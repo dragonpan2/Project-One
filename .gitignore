@@ -48,3 +48,8 @@ Temporary Items
 /Java-Project-One/nbproject/private/
 /Java-Project-One/build/
 /Java-Project-One/dist/
+JavaApplication15/build.xml
+*.netbeans_automatic_build
+JavaApplication15/build/classes/.netbeans_update_resources
+*.xml
+*.properties
