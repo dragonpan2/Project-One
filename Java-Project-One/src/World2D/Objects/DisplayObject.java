@@ -13,8 +13,14 @@ import javax.swing.JComponent;
  * @author bowen
  */
 public interface DisplayObject {
-    public JComponent getJComponent();
+    public enum DisplayObjectType {
+        Circle
+    }
+    //public JComponent getJComponent();
     public void update(Camera camera);
     public void setInterpolationSimulationTime(double dst);
     public void setInterpolationFrameTime(double dft);
+    
+    public DisplayObjectType getType();
+    
 }

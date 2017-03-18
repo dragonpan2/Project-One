@@ -7,6 +7,10 @@ package World2D;
 
 import World2D.Objects.DisplayObject;
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import javax.swing.JPanel;
 
 /**
@@ -21,6 +25,12 @@ public class Scene extends JPanel implements Runnable {
     private DisplayObject[] displayObjects = new DisplayObject[0];
     
     private Camera camera;
+    
+    private Boolean keyW = false;
+    private Boolean keyS = false;
+    private Boolean keyA = false;
+    private Boolean keyD = false;
+    
     
     public Scene() {
         this(60);
@@ -37,6 +47,47 @@ public class Scene extends JPanel implements Runnable {
         
         thread = new Thread(this);
         
+        this.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                 switch(e.getKeyCode()) {
+                    case KeyEvent.VK_W :
+                        keyW = true;
+                        break;
+                    case KeyEvent.VK_S :
+                        keyS = true;
+                        break;
+                    case KeyEvent.VK_A :
+                        keyA = true;
+                        break;
+                    case KeyEvent.VK_D :
+                        keyD = true;
+                        break;
+                    default :
+                        break;
+                 }
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {
+                 switch(e.getKeyCode()) {
+                    case KeyEvent.VK_W :
+                        keyW = false;
+                        break;
+                    case KeyEvent.VK_S :
+                        keyS = false;
+                        break;
+                    case KeyEvent.VK_A :
+                        keyA = false;
+                        break;
+                    case KeyEvent.VK_D :
+                        keyD = false;
+                        break;
+                    default :
+                        break;
+                 }
+            }
+        });
+        
     }
     
     public void setDisplayObjects(DisplayObject... displayObjects) {
@@ -44,7 +95,7 @@ public class Scene extends JPanel implements Runnable {
         for (int i=0; i<displayObjects.length; i++) {
             this.displayObjects[i] = displayObjects[i];
             this.displayObjects[i].setInterpolationFrameTime(1D/desiredFPS); //TODO Calculate FPS to interpolate when frametime changes
-            this.add(displayObjects[i].getJComponent());
+            //this.add(displayObjects[i].getJComponent());
         }
     }
     private void updateCameraToObjects() {
@@ -64,6 +115,37 @@ public class Scene extends JPanel implements Runnable {
         activate();
     }
     
+    public void checkKeys() {
+        if (keyW) {
+            camera.addyPos(-20);
+        }
+        if (keyS) {
+            camera.addyPos(20);
+        }
+        if (keyA) {
+            camera.addxPos(-20);
+        }
+        if (keyD) {
+            camera.addxPos(20);
+        }
+    }
+    @Override
+    protected void paintComponent(Graphics g)
+    {
+        super.paintComponent(g);
+        
+        
+        
+        
+        /*g.setColor(Color.RED);
+        g.drawRect(150,10,100,20);  
+        g.fillRect(150,10,100,20);
+        g.drawLine(200,10 , 200, 2000);
+        g.setColor(Color.BLACK);
+        g.drawString("UE",190 ,25 );
+         ... All drawing code ... */
+    }
+    
     @Override
     public void run() {
         
@@ -78,7 +160,9 @@ public class Scene extends JPanel implements Runnable {
                 
                 startTime = System.nanoTime();
                 updateCameraToObjects();
+                invalidate();
                 repaint();
+                checkKeys();
                 endTime = System.nanoTime();
                 
                 sleepTime = (long)(desiredSleepms*1000000) - (endTime-startTime);
@@ -98,4 +182,6 @@ public class Scene extends JPanel implements Runnable {
         }
         
     }
+
+
 }

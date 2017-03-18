@@ -79,6 +79,7 @@ public class World extends JPanel implements Runnable {
         //this.setPreferredSize(new Dimension(120,1000));
         this.setLayout(null);
         //this.add(ball);
+        /*
         this.add(obj1.displayComponent);
         this.add(obj2.displayComponent);
         this.add(obj3.displayComponent);
@@ -90,7 +91,7 @@ public class World extends JPanel implements Runnable {
         this.add(obj1b.displayComponent);
         this.add(obj2b.displayComponent);
         this.add(obj3b.displayComponent);
-        this.add(obj4b.displayComponent);
+        this.add(obj4b.displayComponent);*/
         this.add(line1);
         this.add(line2);
         this.add(line3);

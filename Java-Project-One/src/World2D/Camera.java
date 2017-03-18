@@ -15,8 +15,8 @@ public class Camera {
     private double yPos;
     private double scale;
 
-    Camera(Scene currenScene) {
-        this(currenScene, 0, 0, 1);
+    Camera(Scene currentScene) {
+        this(currentScene, 0, 0, 1);
     }
     
     Camera(Scene currenScene, double x, double y, double s) {
@@ -50,6 +50,13 @@ public class Camera {
     }
     public void setScale(double scale) {
         this.scale = scale;
+    }
+    
+    public void addxPos(double x) {
+        this.xPos += x;
+    }
+    public void addyPos(double y) {
+        this.yPos += y;
     }
     
 }

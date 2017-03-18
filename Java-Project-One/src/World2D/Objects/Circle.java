@@ -14,7 +14,7 @@ import javax.swing.JComponent;
  *
  * @author bowen
  */
-public class Circle extends JComponent implements DisplayObject {
+public class Circle implements DisplayObject {
 
     double x;
     double y;
@@ -39,11 +39,11 @@ public class Circle extends JComponent implements DisplayObject {
     Color color;
     
     public Circle(int r) {
-        this.setSize(r*2, r*2);
+        //this.setSize(r*2, r*2);
         this.radius = r;
         color = Color.white;
     }
-    
+    /*
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -53,7 +53,7 @@ public class Circle extends JComponent implements DisplayObject {
         
         g.fillOval(0, 0, r*2, r*2);
         this.setLocation(dispx, dispy);
-    }
+    }*/
     private void interpolationStep() {
         int r = (int)this.radius;
         double idt = dst * dft;
@@ -64,8 +64,8 @@ public class Circle extends JComponent implements DisplayObject {
         double ipx = x + stepsWithoutUpdate * idt * ivx;
         double ipy = y + stepsWithoutUpdate * idt * ivy;
         
-        dispx = (int)(((ipx+xoffset)*scaleoffset)-r+0.5);
-        dispy = (int)(((ipy+yoffset)*scaleoffset)-r+0.5);
+        dispx = (int)(((ipx-xoffset)*scaleoffset)-r+0.5);
+        dispy = (int)(((ipy-yoffset)*scaleoffset)-r+0.5);
         stepsWithoutUpdate++;
     }
     public void setColor(Color color) {
@@ -88,11 +88,11 @@ public class Circle extends JComponent implements DisplayObject {
     public void setInterpolationSimulationTime(double dst) {
         this.dst = dst;
     }
-    
+    /*
     @Override
     public JComponent getJComponent() {
         return this;
-    }
+    }*/
 
     @Override
     public void update(Camera camera) {
@@ -100,6 +100,11 @@ public class Circle extends JComponent implements DisplayObject {
         yoffset = camera.getyPos();
         scaleoffset = camera.getScale();
         interpolationStep();
+    }
+
+    @Override
+    public DisplayObjectType getType() {
+        return DisplayObjectType.Circle;
     }
 
     

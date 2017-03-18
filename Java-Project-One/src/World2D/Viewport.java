@@ -25,6 +25,7 @@ public class Viewport extends JFrame {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         
         this.scene = scene;
+        this.scene.setFocusable(true);
         this.add(scene);
         this.scene.activate();
     }
