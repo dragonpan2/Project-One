@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package World2D;
-//Implement sound muffling through walls
+package Physics2D.Objects;
+
 /**
  *
  * @author bowen
  */
-public class SoundEmitter {
+public class UniformBody {
     
 }

@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package World2D;
+package Physics2D.Fields;
 
 /**
  *
  * @author bowen
  */
-public class LightEmitter {
+public class WaveEmitter {
     
 }

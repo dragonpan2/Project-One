@@ -4,12 +4,14 @@
  * and open the template in the editor.
  */
 package World2D;
-//https://en.wikipedia.org/wiki/3D_projection
-//https://en.wikipedia.org/wiki/Shading#Flat_shading
+
+import World2D.Objects.DisplayObject;
+
 /**
  *
  * @author bowen
  */
-public class World {
-    
+public interface World {
+    public DisplayObject[] getDisplayObjects();
+    public long getTicks();
 }

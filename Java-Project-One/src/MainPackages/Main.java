@@ -13,6 +13,12 @@ import MathExt.Approx;
 import java.util.Arrays;
 import MathExt.Ext;
 import MathExt.Fast;
+import Physics2D.Integrators.Integrator.IntegratorType;
+import Physics2D.Objects.SpaceObject;
+import Physics2D.Simulation;
+import Physics2D.Vector2;
+import World2D.Scene;
+import World2D.Viewport;
 /**
  *
  * @author Lin-Li
@@ -23,8 +29,40 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Window window = new Window();
-        System.out.println("W,A,S,D,UP,DOWN,LEFT,RIGHT to move the vectors");
+        
+        
+        Vector2 vecPos1 = new Vector2(new double[]{900, 430});
+        Vector2 vecVel1 = new Vector2(new double[]{-100, 0});
+        SpaceObject obj1 = new SpaceObject(vecPos1, vecVel1, 1E17);
+        Vector2 vecPos2 = new Vector2(new double[]{900, 570});
+        Vector2 vecVel2 = new Vector2(new double[]{100, 0});
+        SpaceObject obj2 = new SpaceObject(vecPos2, vecVel2, 1E17);
+        Vector2 vecPos3 = new Vector2(new double[]{900, 200});
+        Vector2 vecVel3 = new Vector2(new double[]{-220, 0});
+        SpaceObject obj3 = new SpaceObject(vecPos3, vecVel3, 1E8);
+        Vector2 vecPos4 = new Vector2(new double[]{0, 0});
+        Vector2 vecVel4 = new Vector2(new double[]{0, 0});
+        SpaceObject obj4 = new SpaceObject(vecPos4, vecVel4, 1E9);
+        
+        
+        
+        
+        
+        
+        Scene scene = new Scene(60);
+        Viewport viewport = new Viewport(scene);
+        
+        Simulation space = new Simulation(IntegratorType.SYMPLECTIC1, 1, 30, 10, obj1, obj2, obj3, obj4);
+        
+        scene.setDisplayObjects(space.getDisplayObjects());
+        
+        scene.start();
+        space.start();
+        
+        
+        
+        //Window window = new Window();
+        //System.out.println("W,A,S,D,UP,DOWN,LEFT,RIGHT to move the vectors");
         //System.out.println("E to change Math mode, fastMath is currently WIP");
         /*
         System.out.println(5.53263465e-105);
