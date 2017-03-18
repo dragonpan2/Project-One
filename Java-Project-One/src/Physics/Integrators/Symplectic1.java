@@ -35,37 +35,6 @@ public class Symplectic1 implements Integrator {
     }
     
     @Override
-    public PointBody[] get(PointBody[] bodies, double dt, int steps) {
-        PointBody[] bodiesClone = new PointBody[bodies.length];
-        
-        for (int i=0; i<bodies.length; i++) {
-            bodiesClone[i] = bodies[i].clone();
-        }
-        for (int i=0; i<steps; i++) {
-            apply(bodiesClone, dt);
-        }
-        return bodiesClone;
-    }
-    
-    @Override
-    public Vector2[][] getFuture(PointBody[] bodies, double dt, int steps) {
-        PointBody[] bodiesClone = new PointBody[bodies.length];
-        
-        for (int i=0; i<bodies.length; i++) {
-            bodiesClone[i] = bodies[i].clone();
-        }
-        
-        Vector2[][] positionTime = new Vector2[bodiesClone.length][steps];
-        
-        for (int i=0; i<steps; i++) {
-            apply(bodiesClone, dt);
-            for (int n=0; n<bodiesClone.length; n++) {
-                positionTime[n][i] = bodiesClone[n].position().clone();
-            }
-        }
-        return positionTime;
-    }
-    @Override
     public IntegratorType type() {
         return IntegratorType.SYMPLECTIC1;
     }

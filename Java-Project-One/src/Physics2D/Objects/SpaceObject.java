@@ -18,6 +18,8 @@ public class SpaceObject extends PointBody {
     
     public Circle displayComponent;
     
+    private double orbitalPeriod;
+    
     public SpaceObject(String name, double mass) {
         super(mass);
         displayComponent = new Circle(name, (int)Math.log10(mass)+1);

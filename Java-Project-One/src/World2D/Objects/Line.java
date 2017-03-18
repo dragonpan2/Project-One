@@ -40,7 +40,7 @@ public class Line implements DisplayObject {
     }
     public Line(Color color) {
         this.color = color;
-        this.isHidden = false;
+        this.isHidden = true;
     }
     @Override
     public void update(Camera camera) {

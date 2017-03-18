@@ -37,10 +37,10 @@ public class NBodySimulation implements Runnable, World, Simulation {
     
     
     private boolean isPaused;
-    
+    /*
     public NBodySimulation(IntegratorType integrator, double ratio, double updatesPerSecond, int miniSteps, SpaceObject... objects) {
         this(integrator, ratio, updatesPerSecond, miniSteps, new NBodyFuturePath(integrator, ratio, 100, updatesPerSecond/2, objects), objects);
-    }
+    }*/
     public NBodySimulation(IntegratorType integrator, double ratio, double updatesPerSecond, int miniSteps, FutureSimulation futureSimulation, SpaceObject... objects) {
         this.isPaused = true;
         this.objects = objects;
@@ -75,7 +75,6 @@ public class NBodySimulation implements Runnable, World, Simulation {
         }
     }
     private void updateSpatialPositions() {
-        futureIntegrator.setRatio(ratio);
         Vector2[] currentAccelerations = integrator.getCurrentAccelerations();
         for (int i=0; i<objects.length; i++) {
             objects[i].update();
@@ -91,7 +90,6 @@ public class NBodySimulation implements Runnable, World, Simulation {
         if (accel < 10E6) {
             accel *= 2;
             ratio = initialRatio * accel;
-            this.futureIntegrator.setRatio(ratio);
         }
     }
     @Override
@@ -99,7 +97,6 @@ public class NBodySimulation implements Runnable, World, Simulation {
         if (accel > 1) {
             accel /= 2;
             ratio = initialRatio * accel;
-            this.futureIntegrator.setRatio(ratio);
         }
     }
     @Override
@@ -133,14 +130,23 @@ public class NBodySimulation implements Runnable, World, Simulation {
         long endTime;
         long sleepTime;
         
+        int orbitIters = 0;
+        final int orbitTimer = 100000;
+        
         double realLagRatio;
         
         while (true) {
             if (!isPaused) {
                 
                 startTime = System.nanoTime();
+                if (orbitIters > orbitTimer) {
+                    futureIntegrator.forceUpdateOrbitPositions();
+                    orbitIters = 0;
+                }
+                
                 forward(miniSteps*accel);
                 updateSpatialPositions();
+                orbitIters += accel;
                 endTime = System.nanoTime();
                 
                 

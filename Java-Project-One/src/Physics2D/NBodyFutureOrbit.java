@@ -21,7 +21,7 @@ import World2D.World;
  *
  * @author bowen
  */
-public class NBodyFuturePath implements Runnable, World, FutureSimulation {
+public class NBodyFutureOrbit implements Runnable, World, FutureSimulation {
     private Thread thread;
     private SpaceObject[] objects;
     private SpaceObject[] smallObjects;
@@ -47,7 +47,7 @@ public class NBodyFuturePath implements Runnable, World, FutureSimulation {
     private boolean isPaused;
     
     
-    public NBodyFuturePath(IntegratorType integrator, double totalFutureTime, int futureTimeSteps, double updatesPerSecond, SpaceObject[] smallObjects, SpaceObject[] bigObjects, double[] orbitalPeriods) {
+    public NBodyFutureOrbit(IntegratorType integrator, double totalFutureTime, int futureTimeSteps, double updatesPerSecond, SpaceObject[] smallObjects, SpaceObject[] bigObjects, double[] orbitalPeriods) {
         this.isPaused = true;
         this.futureTimeSteps = futureTimeSteps;
         this.updatesPerSecond = updatesPerSecond;

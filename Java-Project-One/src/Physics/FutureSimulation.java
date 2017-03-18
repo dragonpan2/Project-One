@@ -14,4 +14,5 @@ import Physics2D.Objects.SpaceObject;
 public interface FutureSimulation extends Simulation {
     public void setRatio(double ratio);
     public void setBodies(SpaceObject[] bodies);
+    public void forceUpdateOrbitPositions();
 }
