@@ -10,6 +10,7 @@ import MathExt.Algebra.Tensors;
 import MathExt.Algebra.Vectors;
 import Physics2D.Vector2;
 import Physics2D.Vectors2;
+import World2D.Objects.DisplayObject;
 
 /**
  *
@@ -44,62 +45,6 @@ public class PointBody implements LinearMotion {
         this.mass = mass;
         
     }
-    /*
-    @Override
-    public void update(double time) {
-        semiImplicitEuler(time);
-    }
-    private void semiImplicitEuler(double time) {
-        
-        Vector2 newAcceleration = force.clone();
-        newAcceleration.div(mass);
-        acceleration.set(newAcceleration);
-        
-        Vector2 changeVelocity = acceleration.clone();
-        changeVelocity.prod(time);
-        velocity.add(changeVelocity);
-        
-        Vector2 changePosition = velocity.clone();
-        changePosition.prod(time);
-        position.add(changePosition);
-    }
-    private void explicitEuler(double time) {
-        
-        Vector2 newAcceleration = force.clone();
-        newAcceleration.div(mass);
-        acceleration.set(newAcceleration);
-        
-        Vector2 changeVelocity = acceleration.clone();
-        Vector2 changePosition = velocity.clone();
-        changeVelocity.prod(time);
-        changePosition.prod(time);
-        
-        velocity.add(changeVelocity);
-        position.add(changePosition);
-    }
-    private void leapFrog(double time) {
-        
-        Vector2 newAcceleration = force.clone();
-        newAcceleration.div(mass);
-        acceleration.set(newAcceleration);
-        
-        
-        Vector2 velocity12 = Vectors2.add(velocity, Vectors2.prod(acceleration, time/2));
-        
-        position.add(Vectors.prod(velocity12, time));
-        //velocity = Vectors2.add(velocity12, )
-        
-    }
-    @Override
-    public void revert() {
-        Tensor[] backup = Tensors.split(lastTime);
-        Vector2 lastPosition = Vectors2.tensorToVector2(backup[0], position.isCartesian());
-        Vector2 lastVelocity = Vectors2.tensorToVector2(backup[1], velocity.isCartesian());
-        Vector2 lastAcceleration = Vectors2.tensorToVector2(backup[2], acceleration.isCartesian());
-        position.set(lastPosition);
-        velocity.set(lastVelocity);
-        acceleration.set(lastAcceleration);
-    }*/
     
     @Override
     public Vector2 position() {
@@ -150,9 +95,17 @@ public class PointBody implements LinearMotion {
     public void addVelocity(Vector2 velocity) {
         this.velocity.add(velocity);
     }
+    @Override
+    public PointBody clone() {
+        return new PointBody(position, velocity, mass);
+    }
 
     @Override
     public void update() {
-        throw new UnsupportedOperationException("No graphic component to update."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("No graphic component to update.");
+    }
+    
+    public DisplayObject getDisplayObject() {
+        throw new UnsupportedOperationException("No graphic component to display.");
     }
 }

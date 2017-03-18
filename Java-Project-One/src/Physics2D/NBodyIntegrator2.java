@@ -13,7 +13,7 @@ import Physics2D.Objects.PointBody;
  *
  * @author bowen
  */
-public class NBodyIntegrator {
+public class NBodyIntegrator2 {
     final public static double G = 6.67408E-11; //m^3 * kg^-1 * s^-2 Gravitational Constant
     final public static double tp = 5.39116E-44; //Planck time
     final private static int stepsLength = 40;
@@ -30,7 +30,7 @@ public class NBodyIntegrator {
     private double momentumSum;
     private double energySum;
     
-    public NBodyIntegrator(PointBody... objects) {
+    public NBodyIntegrator2(PointBody... objects) {
         this.objects = objects;
         momentumSum = getMomentumSum(objects);
         energySum = getEnergySum(objects);
@@ -172,28 +172,6 @@ public class NBodyIntegrator {
         }
     }
     
-    
-    protected void integrateLeapFrog(double time) {
-        if (leapFrogCurrentAccel == null) {
-            leapFrogCurrentAccel = computeAccelerations(objects);
-        } else if (leapFrogCurrentAccel.length != objects.length) {
-            leapFrogCurrentAccel = computeAccelerations(objects);
-        }
-        Vector2[] velocityHalfArray = new Vector2[objects.length];
-        
-        for (int i=0; i<objects.length; i++) {
-            Vector2 velocityHalf = Vectors2.add(objects[i].velocity(), Vectors2.prod(leapFrogCurrentAccel[i], time/2));
-            objects[i].addPosition(Vectors2.prod(velocityHalf, time));
-            velocityHalfArray[i] = velocityHalf;
-        }
-        
-        leapFrogCurrentAccel = computeAccelerations(objects);
-        
-        for (int i=0; i<objects.length; i++) {
-            objects[i].setVelocity(Vectors2.add(velocityHalfArray[i], Vectors2.prod(leapFrogCurrentAccel[i], time/2)));
-        }
-    }
-    
     protected void integrateExplicitMidpoint(double time) {
         Vector2[] positionHalfArray = new Vector2[objects.length];
         
@@ -228,7 +206,7 @@ public class NBodyIntegrator {
         }
     }
     protected void integrateSym4(double time) {
-        /* numbers by Candy and Rozmus (1991), Forest and Ruth (1990)
+        /* Numbers by Candy and Rozmus (1991), Forest and Ruth (1990)
         double a1 = (1D/6) * (2 + Math.pow(2, 1D/3) + Math.pow(2, -1D/3));
         double a2 = (1D/6) * (1 - Math.pow(2, 1D/3) - Math.pow(2, -1D/3));
         double a3 = a2;
@@ -267,7 +245,7 @@ public class NBodyIntegrator {
         }
     }
     protected void integrateSym3(double time) {
-        /* numbers by Ruth (1983)
+        /* Numbers by Ruth (1983)
         double[] c = new double[] {1, -2D/3, 2D/3};
         double[] d = new double[] {-1D/24, 3D/4, 7D/24};
         */
@@ -301,6 +279,20 @@ public class NBodyIntegrator {
         }
     }
     protected void integrateSym2(double time) {
+        /* Leapfrog
+        double a1 = 0.5;
+        double a2 = a1;
+        double b1 = 0;
+        double b2 = 1;
+        */
+        /* Pseudo-Leapfrog
+        double a1 = 1;
+        double a2 = 0;
+        double b1 = 0.5;
+        double b2 = b1;
+        */
+        
+        //Computer generated optimal solution
         double a1 = 0.7071067811865475244008443621048490392848359376884740365883D;
         double a2 = 1 - a1;
         double b1 = a1;
@@ -319,60 +311,43 @@ public class NBodyIntegrator {
             sympleticVelocityStep(b2, time);
             sympleticPositionStep(a2, time);
         }
+    }
+    protected void integratePseudoLeapfrog(double time) {
+        double a1 = 1;
+        double b1 = 0.5;
+
+        sympleticVelocityStep(b1, time);
+        sympleticPositionStep(a1, time);
+        sympleticVelocityStep(b1, time);
+    }
+    protected void integrateLeapFrog(double time) {
+        if (leapFrogCurrentAccel == null) {
+            leapFrogCurrentAccel = computeAccelerations(objects);
+        } else if (leapFrogCurrentAccel.length != objects.length) {
+            leapFrogCurrentAccel = computeAccelerations(objects);
+        }
+        Vector2[] velocityHalfArray = new Vector2[objects.length];
         
-    }
-    protected void integrateSym2a(double time) {
-
-        //sympleticPositionStep(0, time);
-        sympleticVelocityStep(0.5, time);
-
-        sympleticPositionStep(1, time);
-        sympleticVelocityStep(0.5, time);
+        for (int i=0; i<objects.length; i++) {
+            Vector2 velocityHalf = Vectors2.add(objects[i].velocity(), Vectors2.prod(leapFrogCurrentAccel[i], time/2));
+            objects[i].addPosition(Vectors2.prod(velocityHalf, time));
+            velocityHalfArray[i] = velocityHalf;
+        }
         
-    }
-    protected void integrateSym2b(double time) {
-        //This algorithm in reverse has exactly the same steps, no need for negative time case.
-        //{
-            //objects[i].addPosition(Vectors2.prod(objects[i].velocity(), time));
-        //}
-
-        Vector2[] currentAccel = computeAccelerations(objects);
-
+        leapFrogCurrentAccel = computeAccelerations(objects);
+        
         for (int i=0; i<objects.length; i++) {
-            objects[i].addVelocity(Vectors2.prod(currentAccel[i], time/2));
-        }
-
-        for (int i=0; i<objects.length; i++) {
-            objects[i].addPosition(Vectors2.prod(objects[i].velocity(), time));
-        }
-        Vector2[] currentAccel2 = computeAccelerations(objects);
-
-        for (int i=0; i<objects.length; i++) {
-            objects[i].addVelocity(Vectors2.prod(currentAccel2[i], time/2));
+            objects[i].setVelocity(Vectors2.add(velocityHalfArray[i], Vectors2.prod(leapFrogCurrentAccel[i], time/2)));
         }
     }
+    
     protected void integrateSym1(double time) {
-        integrateSemiImplicitEuler(time);
-    }
-    protected void integrateSemiImplicitEuler(double time) {
         if (time > 0) {
-            Vector2[] currentAccel = computeAccelerations(objects);
-
-            for (int i=0; i<objects.length; i++) {
-                objects[i].addVelocity(Vectors2.prod(currentAccel[i], time));
-                objects[i].addPosition(Vectors2.prod(objects[i].velocity(), time));
-            }
+            sympleticVelocityStep(1, time);
+            sympleticPositionStep(1, time);
         } else {
-            
-            for (int i=0; i<objects.length; i++) {
-                objects[i].addPosition(Vectors2.prod(objects[i].velocity(), time));
-            }
-
-            Vector2[] newAccelerations = computeAccelerations(objects);
-
-            for (int i=0; i<objects.length; i++) {
-                objects[i].addVelocity(Vectors2.prod(newAccelerations[i], time));
-            }
+            sympleticPositionStep(1, time);
+            sympleticVelocityStep(1, time);
         }
     }
     

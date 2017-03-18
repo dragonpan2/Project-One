@@ -5,9 +5,7 @@
  */
 package MainPackages;
 
-import Physics2D.Objects.TestObject;
-import Physics2D.NBodyIntegrator;
-import Physics2D.NBodyIntegrator.Integrator;
+import Physics2D.Objects.SpaceObject;
 import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.JPanel;
@@ -38,33 +36,33 @@ public class World extends JPanel implements Runnable {
     
     Vector2 vecPos1 = new Vector2(new double[]{900, 430});
     Vector2 vecVel1 = new Vector2(new double[]{-100, 0});
-    TestObject obj1 = new TestObject(vecPos1, vecVel1, 1E17);
+    SpaceObject obj1 = new SpaceObject(vecPos1, vecVel1, 1E17);
     Vector2 vecPos2 = new Vector2(new double[]{900, 570});
     Vector2 vecVel2 = new Vector2(new double[]{100, 0});
-    TestObject obj2 = new TestObject(vecPos2, vecVel2, 1E17);
+    SpaceObject obj2 = new SpaceObject(vecPos2, vecVel2, 1E17);
     Vector2 vecPos3 = new Vector2(new double[]{900, 200});
     Vector2 vecVel3 = new Vector2(new double[]{-220, 0});
-    TestObject obj3 = new TestObject(vecPos3, vecVel3, 1E8);
+    SpaceObject obj3 = new SpaceObject(vecPos3, vecVel3, 1E8);
     Vector2 vecPos4 = new Vector2(new double[]{0, 0});
     Vector2 vecVel4 = new Vector2(new double[]{0, 0});
-    TestObject obj4 = new TestObject(vecPos4, vecVel4, 1E9);
+    SpaceObject obj4 = new SpaceObject(vecPos4, vecVel4, 1E9);
     
-    TestObject obj1a = obj1.clone();
-    TestObject obj2a = obj2.clone();
-    TestObject obj3a = obj3.clone();
-    TestObject obj4a = obj4.clone();
-    
-    
-    TestObject obj1b = obj1.clone();
-    TestObject obj2b = obj2.clone();
-    TestObject obj3b = obj3.clone();
-    TestObject obj4b = obj4.clone();
+    SpaceObject obj1a = obj1.clone();
+    SpaceObject obj2a = obj2.clone();
+    SpaceObject obj3a = obj3.clone();
+    SpaceObject obj4a = obj4.clone();
     
     
-    NBodyIntegrator int1 = new NBodyIntegrator(obj1, obj2, obj3, obj4);
+    SpaceObject obj1b = obj1.clone();
+    SpaceObject obj2b = obj2.clone();
+    SpaceObject obj3b = obj3.clone();
+    SpaceObject obj4b = obj4.clone();
+    
+    /*
+    Physics2D.World int1 = new World(obj1, obj2, obj3, obj4);
     NBodyIntegrator int2 = new NBodyIntegrator(obj1a, obj2a, obj3a, obj4a);
     NBodyIntegrator int3 = new NBodyIntegrator(obj1b, obj2b, obj3b, obj4b);
-    
+    */
     Thread thread;
 
     public World() {
@@ -118,15 +116,6 @@ public class World extends JPanel implements Runnable {
         
         int steps = 0;
         
-        Vector2 v1 = new Vector2(new double[] {4,9});
-        Vector2 v2 = new Vector2(new double[] {100, 10});
-        Vector2 v3 = v2.clone();
-        v3.add(v1);
-        System.out.println(v2);
-        System.out.println(v3);
-        System.out.println(Vectors2.prod(v1, v2, v1));
-        System.out.println(Vectors2.prod(v1, 0));
-        System.out.println(Vectors2.add(v1, v2, v1));
         
         
         while (true) {
@@ -137,17 +126,17 @@ public class World extends JPanel implements Runnable {
             vec4.set(Vectors2.rej(vec1, vec2));
             vec5.set(Vectors2.proj(vec2, vec1));
             vec6.set(Vectors2.rej(vec2, vec1));
-            
             startTime = System.nanoTime();
+            /*
             if (steps%1800 < 900) {
-                int1.update(desiredSleepsec, 100, Integrator.SYMPLECTIC4);
+                int1.update(desiredSleepsec, 1, Integrator.SYMPLECTIC4);
                 int2.update(desiredSleepsec, 1, Integrator.SYMPLECTIC3);
-                int3.update(desiredSleepsec, 4, Integrator.SYMPLECTIC2);
+                int3.update(desiredSleepsec, 1, Integrator.LEAPFROG);
             } else {
-                int1.update(-desiredSleepsec, 100, Integrator.SYMPLECTIC4);
+                int1.update(-desiredSleepsec, 1, Integrator.SYMPLECTIC4);
                 int2.update(-desiredSleepsec, 1, Integrator.SYMPLECTIC3);
-                int3.update(-desiredSleepsec, 4, Integrator.SYMPLECTIC2);
-            }
+                int3.update(-desiredSleepsec, 1, Integrator.LEAPFROG);
+            }*/
             steps++;
             if (steps > 1800) {
                 steps = 0;
