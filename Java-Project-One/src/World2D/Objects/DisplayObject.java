@@ -22,5 +22,6 @@ public interface DisplayObject {
     public void setInterpolationFrameTime(double dft);
     
     public DisplayObjectType getType();
+    public boolean isInView(int x0, int y0, int x1, int y1);
     
 }

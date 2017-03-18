@@ -17,6 +17,7 @@ public class ExplicitEuler implements Integrator {
     
     private Vector2[] accelerations;
     
+    @Override
     public void apply(PointBody[] bodies, double dt) {
         Vector2[] currentAcc = NBody.getAccelerations(bodies);
         
@@ -30,6 +31,7 @@ public class ExplicitEuler implements Integrator {
     public Vector2[] getCurrentAccelerations() {
         return accelerations;
     }
+    @Override
     public PointBody[] get(PointBody[] bodies, double dt, int steps) {
         PointBody[] bodiesClone = new PointBody[bodies.length];
         
@@ -42,6 +44,7 @@ public class ExplicitEuler implements Integrator {
         return bodiesClone;
     }
     
+    @Override
     public Vector2[][] getFuture(PointBody[] bodies, double dt, int steps) {
         PointBody[] bodiesClone = new PointBody[bodies.length];
         

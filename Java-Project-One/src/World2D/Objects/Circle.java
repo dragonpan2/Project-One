@@ -33,15 +33,23 @@ public class Circle implements DisplayObject {
     double yoffset;
     double scaleoffset;
     
+    double xscroffset;
+    double yscroffset;
+    
     int dispx;
     int dispy;
     
+    String name;
     Color color;
     
-    public Circle(int r) {
+    public Circle(String name, int r) {
+        this(name, Color.WHITE, r);
+    }
+    public Circle(String name, Color color, int r) {
         //this.setSize(r*2, r*2);
+        this.name = name;
         this.radius = r;
-        color = Color.white;
+        this.color = color;
     }
     /*
     @Override
@@ -55,7 +63,7 @@ public class Circle implements DisplayObject {
         this.setLocation(dispx, dispy);
     }*/
     private void interpolationStep() {
-        int r = (int)this.radius;
+        int r = (int)(this.radius*(scaleoffset)+5);
         double idt = dst * dft;
         
         double ivx = vx + (0.5)*ax*(idt*stepsWithoutUpdate*idt*stepsWithoutUpdate);
@@ -64,8 +72,8 @@ public class Circle implements DisplayObject {
         double ipx = x + stepsWithoutUpdate * idt * ivx;
         double ipy = y + stepsWithoutUpdate * idt * ivy;
         
-        dispx = (int)(((ipx-xoffset)*scaleoffset)-r+0.5);
-        dispy = (int)(((ipy-yoffset)*scaleoffset)-r+0.5);
+        dispx = (int)(((ipx-xoffset)*scaleoffset)+xscroffset-r+0.5);
+        dispy = (int)(((ipy-yoffset)*scaleoffset)+yscroffset-r+0.5);
         stepsWithoutUpdate++;
     }
     public void setColor(Color color) {
@@ -100,11 +108,33 @@ public class Circle implements DisplayObject {
         yoffset = camera.getyPos();
         scaleoffset = camera.getScale();
         interpolationStep();
+        xscroffset = camera.getxScrOffset();
+        yscroffset = camera.getyScrOffset();
     }
 
     @Override
     public DisplayObjectType getType() {
         return DisplayObjectType.Circle;
+    }
+    public int getDispx() {
+        return dispx;
+    }
+    public int getDispy() {
+        return dispy;
+    }
+    public int getRadius() {
+        return (int)(radius*(scaleoffset)+5);
+    }
+    public Color getColor() {
+        return color;
+    }
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public boolean isInView(int x0, int y0, int x1, int y1) {
+        return (dispx >= x0 && dispx <= x1 && dispy >= y0 && dispy <= y1);
     }
 
     

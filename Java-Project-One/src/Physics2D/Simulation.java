@@ -9,6 +9,7 @@ import Physics2D.Integrators.ExplicitEuler;
 import Physics2D.Integrators.Integrator;
 import Physics2D.Integrators.Integrator.IntegratorType;
 import Physics2D.Integrators.Symplectic1;
+import Physics2D.Integrators.Symplectic4;
 import Physics2D.Objects.SpaceObject;
 import World2D.Objects.DisplayObject;
 import World2D.World;
@@ -25,7 +26,10 @@ public class Simulation implements Runnable, World {
     private double updatesPerSecond; //How many "Big steps" per second
     private int miniSteps; //How many "Small Steps" per Big step
     private double secondsPerMiniStep; //How many seconds pass in each "Small Steps"
+    private double initialRatio;
     private double ratio; //Ratio between simulated time and real time, higher is faster
+    
+    private long accel = 1;
     
     
     private boolean isPaused;
@@ -33,6 +37,7 @@ public class Simulation implements Runnable, World {
     public Simulation(IntegratorType integrator, double ratio, double updatesPerSecond, int miniSteps, SpaceObject... objects) {
         this.isPaused = true;
         this.objects = objects;
+        this.initialRatio = ratio;
         this.ratio = ratio;
         this.updatesPerSecond = updatesPerSecond;
         this.secondsPerMiniStep = ratio/updatesPerSecond/miniSteps;
@@ -43,6 +48,9 @@ public class Simulation implements Runnable, World {
                 break;
             case EXPLICITEULER:
                 this.integrator = new ExplicitEuler();
+                break;
+            case SYMPLECTIC4:
+                this.integrator = new Symplectic4();
                 break;
             case SYMPLECTIC1:
                 this.integrator = new Symplectic1();
@@ -69,9 +77,28 @@ public class Simulation implements Runnable, World {
         }
     }
     public void updateInterpolationSimulationTime(double time) { //Total time to interpolate before next physics Big Step
+        System.out.println(time);
         for (int i=0; i<objects.length; i++) {
             objects[i].displayComponent.setInterpolationSimulationTime(time);
         }
+    }
+    @Override
+    public void speedUp() {
+        if (accel < 10E6) {
+            accel *= 2;
+            ratio = initialRatio * accel;
+        }
+    }
+    @Override
+    public void speedDown() {
+        if (accel > 1) {
+            accel /= 2;
+            ratio = initialRatio * accel;
+        }
+    }
+    @Override
+    public double getSpeed() {
+        return ratio;
     }
     public void start() {
         this.thread.start();
@@ -99,16 +126,17 @@ public class Simulation implements Runnable, World {
             if (!isPaused) {
                 
                 startTime = System.nanoTime();
-                forward(miniSteps);
+                forward(miniSteps*accel);
                 updateGraphicalPositions();
                 endTime = System.nanoTime();
                 
                 
                 sleepTime = (long)(desiredSleepms*1000000) - (endTime-startTime);
-                realLagRatio = desiredSleepns/(endTime-startTime);
+                realLagRatio = desiredSleepns/(endTime-startTime)*accel;
                 if (sleepTime < 0) {
                     sleepTime = 0;
                     System.out.println("Thread Overload");
+                    speedDown();
                 }
                 long sleepms = Math.floorDiv(sleepTime, 1000000);
                 int sleepns = (int)Math.floorMod(sleepTime, 1000000);
@@ -118,6 +146,7 @@ public class Simulation implements Runnable, World {
                 } catch (InterruptedException ex) {
                     System.out.println("Thread Error");
                 }
+                //updateInterpolationSimulationTime(0);
                 updateInterpolationSimulationTime((realLagRatio > ratio) ? ratio : realLagRatio);
                 
             }

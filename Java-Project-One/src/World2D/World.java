@@ -14,4 +14,7 @@ import World2D.Objects.DisplayObject;
 public interface World {
     public DisplayObject[] getDisplayObjects();
     public long getTicks();
+    public double getSpeed();
+    public void speedUp();
+    public void speedDown();
 }

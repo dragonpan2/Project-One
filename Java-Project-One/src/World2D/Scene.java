@@ -5,12 +5,17 @@
  */
 package World2D;
 
+import MainPackages.Main;
+import World2D.Objects.Circle;
 import World2D.Objects.DisplayObject;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseWheelEvent;
 import javax.swing.JPanel;
 
 /**
@@ -31,21 +36,39 @@ public class Scene extends JPanel implements Runnable {
     private Boolean keyA = false;
     private Boolean keyD = false;
     
+    private int xsize, ysize;
     
-    public Scene() {
-        this(60);
+    private World world;
+    
+    
+    public Scene(int xsize, int ysize, World world) {
+        this(60, xsize, ysize, world);
     }
     
-    public Scene(int desiredFPS) {
+    public Scene(int desiredFPS, int xsize, int ysize, World world) {
         this.isActive = false;
         this.desiredFPS = desiredFPS;
-        this.camera = new Camera(this);
+        this.camera = new Camera(this, xsize, ysize);
+        this.world = world;
+        
+        this.xsize = xsize;
+        this.ysize = ysize;
         
         this.setLayout(null);
         this.setVisible(true);
         this.setBackground(Color.black);
         
         thread = new Thread(this);
+        
+        this.addMouseWheelListener(new MouseAdapter() {
+            
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                int notches = e.getWheelRotation();
+                camera.addScale(notches);
+            }
+            
+        });
         
         this.addKeyListener(new KeyAdapter() {
             @Override
@@ -62,6 +85,12 @@ public class Scene extends JPanel implements Runnable {
                         break;
                     case KeyEvent.VK_D :
                         keyD = true;
+                        break;
+                    case KeyEvent.VK_E :
+                        world.speedUp();
+                        break;
+                    case KeyEvent.VK_Q :
+                        world.speedDown();
                         break;
                     default :
                         break;
@@ -129,13 +158,34 @@ public class Scene extends JPanel implements Runnable {
             camera.addxPos(20);
         }
     }
+    public static String secondsToText(double seconds) {
+        if (seconds < 60) {
+            return seconds + "s/s";
+        } else if (seconds < 60*60) {
+            return Math.floor(seconds/60) + "min/s";
+        } else if (seconds < 60*60*24) {
+            return Math.floor(seconds/60/60) + "hours/s";
+        } else if (seconds < 60*60*24*365.25) {
+            return Math.floor(seconds/60/60/24) + "days/s";
+        } else if (seconds < 60*60*24*365.25*10) {
+            return Math.floor(seconds/60/60/24/365.25) + "years/s";
+        }
+        return seconds + "";
+    }
+    
     @Override
     protected void paintComponent(Graphics g)
     {
         super.paintComponent(g);
+        drawAllObjects(g);
+        g.setColor(Color.yellow);
+        g.drawLine(0, 0, 0, 1080);
+        g.drawLine(0, 0, 1920, 0);
+        g.drawLine(1920, 0, 1920, 1080);
+        g.drawLine(0, 1080, 1920, 1080);
         
-        
-        
+        Graphics2D g2 = (Graphics2D)g;
+        g.drawString(secondsToText(world.getSpeed()) + "", 0, 20);
         
         /*g.setColor(Color.RED);
         g.drawRect(150,10,100,20);  
@@ -144,6 +194,27 @@ public class Scene extends JPanel implements Runnable {
         g.setColor(Color.BLACK);
         g.drawString("UE",190 ,25 );
          ... All drawing code ... */
+    }
+    
+    private void drawAllObjects(Graphics g) {
+        for (int i=0; i<displayObjects.length; i++) {
+            if (displayObjects[i].isInView(-50, -50, 1920+50, 1080+50)) {
+                switch(displayObjects[i].getType()) {
+                    case Circle:
+                        drawCircle(g, (Circle)displayObjects[i]);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+    
+    private void drawCircle(Graphics g, Circle circle) {
+        int r = circle.getRadius();
+        g.setColor(circle.getColor());
+        g.fillOval(circle.getDispx(), circle.getDispy(), r*2, r*2);
+        g.drawString(circle.getName(), circle.getDispx()+20, circle.getDispy()+r*2);
     }
     
     @Override

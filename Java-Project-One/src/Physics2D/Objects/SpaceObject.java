@@ -18,24 +18,21 @@ public class SpaceObject extends PointBody {
     
     public Circle displayComponent;
     
-    public SpaceObject() {
-    }
-
-    public SpaceObject(double mass) {
+    public SpaceObject(String name, double mass) {
         super(mass);
-        displayComponent = new Circle((int)Math.log10(mass)+1);
+        displayComponent = new Circle(name, (int)Math.log10(mass)+1);
         update(0, 0);
     }
 
-    public SpaceObject(Vector2 position, double mass) {
+    public SpaceObject(String name, Vector2 position, double mass) {
         super(position, mass);
-        displayComponent = new Circle((int)Math.log10(mass)+1);
+        displayComponent = new Circle(name, (int)Math.log10(mass)+1);
         update(0, 0);
     }
 
-    public SpaceObject(Vector2 position, Vector2 velocity, double mass) {
+    public SpaceObject(String name, Vector2 position, Vector2 velocity, double mass) {
         super(position, velocity, mass);
-        displayComponent = new Circle((int)Math.log10(mass)+1);
+        displayComponent = new Circle(name, (int)Math.log10(mass)+1);
         update(0, 0);
     }
     @Override
@@ -54,7 +51,7 @@ public class SpaceObject extends PointBody {
     }
     @Override
     public SpaceObject clone() {
-        SpaceObject newTestObject = new SpaceObject(this.position(), this.velocity(), this.mass());
+        SpaceObject newTestObject = new SpaceObject("Clone", this.position(), this.velocity(), this.mass());
         return newTestObject;
     }
 }

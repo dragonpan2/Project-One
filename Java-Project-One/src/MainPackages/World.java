@@ -26,7 +26,7 @@ public class World extends JPanel implements Runnable {
     Vector2 vec4 = Vectors2.rej(vec1, vec2);
     Vector2 vec5 = Vectors2.proj(vec2, vec1);
     Vector2 vec6 = Vectors2.rej(vec2, vec1);
-    
+    /*
     TestLine line1 = new TestLine(vec1, Color.red, 2);
     TestLine line2 = new TestLine(vec2, Color.red, 2);
     TestLine line3 = new TestLine(vec3, Color.green, 3);
@@ -36,16 +36,16 @@ public class World extends JPanel implements Runnable {
     
     Vector2 vecPos1 = new Vector2(new double[]{900, 430});
     Vector2 vecVel1 = new Vector2(new double[]{-100, 0});
-    SpaceObject obj1 = new SpaceObject(vecPos1, vecVel1, 1E17);
+    //SpaceObject obj1 = new SpaceObject(vecPos1, vecVel1, 1E17);
     Vector2 vecPos2 = new Vector2(new double[]{900, 570});
     Vector2 vecVel2 = new Vector2(new double[]{100, 0});
-    SpaceObject obj2 = new SpaceObject(vecPos2, vecVel2, 1E17);
+    //SpaceObject obj2 = new SpaceObject(vecPos2, vecVel2, 1E17);
     Vector2 vecPos3 = new Vector2(new double[]{900, 200});
     Vector2 vecVel3 = new Vector2(new double[]{-220, 0});
-    SpaceObject obj3 = new SpaceObject(vecPos3, vecVel3, 1E8);
+    //SpaceObject obj3 = new SpaceObject(vecPos3, vecVel3, 1E8);
     Vector2 vecPos4 = new Vector2(new double[]{0, 0});
     Vector2 vecVel4 = new Vector2(new double[]{0, 0});
-    SpaceObject obj4 = new SpaceObject(vecPos4, vecVel4, 1E9);
+   // SpaceObject obj4 = new SpaceObject(vecPos4, vecVel4, 1E9);
     
     SpaceObject obj1a = obj1.clone();
     SpaceObject obj2a = obj2.clone();
@@ -58,7 +58,7 @@ public class World extends JPanel implements Runnable {
     SpaceObject obj3b = obj3.clone();
     SpaceObject obj4b = obj4.clone();
     
-    /*
+    
     Physics2D.World int1 = new World(obj1, obj2, obj3, obj4);
     NBodyIntegrator int2 = new NBodyIntegrator(obj1a, obj2a, obj3a, obj4a);
     NBodyIntegrator int3 = new NBodyIntegrator(obj1b, obj2b, obj3b, obj4b);
@@ -66,7 +66,7 @@ public class World extends JPanel implements Runnable {
     Thread thread;
 
     public World() {
-         
+        /*
         obj1a.setColour(Color.yellow);
         obj2a.setColour(Color.yellow);
         obj3a.setColour(Color.yellow);
@@ -79,7 +79,7 @@ public class World extends JPanel implements Runnable {
         //this.setPreferredSize(new Dimension(120,1000));
         this.setLayout(null);
         //this.add(ball);
-        /*
+        
         this.add(obj1.displayComponent);
         this.add(obj2.displayComponent);
         this.add(obj3.displayComponent);
@@ -91,13 +91,13 @@ public class World extends JPanel implements Runnable {
         this.add(obj1b.displayComponent);
         this.add(obj2b.displayComponent);
         this.add(obj3b.displayComponent);
-        this.add(obj4b.displayComponent);*/
+        this.add(obj4b.displayComponent);
         this.add(line1);
         this.add(line2);
         this.add(line3);
         this.add(line4);
         this.add(line5);
-        this.add(line6);
+        this.add(line6);*/
         this.setLocation(500, 500);
         
         this.thread = new Thread(this);
