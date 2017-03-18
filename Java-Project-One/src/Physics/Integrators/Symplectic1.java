@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Physics2D.Integrators;
+package Physics.Integrators;
 
 import Physics2D.Objects.PointBody;
 import Physics2D.Vector2;
@@ -13,35 +13,18 @@ import Physics2D.Vectors2;
  *
  * @author bowen
  */
-public class Symplectic4 implements Integrator {
+public class Symplectic1 implements Integrator {
     
     private Vector2[] accelerations;
     
     @Override
     public void apply(PointBody[] bodies, double dt) {
-        double a1 = 0.5153528374311229364D;
-        double a2 =-0.0857820194129736460D;
-        double a3 = 0.4415830236164665242D;
-        double a4 = 0.1288461583653841854D;
-        
-        double b1 = 0.1344961992774310892D;
-        double b2 =-0.2248198030794208058D;
-        double b3 = 0.7562300005156682911D;
-        double b4 = 0.3340036032863214255D;
-        
-        double[] c = new double[] {a4, a3, a2, a1};
-        double[] d = new double[] {b4, b3, b2, b1};
-        
         if (dt > 0) {
-            for (int i=0; i<4; i++) {
-                Symplectic.applySympleticPositionStep(bodies, c[i], dt);
-                accelerations = Symplectic.applySympleticVelocityStep(bodies, d[i], dt);
-            }
+            accelerations = Symplectic.applySympleticVelocityStep(bodies, 1, dt);
+            Symplectic.applySympleticPositionStep(bodies, 1, dt);
         } else {
-            for (int i=3; i>-1; i--) {
-                accelerations = Symplectic.applySympleticVelocityStep(bodies, d[i], dt);
-                Symplectic.applySympleticPositionStep(bodies, c[i], dt);
-            }
+            Symplectic.applySympleticPositionStep(bodies, 1, dt);
+            accelerations =  Symplectic.applySympleticVelocityStep(bodies, 1, dt);
         }
         
     }
@@ -77,10 +60,13 @@ public class Symplectic4 implements Integrator {
         for (int i=0; i<steps; i++) {
             apply(bodiesClone, dt);
             for (int n=0; n<bodiesClone.length; n++) {
-                positionTime[n][i] = bodiesClone[n].position();
+                positionTime[n][i] = bodiesClone[n].position().clone();
             }
         }
         return positionTime;
-        
+    }
+    @Override
+    public IntegratorType type() {
+        return IntegratorType.SYMPLECTIC1;
     }
 }

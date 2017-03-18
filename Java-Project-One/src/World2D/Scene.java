@@ -8,12 +8,13 @@ package World2D;
 import MainPackages.Main;
 import World2D.Objects.Circle;
 import World2D.Objects.DisplayObject;
+import World2D.Objects.Interpolable;
+import World2D.Objects.Line;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseWheelEvent;
 import javax.swing.JPanel;
@@ -38,18 +39,18 @@ public class Scene extends JPanel implements Runnable {
     
     private int xsize, ysize;
     
-    private World world;
+    private World[] worlds;
     
     
-    public Scene(int xsize, int ysize, World world) {
-        this(60, xsize, ysize, world);
+    public Scene(int xsize, int ysize, World... worlds) {
+        this(60, xsize, ysize, worlds);
     }
     
-    public Scene(int desiredFPS, int xsize, int ysize, World world) {
+    public Scene(int desiredFPS, int xsize, int ysize, World... worlds) {
         this.isActive = false;
         this.desiredFPS = desiredFPS;
         this.camera = new Camera(this, xsize, ysize);
-        this.world = world;
+        this.worlds = worlds;
         
         this.xsize = xsize;
         this.ysize = ysize;
@@ -87,10 +88,10 @@ public class Scene extends JPanel implements Runnable {
                         keyD = true;
                         break;
                     case KeyEvent.VK_E :
-                        world.speedUp();
+                        worlds[0].getSimulation().speedUp();
                         break;
                     case KeyEvent.VK_Q :
-                        world.speedDown();
+                        worlds[0].getSimulation().speedDown();
                         break;
                     default :
                         break;
@@ -119,11 +120,32 @@ public class Scene extends JPanel implements Runnable {
         
     }
     
+    public void setDisplayObjects(World... worlds) {
+        int length = 0;
+        for (int i=0; i<worlds.length; i++) {
+            length += worlds[i].getDisplayObjects().length;
+        }
+        this.displayObjects = new DisplayObject[length];
+        for (int n=0; n<worlds.length; n++) {
+            DisplayObject[] nDisplayObjects = worlds[n].getDisplayObjects();
+            for (int i=0; i<displayObjects.length; i++) {
+                this.displayObjects[i] = nDisplayObjects[i];
+                
+                if (this.displayObjects[i] instanceof Interpolable) {
+                    ((Interpolable)this.displayObjects[i]).setInterpolationFrameTime(1D/desiredFPS); //TODO Calculate FPS to interpolate when frametime changes
+                }
+                //this.add(displayObjects[i].getJComponent());
+            }
+        }
+    }
     public void setDisplayObjects(DisplayObject... displayObjects) {
         this.displayObjects = new DisplayObject[displayObjects.length];
         for (int i=0; i<displayObjects.length; i++) {
             this.displayObjects[i] = displayObjects[i];
-            this.displayObjects[i].setInterpolationFrameTime(1D/desiredFPS); //TODO Calculate FPS to interpolate when frametime changes
+            
+                if (this.displayObjects[i] instanceof Interpolable) {
+                    ((Interpolable)this.displayObjects[i]).setInterpolationFrameTime(1D/desiredFPS); //TODO Calculate FPS to interpolate when frametime changes
+                }
             //this.add(displayObjects[i].getJComponent());
         }
     }
@@ -178,14 +200,14 @@ public class Scene extends JPanel implements Runnable {
     {
         super.paintComponent(g);
         drawAllObjects(g);
-        g.setColor(Color.yellow);
+        g.setColor(Color.YELLOW);
         g.drawLine(0, 0, 0, 1080);
         g.drawLine(0, 0, 1920, 0);
         g.drawLine(1920, 0, 1920, 1080);
         g.drawLine(0, 1080, 1920, 1080);
         
         Graphics2D g2 = (Graphics2D)g;
-        g.drawString(secondsToText(world.getSpeed()) + "", 0, 20);
+        g.drawString(secondsToText(worlds[0].getSimulation().getSpeed()) + "", 10, 20);
         
         /*g.setColor(Color.RED);
         g.drawRect(150,10,100,20);  
@@ -203,6 +225,9 @@ public class Scene extends JPanel implements Runnable {
                     case Circle:
                         drawCircle(g, (Circle)displayObjects[i]);
                         break;
+                    case Line:
+                        drawLine(g, (Line)displayObjects[i]);
+                        break;
                     default:
                         break;
                 }
@@ -213,8 +238,12 @@ public class Scene extends JPanel implements Runnable {
     private void drawCircle(Graphics g, Circle circle) {
         int r = circle.getRadius();
         g.setColor(circle.getColor());
-        g.fillOval(circle.getDispx(), circle.getDispy(), r*2, r*2);
-        g.drawString(circle.getName(), circle.getDispx()+20, circle.getDispy()+r*2);
+        g.fillOval(circle.getDix(), circle.getDiy(), r*2, r*2);
+        g.drawString(circle.getName(), circle.getDix()+20, circle.getDiy()+r*2);
+    }
+    private void drawLine(Graphics g, Line line) {
+        g.setColor(line.getColor());
+        g.drawLine(line.getDix0(), line.getDiy0(), line.getDix1(), line.getDiy1());
     }
     
     @Override

@@ -37,7 +37,8 @@ public class SpaceObject extends PointBody {
     }
     @Override
     public final void update() {
-        displayComponent.updateCoordinates(position().get(0), position().get(1), velocity().get(0), velocity().get(1));
+        displayComponent.setPos(position().get(0), position().get(1));
+        displayComponent.setVel(velocity().get(0), velocity().get(1));
     }
     public void setColour(Color color) {
         displayComponent.setColor(color);

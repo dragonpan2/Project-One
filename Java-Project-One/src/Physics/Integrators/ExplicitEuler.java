@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Physics2D.Integrators;
+package Physics.Integrators;
 
 import Physics2D.Objects.PointBody;
 import Physics2D.Vector2;
@@ -57,11 +57,16 @@ public class ExplicitEuler implements Integrator {
         for (int i=0; i<steps; i++) {
             apply(bodiesClone, dt);
             for (int n=0; n<bodiesClone.length; n++) {
-                positionTime[n][i] = bodiesClone[n].position();
+                positionTime[n][i] = bodiesClone[n].position().clone();
             }
         }
         return positionTime;
         
+    }
+
+    @Override
+    public IntegratorType type() {
+        return IntegratorType.EXPLICITEULER;
     }
 
 }

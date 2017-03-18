@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Physics2D.Integrators;
+package Physics.Integrators;
 
 import Physics2D.Objects.PointBody;
 import Physics2D.Vector2;
@@ -21,4 +21,5 @@ public interface Integrator {
     public Vector2[] getCurrentAccelerations();
     public PointBody[] get(PointBody[] bodies, double dt, int steps);
     public Vector2[][] getFuture(PointBody[] bodies, double dt, int steps);
+    public IntegratorType type();
 }

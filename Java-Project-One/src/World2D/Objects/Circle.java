@@ -14,7 +14,7 @@ import javax.swing.JComponent;
  *
  * @author bowen
  */
-public class Circle implements DisplayObject {
+public class Circle implements DisplayObject, Interpolable {
 
     double x;
     double y;
@@ -34,8 +34,8 @@ public class Circle implements DisplayObject {
     double xscroffset;
     double yscroffset;
     
-    int dispx;
-    int dispy;
+    int dix;
+    int diy;
     
     String name;
     Color color;
@@ -68,19 +68,12 @@ public class Circle implements DisplayObject {
         double ipx = x + stepsWithoutUpdate * idt * vx;
         double ipy = y + stepsWithoutUpdate * idt * vy;
         
-        dispx = (int)(((ipx-xoffset)*scaleoffset)+xscroffset-r+0.5);
-        dispy = (int)(((ipy-yoffset)*scaleoffset)+yscroffset-r+0.5);
+        dix = (int)(((ipx-xoffset)*scaleoffset)+xscroffset-r+0.5);
+        diy = (int)(((ipy-yoffset)*scaleoffset)+yscroffset-r+0.5);
         stepsWithoutUpdate++;
     }
     public void setColor(Color color) {
         this.color = color;
-    }
-    public void updateCoordinates(double x, double y, double vx, double vy) {
-        stepsWithoutUpdate = 0;
-        this.x = x;
-        this.y = y;
-        this.vx = vx;
-        this.vy = vy;
     }
     @Override
     public void setInterpolationFrameTime(double dft) {
@@ -110,15 +103,18 @@ public class Circle implements DisplayObject {
     public DisplayObjectType getType() {
         return DisplayObjectType.Circle;
     }
-    public int getDispx() {
-        return dispx;
+    @Override
+    public int getDix() {
+        return dix;
     }
-    public int getDispy() {
-        return dispy;
+    @Override
+    public int getDiy() {
+        return diy;
     }
     public int getRadius() {
         return (int)(radius*(scaleoffset)+5);
     }
+    @Override
     public Color getColor() {
         return color;
     }
@@ -128,7 +124,20 @@ public class Circle implements DisplayObject {
 
     @Override
     public boolean isInView(int x0, int y0, int x1, int y1) {
-        return (dispx >= x0 && dispx <= x1 && dispy >= y0 && dispy <= y1);
+        return (dix >= x0 && dix <= x1 && diy >= y0 && diy <= y1);
+    }
+
+    @Override
+    public void setPos(double x, double y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    @Override
+    public void setVel(double vx, double vy) {
+        stepsWithoutUpdate = 0;
+        this.vx = vx;
+        this.vy = vy;
     }
 
     

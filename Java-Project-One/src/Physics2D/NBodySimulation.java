@@ -5,23 +5,27 @@
  */
 package Physics2D;
 
-import Physics2D.Integrators.ExplicitEuler;
-import Physics2D.Integrators.Integrator;
-import Physics2D.Integrators.Integrator.IntegratorType;
-import Physics2D.Integrators.Symplectic1;
-import Physics2D.Integrators.Symplectic4;
+import Physics.FutureSimulation;
+import Physics.Simulation;
+import Physics.Integrators.ExplicitEuler;
+import Physics.Integrators.Integrator;
+import Physics.Integrators.Integrator.IntegratorType;
+import Physics.Integrators.Symplectic1;
+import Physics.Integrators.Symplectic4;
 import Physics2D.Objects.SpaceObject;
 import World2D.Objects.DisplayObject;
+import World2D.Objects.Line;
 import World2D.World;
 
 /**
  *
  * @author bowen
  */
-public class Simulation implements Runnable, World {
+public class NBodySimulation implements Runnable, World, Simulation {
     private Thread thread;
     private SpaceObject[] objects;
     private Integrator integrator;
+    private FutureSimulation futureIntegrator;
     
     private double updatesPerSecond; //How many "Big steps" per second
     private int miniSteps; //How many "Small Steps" per Big step
@@ -34,7 +38,10 @@ public class Simulation implements Runnable, World {
     
     private boolean isPaused;
     
-    public Simulation(IntegratorType integrator, double ratio, double updatesPerSecond, int miniSteps, SpaceObject... objects) {
+    public NBodySimulation(IntegratorType integrator, double ratio, double updatesPerSecond, int miniSteps, SpaceObject... objects) {
+        this(integrator, ratio, updatesPerSecond, miniSteps, new NBodyFuturePath(integrator, ratio, 10, 10, updatesPerSecond/2, objects), objects);
+    }
+    public NBodySimulation(IntegratorType integrator, double ratio, double updatesPerSecond, int miniSteps, FutureSimulation futureSimulation, SpaceObject... objects) {
         this.isPaused = true;
         this.objects = objects;
         this.initialRatio = ratio;
@@ -42,7 +49,6 @@ public class Simulation implements Runnable, World {
         this.updatesPerSecond = updatesPerSecond;
         this.secondsPerMiniStep = ratio/updatesPerSecond/miniSteps;
         this.miniSteps = (miniSteps > 0) ? miniSteps : 1;
-        System.out.println(secondsPerMiniStep);
         switch(integrator) {
             case NOFORCE:
                 break;
@@ -56,27 +62,26 @@ public class Simulation implements Runnable, World {
                 this.integrator = new Symplectic1();
                 break;
         }
+        this.futureIntegrator = futureSimulation;
         this.thread = new Thread(this);
+    }
+    @Override
+    public void step() {
+        forward(1);
     }
     public void forward(int steps) {
         for (int i=0; i<steps; i++) {
             integrator.apply(objects, secondsPerMiniStep);
         }
     }
-    public double forward(double seconds) { //takes the wished time, returns the time that passed in reality
-        int steps = (int)(seconds/secondsPerMiniStep);
-        for (int i=0; i<steps; i++) {
-            integrator.apply(objects, secondsPerMiniStep);
-        }
-        return seconds * secondsPerMiniStep;
-    }
-    public void updateGraphicalPositions() {
+    private void updateSpatialPositions() {
+        futureIntegrator.setRatio(ratio);
         Vector2[] currentAccelerations = integrator.getCurrentAccelerations();
         for (int i=0; i<objects.length; i++) {
             objects[i].update();
         }
     }
-    public void updateInterpolationSimulationTime(double time) { //Total time to interpolate before next physics Big Step
+    private void updateInterpolationSimulationTime(double time) { //Total time to interpolate before next physics Big Step
         for (int i=0; i<objects.length; i++) {
             objects[i].displayComponent.setInterpolationSimulationTime(time);
         }
@@ -86,6 +91,7 @@ public class Simulation implements Runnable, World {
         if (accel < 10E6) {
             accel *= 2;
             ratio = initialRatio * accel;
+            this.futureIntegrator.setRatio(ratio);
         }
     }
     @Override
@@ -93,21 +99,29 @@ public class Simulation implements Runnable, World {
         if (accel > 1) {
             accel /= 2;
             ratio = initialRatio * accel;
+            this.futureIntegrator.setRatio(ratio);
         }
     }
     @Override
     public double getSpeed() {
         return initialRatio * accel;
     }
+    @Override
     public void start() {
         this.thread.start();
+        this.futureIntegrator.start();
         unpause();
+        this.futureIntegrator.unpause();
     }
+    @Override
     public void pause() {
         this.isPaused = true;
+        this.futureIntegrator.pause();
     }
+    @Override
     public void unpause() {
         this.isPaused = false;
+        this.futureIntegrator.unpause();
     }
     @Override
     public void run() {
@@ -126,7 +140,7 @@ public class Simulation implements Runnable, World {
                 
                 startTime = System.nanoTime();
                 forward(miniSteps*accel);
-                updateGraphicalPositions();
+                updateSpatialPositions();
                 endTime = System.nanoTime();
                 
                 
@@ -155,9 +169,16 @@ public class Simulation implements Runnable, World {
 
     @Override
     public DisplayObject[] getDisplayObjects() {
-        DisplayObject[] displayObjects = new DisplayObject[objects.length];
-        for (int i=0; i<objects.length; i++) {
-            displayObjects[i] = objects[i].getDisplayObject();
+        DisplayObject[] lines = this.futureIntegrator.getDisplayObjects();
+        
+        
+        DisplayObject[] displayObjects = new DisplayObject[objects.length + lines.length];
+        for (int i=0; i<displayObjects.length; i++) {
+            if (i < objects.length) {
+                displayObjects[i] = objects[i].getDisplayObject();
+            } else {
+                displayObjects[i] = lines[i-objects.length];
+            }
         }
         return displayObjects;
     }
@@ -165,5 +186,10 @@ public class Simulation implements Runnable, World {
     @Override
     public long getTicks() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Simulation getSimulation() {
+        return this;
     }
 }
