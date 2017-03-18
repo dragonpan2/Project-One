@@ -16,6 +16,7 @@ import Physics2D.Objects.SpaceObject;
 import World2D.Objects.DisplayObject;
 import World2D.Objects.Line;
 import World2D.World;
+import java.util.Date;
 
 /**
  *
@@ -27,10 +28,6 @@ public class NBodyFuturePath implements Runnable, World, FutureSimulation {
     private SpaceObject[] smallObjects;
     private SpaceObject[] bigObjects;
     
-    private double[] orbitalPeriods;
-    
-    private Line[] lines;
-    private Line[] orbitLines;
     private Line[] pathLines;
     private Integrator integrator;
     
@@ -47,7 +44,7 @@ public class NBodyFuturePath implements Runnable, World, FutureSimulation {
     private boolean isPaused;
     
     
-    public NBodyFuturePath(IntegratorType integrator, double totalFutureTime, int futureTimeSteps, double updatesPerSecond, SpaceObject[] smallObjects, SpaceObject[] bigObjects, double[] orbitalPeriods) {
+    public NBodyFuturePath(IntegratorType integrator, double totalFutureTime, int futureTimeSteps, double updatesPerSecond, SpaceObject[] smallObjects, SpaceObject[] bigObjects) {
         this.isPaused = true;
         this.futureTimeSteps = futureTimeSteps;
         this.updatesPerSecond = updatesPerSecond;
@@ -57,7 +54,6 @@ public class NBodyFuturePath implements Runnable, World, FutureSimulation {
         this.smallObjects = smallObjects;
         this.bigObjects = bigObjects;
         
-        this.orbitalPeriods = orbitalPeriods;
         this.updateOrbits = false;
         //this.smallestOrbitalPeriod = orbitalPeriods[1];
         
@@ -69,23 +65,10 @@ public class NBodyFuturePath implements Runnable, World, FutureSimulation {
                 objects[i] = bigObjects[i-smallObjects.length];
             }
         }
-        this.orbitLines = new Line[(futureTimeSteps+Math.floorDiv(futureTimeSteps, 100))*bigObjects.length];
-        for (int i=0; i<orbitLines.length; i++) {
-            orbitLines[i] = new Line();
-        }
         
         this.pathLines = new Line[(futureTimeSteps-1)*smallObjects.length];
         for (int i=0; i<pathLines.length; i++) {
             pathLines[i] = new Line();
-        }
-        
-        this.lines = new Line[orbitLines.length + pathLines.length];
-        for (int i=0; i<lines.length; i++) {
-            if (i < pathLines.length) {
-                lines[i] = pathLines[i];
-            } else {
-                lines[i] = orbitLines[i-pathLines.length];
-            }
         }
         
         
@@ -116,47 +99,6 @@ public class NBodyFuturePath implements Runnable, World, FutureSimulation {
         return ((Math.abs(x-x0) < threshold) && (Math.abs(y-y0) < threshold));
     }
     
-    private void updateOrbitPositions() {
-        
-        Vector2[][] positionTime = new Vector2[bigObjects.length][futureTimeSteps];
-        for (int i=0; i<bigObjects.length; i++) {
-            positionTime[i] = Integrator.getFutureSingle(bigObjects, i, this.integrator, orbitalPeriods[i]/futureTimeSteps, futureTimeSteps+Math.floorDiv(futureTimeSteps, 100));
-        }
-        int linei = 0;
-        
-        //final double orbitThreshold = 1E9;
-        //final int timeTriggerThreshold = 100;
-        //final int timeOverlapThreshold = 10;
-        
-        for (int n=0; n<bigObjects.length; n++) {
-            //boolean isPeriodic = false;
-            //int timeOverlapCounter = 0;
-            for (int i=0; i<positionTime[n].length-1; i++) {
-                //if (i > timeTriggerThreshold) {
-                    //if (isWithinThreshold(positionTime[n][0].get(0), positionTime[n][1].get(1), positionTime[n][i].get(0), positionTime[n][i].get(1), orbitThreshold)) {
-                        //isPeriodic = true;
-                    //}
-                //}
-                //if (isPeriodic && timeOverlapCounter > timeOverlapThreshold) {
-                    //orbitLines[linei].hide();
-                //} else {
-                    //if (isPeriodic) {
-                        //timeOverlapCounter++;
-                    //}
-                    orbitLines[linei].setPos(positionTime[n][i].get(0), positionTime[n][i].get(1), positionTime[n][i+1].get(0), positionTime[n][i+1].get(1));
-                    orbitLines[linei].show();
-                //}
-                
-                linei++;
-            }
-                //orbitLines[linei].setPos(positionTime[n][positionTime[n].length-1].get(0), positionTime[n][positionTime[n].length-1].get(1), positionTime[n][0].get(0), positionTime[n][0].get(1));
-                //orbitLines[linei].show();
-        }
-    }
-    
-    public void forceUpdateOrbitPositions() {
-        this.updateOrbits = true;
-    }
     
     private void updatePathPositions() { //TODO implement variable timesteps for path positions based on velocity
         Vector2[][] positionTime = Integrator.getFuture(objects, this.integrator, totalFutureTime/futureTimeSteps, futureTimeSteps);
@@ -213,15 +155,11 @@ public class NBodyFuturePath implements Runnable, World, FutureSimulation {
         long endTime;
         long sleepTime;
         
-        updateOrbitPositions();
         
         while (true) {
             if (!isPaused) {
                 
                 startTime = System.nanoTime();
-                if (updateOrbits) {
-                    updateOrbitPositions();
-                }
                 step();
                 updatePathPositions();
                 endTime = System.nanoTime();
@@ -247,7 +185,7 @@ public class NBodyFuturePath implements Runnable, World, FutureSimulation {
 
     @Override
     public DisplayObject[] getDisplayObjects() {
-        DisplayObject[] displayObjects = lines;
+        DisplayObject[] displayObjects = pathLines;
         return displayObjects;
     }
 
@@ -283,6 +221,11 @@ public class NBodyFuturePath implements Runnable, World, FutureSimulation {
 
     @Override
     public void setBodies(SpaceObject[] bodies) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Date getDate() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

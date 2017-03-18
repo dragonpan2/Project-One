@@ -16,6 +16,7 @@ import Physics2D.Objects.SpaceObject;
 import World2D.Objects.DisplayObject;
 import World2D.Objects.Line;
 import World2D.World;
+import java.util.Date;
 
 /**
  *
@@ -23,20 +24,15 @@ import World2D.World;
  */
 public class NBodyFutureOrbit implements Runnable, World, FutureSimulation {
     private Thread thread;
-    private SpaceObject[] objects;
-    private SpaceObject[] smallObjects;
     private SpaceObject[] bigObjects;
     
     private double[] orbitalPeriods;
     
-    private Line[] lines;
     private Line[] orbitLines;
-    private Line[] pathLines;
     private Integrator integrator;
     
-    private double updatesPerSecond; //How many "Calculations" per second
+    
     private int futureTimeSteps; //How many steps does the integrator calculate for the amount of time
-    private double totalFutureTime;
     
     //private double smallestOrbitalPeriod;
     private boolean updateOrbits;
@@ -47,48 +43,20 @@ public class NBodyFutureOrbit implements Runnable, World, FutureSimulation {
     private boolean isPaused;
     
     
-    public NBodyFutureOrbit(IntegratorType integrator, double totalFutureTime, int futureTimeSteps, double updatesPerSecond, SpaceObject[] smallObjects, SpaceObject[] bigObjects, double[] orbitalPeriods) {
+    public NBodyFutureOrbit(IntegratorType integrator, int futureTimeSteps, SpaceObject[] bigObjects, double[] orbitalPeriods) {
         this.isPaused = true;
         this.futureTimeSteps = futureTimeSteps;
-        this.updatesPerSecond = updatesPerSecond;
-        this.totalFutureTime = totalFutureTime;
-        this.ratio = totalFutureTime;
         
-        this.smallObjects = smallObjects;
         this.bigObjects = bigObjects;
         
         this.orbitalPeriods = orbitalPeriods;
         this.updateOrbits = false;
         //this.smallestOrbitalPeriod = orbitalPeriods[1];
         
-        this.objects = new SpaceObject[bigObjects.length + smallObjects.length];
-        for (int i=0; i<objects.length; i++) {
-            if (i < smallObjects.length) {
-                objects[i] = smallObjects[i];
-            } else {
-                objects[i] = bigObjects[i-smallObjects.length];
-            }
-        }
         this.orbitLines = new Line[(futureTimeSteps+Math.floorDiv(futureTimeSteps, 100))*bigObjects.length];
         for (int i=0; i<orbitLines.length; i++) {
             orbitLines[i] = new Line();
         }
-        
-        this.pathLines = new Line[(futureTimeSteps-1)*smallObjects.length];
-        for (int i=0; i<pathLines.length; i++) {
-            pathLines[i] = new Line();
-        }
-        
-        this.lines = new Line[orbitLines.length + pathLines.length];
-        for (int i=0; i<lines.length; i++) {
-            if (i < pathLines.length) {
-                lines[i] = pathLines[i];
-            } else {
-                lines[i] = orbitLines[i-pathLines.length];
-            }
-        }
-        
-        
         
         switch(integrator) {
             case NOFORCE:
@@ -105,10 +73,6 @@ public class NBodyFutureOrbit implements Runnable, World, FutureSimulation {
         }
         this.thread = new Thread(this);
     }
-    @Override
-    public void step() {
-        compute();
-    }
     public void compute() {
         //Vector2[][] positionTime = integrator.getFuture(objects, ratio/stepsPerRatioTime, futureRatioSteps*stepsPerRatioTime);
     }
@@ -116,7 +80,8 @@ public class NBodyFutureOrbit implements Runnable, World, FutureSimulation {
         return ((Math.abs(x-x0) < threshold) && (Math.abs(y-y0) < threshold));
     }
     
-    private void updateOrbitPositions() {
+    @Override
+    public void step() {
         
         Vector2[][] positionTime = new Vector2[bigObjects.length][futureTimeSteps];
         for (int i=0; i<bigObjects.length; i++) {
@@ -151,6 +116,7 @@ public class NBodyFutureOrbit implements Runnable, World, FutureSimulation {
             }
                 //orbitLines[linei].setPos(positionTime[n][positionTime[n].length-1].get(0), positionTime[n][positionTime[n].length-1].get(1), positionTime[n][0].get(0), positionTime[n][0].get(1));
                 //orbitLines[linei].show();
+                //linei++;
         }
     }
     
@@ -158,38 +124,6 @@ public class NBodyFutureOrbit implements Runnable, World, FutureSimulation {
         this.updateOrbits = true;
     }
     
-    private void updatePathPositions() { //TODO implement variable timesteps for path positions based on velocity
-        Vector2[][] positionTime = Integrator.getFuture(objects, this.integrator, totalFutureTime/futureTimeSteps, futureTimeSteps);
-        int linei = 0;
-        
-        final double orbitThreshold = 1E9;
-        final int timeTriggerThreshold = 100;
-        final int timeOverlapThreshold = 10;
-        
-        for (int n=0; n<smallObjects.length; n++) {
-            System.out.println(n);
-            boolean isPeriodic = false;
-            int timeOverlapCounter = 0;
-            for (int i=0; i<positionTime[n].length-1; i++) {
-                if (i > timeTriggerThreshold) {
-                    if (isWithinThreshold(positionTime[n][0].get(0), positionTime[n][1].get(1), positionTime[n][i].get(0), positionTime[n][i].get(1), orbitThreshold)) {
-                        isPeriodic = true;
-                    }
-                }
-                if (isPeriodic && timeOverlapCounter > timeOverlapThreshold) {
-                    pathLines[linei].hide();
-                } else {
-                    if (isPeriodic) {
-                        timeOverlapCounter++;
-                    }
-                    pathLines[linei].setPos(positionTime[n][i].get(0), positionTime[n][i].get(1), positionTime[n][i+1].get(0), positionTime[n][i+1].get(1));
-                    pathLines[linei].show();
-                }
-                
-                linei++;
-            }
-        }
-    }
     @Override
     public void start() {
         this.thread.start();
@@ -206,24 +140,22 @@ public class NBodyFutureOrbit implements Runnable, World, FutureSimulation {
     @Override
     public void run() {
         
-        double desiredSleepms = 1000D/updatesPerSecond; //Desired sleep time in miliseconds
-        double desiredSleepns = 1000000000D/updatesPerSecond;
+        double desiredSleepms = 1000D;
         
         long startTime;
         long endTime;
         long sleepTime;
         
-        updateOrbitPositions();
+        step();
         
         while (true) {
             if (!isPaused) {
                 
                 startTime = System.nanoTime();
                 if (updateOrbits) {
-                    updateOrbitPositions();
+                    step();
+                    updateOrbits = false;
                 }
-                step();
-                updatePathPositions();
                 endTime = System.nanoTime();
                 
                 sleepTime = (long)(desiredSleepms*1000000) - (endTime-startTime);
@@ -247,8 +179,7 @@ public class NBodyFutureOrbit implements Runnable, World, FutureSimulation {
 
     @Override
     public DisplayObject[] getDisplayObjects() {
-        DisplayObject[] displayObjects = lines;
-        return displayObjects;
+        return orbitLines;
     }
 
     @Override
@@ -283,6 +214,11 @@ public class NBodyFutureOrbit implements Runnable, World, FutureSimulation {
 
     @Override
     public void setBodies(SpaceObject[] bodies) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Date getDate() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

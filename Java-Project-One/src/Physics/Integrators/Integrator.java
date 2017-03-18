@@ -44,7 +44,12 @@ public interface Integrator {
         
         Vector2[][] positionTime = new Vector2[bodiesClone.length][steps];
         
-        for (int i=0; i<steps; i++) {
+        
+        for (int n=0; n<bodiesClone.length; n++) {
+            positionTime[n][0] = bodiesClone[n].position().clone();
+        }
+        
+        for (int i=1; i<steps; i++) {
             integrator.apply(bodiesClone, dt);
             for (int n=0; n<bodiesClone.length; n++) {
                 positionTime[n][i] = bodiesClone[n].position().clone();
@@ -62,7 +67,8 @@ public interface Integrator {
         
         Vector2[] positionTime = new Vector2[steps];
         
-        for (int i=0; i<steps; i++) {
+        positionTime[0] = bodiesClone[k].position().clone();
+        for (int i=1; i<steps; i++) {
             integrator.apply(bodiesClone, dt);
             positionTime[i] = bodiesClone[k].position().clone();
         }

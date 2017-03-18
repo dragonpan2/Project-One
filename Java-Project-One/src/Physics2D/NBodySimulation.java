@@ -16,6 +16,7 @@ import Physics2D.Objects.SpaceObject;
 import World2D.Objects.DisplayObject;
 import World2D.Objects.Line;
 import World2D.World;
+import java.util.Date;
 
 /**
  *
@@ -26,6 +27,7 @@ public class NBodySimulation implements Runnable, World, Simulation {
     private SpaceObject[] objects;
     private Integrator integrator;
     private FutureSimulation futureIntegrator;
+    private NBodyFutureOrbit orbitIntegrator;
     
     private double updatesPerSecond; //How many "Big steps" per second
     private int miniSteps; //How many "Small Steps" per Big step
@@ -35,14 +37,18 @@ public class NBodySimulation implements Runnable, World, Simulation {
     
     private int accel = 1;
     
+    private Date date;
     
     private boolean isPaused;
     /*
     public NBodySimulation(IntegratorType integrator, double ratio, double updatesPerSecond, int miniSteps, SpaceObject... objects) {
         this(integrator, ratio, updatesPerSecond, miniSteps, new NBodyFuturePath(integrator, ratio, 100, updatesPerSecond/2, objects), objects);
     }*/
-    public NBodySimulation(IntegratorType integrator, double ratio, double updatesPerSecond, int miniSteps, FutureSimulation futureSimulation, SpaceObject... objects) {
+    public NBodySimulation(IntegratorType integrator, double ratio, double updatesPerSecond, int miniSteps, FutureSimulation futureSimulation, NBodyFutureOrbit futureOrbit, Date date, SpaceObject... objects) {
         this.isPaused = true;
+        
+        this.date = date;
+        
         this.objects = objects;
         this.initialRatio = ratio;
         this.ratio = ratio;
@@ -63,6 +69,7 @@ public class NBodySimulation implements Runnable, World, Simulation {
                 break;
         }
         this.futureIntegrator = futureSimulation;
+        this.orbitIntegrator = futureOrbit;
         this.thread = new Thread(this);
     }
     @Override
@@ -70,6 +77,8 @@ public class NBodySimulation implements Runnable, World, Simulation {
         forward(1);
     }
     public void forward(int steps) {
+        long newTime = date.getTime() + (long)(1000 * steps * secondsPerMiniStep);
+        date = new Date(newTime);
         for (int i=0; i<steps; i++) {
             integrator.apply(objects, secondsPerMiniStep);
         }
@@ -107,18 +116,22 @@ public class NBodySimulation implements Runnable, World, Simulation {
     public void start() {
         this.thread.start();
         this.futureIntegrator.start();
+        this.orbitIntegrator.start();
         unpause();
         this.futureIntegrator.unpause();
+        this.orbitIntegrator.unpause();
     }
     @Override
     public void pause() {
         this.isPaused = true;
         this.futureIntegrator.pause();
+        this.orbitIntegrator.pause();
     }
     @Override
     public void unpause() {
         this.isPaused = false;
         this.futureIntegrator.unpause();
+        this.orbitIntegrator.unpause();
     }
     @Override
     public void run() {
@@ -131,7 +144,7 @@ public class NBodySimulation implements Runnable, World, Simulation {
         long sleepTime;
         
         int orbitIters = 0;
-        final int orbitTimer = 100000;
+        final int orbitTimer = 1000;
         
         double realLagRatio;
         
@@ -139,8 +152,8 @@ public class NBodySimulation implements Runnable, World, Simulation {
             if (!isPaused) {
                 
                 startTime = System.nanoTime();
-                if (orbitIters > orbitTimer) {
-                    futureIntegrator.forceUpdateOrbitPositions();
+                if (orbitIters > orbitTimer || orbitIters < 0) {
+                    orbitIntegrator.forceUpdateOrbitPositions();
                     orbitIters = 0;
                 }
                 
@@ -177,15 +190,45 @@ public class NBodySimulation implements Runnable, World, Simulation {
 
     @Override
     public DisplayObject[] getDisplayObjects() {
+        DisplayObject[] orbits = this.orbitIntegrator.getDisplayObjects();
         DisplayObject[] lines = this.futureIntegrator.getDisplayObjects();
         
+        int objectsCount = 0;
         
-        DisplayObject[] displayObjects = new DisplayObject[objects.length + lines.length];
-        for (int i=0; i<displayObjects.length; i++) {
-            if (i < objects.length) {
-                displayObjects[i] = objects[i].getDisplayObject();
-            } else {
-                displayObjects[i] = lines[i-objects.length];
+        for (SpaceObject object : objects) {
+            if (!object.displayComponent.isHidden()) {
+                objectsCount++;
+            }
+        }
+        for (DisplayObject orbit : orbits) {
+            if (!orbit.isHidden()) {
+                objectsCount++;
+            }
+        }
+        for (DisplayObject line : lines) {
+            if (!line.isHidden()) {
+                objectsCount++;
+            }
+        }
+        DisplayObject[] displayObjects = new DisplayObject[objectsCount];
+        int objectsIndex = 0;
+        
+        for (SpaceObject object : objects) {
+            if (!object.displayComponent.isHidden()) {
+                displayObjects[objectsIndex] = object.displayComponent;
+                objectsIndex++;
+            }
+        }
+        for (DisplayObject orbit : orbits) {
+            if (!orbit.isHidden()) {
+                displayObjects[objectsIndex] = orbit;
+                objectsIndex++;
+            }
+        }
+        for (DisplayObject line : lines) {
+            if (!line.isHidden()) {
+                displayObjects[objectsIndex] = line;
+                objectsIndex++;
             }
         }
         return displayObjects;
@@ -199,5 +242,10 @@ public class NBodySimulation implements Runnable, World, Simulation {
     @Override
     public Simulation getSimulation() {
         return this;
+    }
+
+    @Override
+    public Date getDate() {
+        return date;
     }
 }

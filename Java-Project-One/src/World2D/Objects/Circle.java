@@ -42,10 +42,10 @@ public class Circle implements DisplayObject, Interpolable {
     private String name;
     private Color color;
     
-    public Circle(String name, int r) {
+    public Circle(String name, double r) {
         this(name, Color.WHITE, r);
     }
-    public Circle(String name, Color color, int r) {
+    public Circle(String name, Color color, double r) {
         //this.setSize(r*2, r*2);
         this.isHidden = false;
         this.name = name;
@@ -64,7 +64,7 @@ public class Circle implements DisplayObject, Interpolable {
         this.setLocation(dispx, dispy);
     }*/
     private void interpolationStep() {
-        int r = (int)(this.radius*(scaleoffset)+5);
+        int r = (int)(this.radius*(scaleoffset/1000)+5);
         double idt = dst * dft;
         
         
@@ -115,7 +115,7 @@ public class Circle implements DisplayObject, Interpolable {
         return diy;
     }
     public int getRadius() {
-        return (int)(radius*(scaleoffset)+5);
+        return (int)(radius*(scaleoffset/1000)+5);
     }
     @Override
     public Color getColor() {

@@ -5,21 +5,16 @@
  */
 package MainPackages;
 
-import MathExt.Algebra.Matrices;
-import MathExt.Algebra.Tensor;
-import MathExt.Algebra.Matrix;
-import MathExt.Algebra.Tensors;
-import MathExt.Approx;
-import java.util.Arrays;
-import MathExt.Ext;
-import MathExt.Fast;
 import Physics.Integrators.Integrator.IntegratorType;
+import Physics2D.NBodyFutureOrbit;
 import Physics2D.NBodyFuturePath;
 import Physics2D.Objects.SpaceObject;
 import Physics2D.NBodySimulation;
 import Physics2D.Vector2;
 import World2D.Scene;
 import World2D.Viewport;
+import java.text.DateFormat;
+import java.util.Date;
 /**
  *
  * @author Lin-Li
@@ -45,10 +40,12 @@ public class Main {
         SpaceObject uranus = generateBody("Uranus", 1.822435404251011E+01, 8.083455869795067E+00, -1.623364621989834E-03, 3.411947644480543E-03, 8.681E25);
         SpaceObject neptune = generateBody("Neptune", 2.841221822673949E+01, -9.468008842306654E+00, 9.711403807320941E-04, 2.996820640231039E-03, 1.024E26);
         
+        Date initialDate = new Date(1489636800000l);
+        
         SpaceObject[] bigObjects = new SpaceObject[] {sun, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune};
         SpaceObject[] smallObjects = new SpaceObject[] {};
         
-        double[] orbitalPeriodsInDays = new double[] {1, 87.97, 224.7, 365.26, 686.98, 4332.82, 10755.7, 30687.15, 60190.03};
+        double[] orbitalPeriodsInDays = new double[] {1E4, 87.97, 224.7, 365.26, 686.98, 4332.82, 10755.7, 30687.15, 60190.03};
         
         double[] orbitalPeriods = new double[orbitalPeriodsInDays.length];
         
@@ -66,8 +63,9 @@ public class Main {
         }
         
         
-        NBodyFuturePath futureIntegrator = new NBodyFuturePath(IntegratorType.SYMPLECTIC1, 1E8, 1000, 1, smallObjects, bigObjects, orbitalPeriods);
-        NBodySimulation space = new NBodySimulation(IntegratorType.SYMPLECTIC4, 1E5, 30, 1, futureIntegrator, allObjects);
+        NBodyFuturePath futureIntegrator = new NBodyFuturePath(IntegratorType.SYMPLECTIC1, 1E8, 200, 1, smallObjects, bigObjects);
+        NBodyFutureOrbit orbitIntegrator = new NBodyFutureOrbit(IntegratorType.SYMPLECTIC4, 100, bigObjects, orbitalPeriods);
+        NBodySimulation space = new NBodySimulation(IntegratorType.SYMPLECTIC4, 1E5, 30, 1, futureIntegrator, orbitIntegrator, initialDate, allObjects);
         
         Scene scene = new Scene(60, 1920, 1080, space);
         Viewport viewport = new Viewport(1920, 1080, scene);

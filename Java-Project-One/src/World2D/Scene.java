@@ -209,7 +209,8 @@ public class Scene extends JPanel implements Runnable {
         g.drawLine(0, 1080, 1920, 1080);
         
         Graphics2D g2 = (Graphics2D)g;
-        g.drawString(secondsToText(worlds[0].getSimulation().getSpeed()) + "", 10, 20);
+        g.drawString(worlds[0].getSimulation().getDate().toGMTString(), 10, 20);
+        g.drawString(secondsToText(worlds[0].getSimulation().getSpeed()), 10, 40);
         
         /*g.setColor(Color.RED);
         g.drawRect(150,10,100,20);  
@@ -222,7 +223,8 @@ public class Scene extends JPanel implements Runnable {
     
     private void drawAllObjects(Graphics g) {
         for (int i=0; i<displayObjects.length; i++) {
-            if (displayObjects[i].isInView(-50, -50, 1920+50, 1080+50) && !displayObjects[i].isHidden()) {
+            //if (displayObjects[i].isInView(-50, -50, 1920+50, 1080+50) && !displayObjects[i].isHidden()) {
+            if (!displayObjects[i].isHidden()) {
                 switch(displayObjects[i].getType()) {
                     case Circle:
                         drawCircle(g, (Circle)displayObjects[i]);

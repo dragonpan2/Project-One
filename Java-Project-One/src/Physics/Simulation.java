@@ -6,6 +6,7 @@
 package Physics;
 
 import World2D.Objects.DisplayObject;
+import java.util.Date;
 
 /**
  *
@@ -13,6 +14,7 @@ import World2D.Objects.DisplayObject;
  */
 public interface Simulation { //Any collection of objects that are simulable
     public long getTicks();
+    public Date getDate();
     public double getSpeed();
     
     public void start();
