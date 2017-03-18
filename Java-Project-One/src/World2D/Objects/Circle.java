@@ -24,8 +24,6 @@ public class Circle implements DisplayObject {
     
     double vx;
     double vy;
-    double ax;
-    double ay;
     double dst;
     double dft;
     
@@ -66,11 +64,9 @@ public class Circle implements DisplayObject {
         int r = (int)(this.radius*(scaleoffset)+5);
         double idt = dst * dft;
         
-        double ivx = vx + (0.5)*ax*(idt*stepsWithoutUpdate*idt*stepsWithoutUpdate);
-        double ivy = vy + (0.5)*ay*(idt*stepsWithoutUpdate*idt*stepsWithoutUpdate);
         
-        double ipx = x + stepsWithoutUpdate * idt * ivx;
-        double ipy = y + stepsWithoutUpdate * idt * ivy;
+        double ipx = x + stepsWithoutUpdate * idt * vx;
+        double ipy = y + stepsWithoutUpdate * idt * vy;
         
         dispx = (int)(((ipx-xoffset)*scaleoffset)+xscroffset-r+0.5);
         dispy = (int)(((ipy-yoffset)*scaleoffset)+yscroffset-r+0.5);
@@ -79,14 +75,12 @@ public class Circle implements DisplayObject {
     public void setColor(Color color) {
         this.color = color;
     }
-    public void updateCoordinates(double x, double y, double vx, double vy, double ax, double ay) {
+    public void updateCoordinates(double x, double y, double vx, double vy) {
         stepsWithoutUpdate = 0;
         this.x = x;
         this.y = y;
         this.vx = vx;
         this.vy = vy;
-        this.ax = ax;
-        this.ay = ay;
     }
     @Override
     public void setInterpolationFrameTime(double dft) {

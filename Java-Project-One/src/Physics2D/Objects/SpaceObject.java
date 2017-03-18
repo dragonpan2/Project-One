@@ -21,26 +21,23 @@ public class SpaceObject extends PointBody {
     public SpaceObject(String name, double mass) {
         super(mass);
         displayComponent = new Circle(name, (int)Math.log10(mass)+1);
-        update(0, 0);
+        update();
     }
 
     public SpaceObject(String name, Vector2 position, double mass) {
         super(position, mass);
         displayComponent = new Circle(name, (int)Math.log10(mass)+1);
-        update(0, 0);
+        update();
     }
 
     public SpaceObject(String name, Vector2 position, Vector2 velocity, double mass) {
         super(position, velocity, mass);
         displayComponent = new Circle(name, (int)Math.log10(mass)+1);
-        update(0, 0);
+        update();
     }
     @Override
     public final void update() {
-        update(0, 0);
-    }
-    public final void update(double ax, double ay) {
-        displayComponent.updateCoordinates(position().get(0), position().get(1), velocity().get(0), velocity().get(1), ax, ay);
+        displayComponent.updateCoordinates(position().get(0), position().get(1), velocity().get(0), velocity().get(1));
     }
     public void setColour(Color color) {
         displayComponent.setColor(color);

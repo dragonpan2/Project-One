@@ -46,7 +46,7 @@ public class Main {
         
         
         
-        Simulation space = new Simulation(IntegratorType.SYMPLECTIC4, 1, 1, 1, sun, mercury, venus, earth, mars);
+        Simulation space = new Simulation(IntegratorType.SYMPLECTIC4, 1E5, 15, 1, sun, mercury, venus, earth, mars);
         
         Scene scene = new Scene(60, 1920, 1080, space);
         Viewport viewport = new Viewport(1920, 1080, scene);

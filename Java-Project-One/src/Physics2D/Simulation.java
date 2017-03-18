@@ -29,7 +29,7 @@ public class Simulation implements Runnable, World {
     private double initialRatio;
     private double ratio; //Ratio between simulated time and real time, higher is faster
     
-    private long accel = 1;
+    private int accel = 1;
     
     
     private boolean isPaused;
@@ -73,11 +73,10 @@ public class Simulation implements Runnable, World {
     public void updateGraphicalPositions() {
         Vector2[] currentAccelerations = integrator.getCurrentAccelerations();
         for (int i=0; i<objects.length; i++) {
-            objects[i].update(currentAccelerations[i].get(0), currentAccelerations[i].get(1));
+            objects[i].update();
         }
     }
     public void updateInterpolationSimulationTime(double time) { //Total time to interpolate before next physics Big Step
-        System.out.println(time);
         for (int i=0; i<objects.length; i++) {
             objects[i].displayComponent.setInterpolationSimulationTime(time);
         }
@@ -98,7 +97,7 @@ public class Simulation implements Runnable, World {
     }
     @Override
     public double getSpeed() {
-        return ratio;
+        return initialRatio * accel;
     }
     public void start() {
         this.thread.start();
@@ -132,7 +131,8 @@ public class Simulation implements Runnable, World {
                 
                 
                 sleepTime = (long)(desiredSleepms*1000000) - (endTime-startTime);
-                realLagRatio = desiredSleepns/(endTime-startTime)*accel;
+                realLagRatio = desiredSleepns/(endTime-startTime)*ratio;
+                //realLagRatio = 0;
                 if (sleepTime < 0) {
                     sleepTime = 0;
                     System.out.println("Thread Overload");
