@@ -6,6 +6,7 @@
 package World2D.Objects;
 
 import World2D.Camera;
+import java.awt.Color;
 import javax.swing.JComponent;
 
 /**
@@ -13,8 +14,25 @@ import javax.swing.JComponent;
  * @author bowen
  */
 public interface DisplayObject {
-    public JComponent getJComponent();
+    public enum DisplayObjectType {
+        Circle, Line
+    }
+    //public JComponent getJComponent();
     public void update(Camera camera);
-    public void setInterpolationSimulationTime(double dst);
-    public void setInterpolationFrameTime(double dft);
+    
+    public void setPos(double x, double y);
+    
+    public DisplayObjectType getType();
+    public boolean isInView(int x0, int y0, int x1, int y1);
+    
+    public int getDix();
+    public int getDiy();
+    
+    public Color getColor();
+    
+    public boolean isHidden();
+    
+    public void hide();
+    public void show();
+    
 }

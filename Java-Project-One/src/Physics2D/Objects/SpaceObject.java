@@ -18,32 +18,29 @@ public class SpaceObject extends PointBody {
     
     public Circle displayComponent;
     
-    public SpaceObject() {
-    }
-
-    public SpaceObject(double mass) {
+    private double orbitalPeriod;
+    
+    public SpaceObject(String name, double mass) {
         super(mass);
-        displayComponent = new Circle((int)Math.log10(mass)+1);
-        update(0, 0);
+        displayComponent = new Circle(name, Math.log10(mass)+10);
+        update();
     }
 
-    public SpaceObject(Vector2 position, double mass) {
+    public SpaceObject(String name, Vector2 position, double mass) {
         super(position, mass);
-        displayComponent = new Circle((int)Math.log10(mass)+1);
-        update(0, 0);
+        displayComponent = new Circle(name, Math.log10(mass)+10);
+        update();
     }
 
-    public SpaceObject(Vector2 position, Vector2 velocity, double mass) {
+    public SpaceObject(String name, Vector2 position, Vector2 velocity, double mass) {
         super(position, velocity, mass);
-        displayComponent = new Circle((int)Math.log10(mass)+1);
-        update(0, 0);
+        displayComponent = new Circle(name, Math.log10(mass)+10);
+        update();
     }
     @Override
     public final void update() {
-        update(0, 0);
-    }
-    public final void update(double ax, double ay) {
-        displayComponent.updateCoordinates(position().get(0), position().get(1), velocity().get(0), velocity().get(1), ax, ay);
+        displayComponent.setPos(position().get(0), position().get(1));
+        displayComponent.setVel(velocity().get(0), velocity().get(1));
     }
     public void setColour(Color color) {
         displayComponent.setColor(color);
@@ -54,7 +51,7 @@ public class SpaceObject extends PointBody {
     }
     @Override
     public SpaceObject clone() {
-        SpaceObject newTestObject = new SpaceObject(this.position(), this.velocity(), this.mass());
+        SpaceObject newTestObject = new SpaceObject("Clone", this.position(), this.velocity(), this.mass());
         return newTestObject;
     }
 }

@@ -14,17 +14,18 @@ import javax.swing.JFrame;
 public class Viewport extends JFrame {
     private Scene scene;
     
-    public Viewport() {
-        this(new Scene());
+    public Viewport(int xsize, int ysize, World world) {
+        this(xsize, ysize, new Scene(xsize, ysize, world));
     }
-    public Viewport(Scene scene) {
+    public Viewport(int xsize, int ysize, Scene scene) {
         this.setTitle("Space!");
-        this.setSize(1920, 1080);
+        this.setSize(xsize, ysize);
         
         this.setVisible(true);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         
         this.scene = scene;
+        this.scene.setFocusable(true);
         this.add(scene);
         this.scene.activate();
     }

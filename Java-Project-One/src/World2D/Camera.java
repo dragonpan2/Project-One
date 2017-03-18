@@ -14,16 +14,22 @@ public class Camera {
     private double xPos;
     private double yPos;
     private double scale;
+    
+    private int screenOffsetx;
+    private int screenOffsety;
 
-    Camera(Scene currenScene) {
-        this(currenScene, 0, 0, 1);
+    Camera(Scene currentScene, int xsize, int ysize) {
+        this(currentScene, xsize/2, ysize/2, 1E-10, xsize, ysize);
     }
     
-    Camera(Scene currenScene, double x, double y, double s) {
+    Camera(Scene currenScene, double x, double y, double s, int xsize, int ysize) {
         this.currentScene = currenScene;
         xPos = x;
         yPos = y;
         scale = s;
+        screenOffsetx = xsize/2;
+        screenOffsety = ysize/2;
+        System.out.println(screenOffsetx);
     }
     
     public Scene scene() {
@@ -45,11 +51,39 @@ public class Camera {
     public void setyPos(double yPos) {
         this.yPos = yPos;
     }
+    
     public double getScale() {
         return scale;
     }
     public void setScale(double scale) {
         this.scale = scale;
+    }
+    
+    
+    public int getxScrOffset() {
+        return screenOffsetx;
+    }
+    public int getyScrOffset() {
+        return screenOffsety;
+    }
+    
+    public void addxPos(double x) {
+        this.xPos += x*(1/scale);
+    }
+    public void addyPos(double y) {
+        this.yPos += y*(1/scale);
+    }
+    public void addScale(int n) {
+        if (n > 0) {
+            for (int i=0; i<n; i++) {
+                scale /= 2;
+            }
+        } else {
+            n = -n;
+            for (int i=0; i<n; i++) {
+                scale *= 2;
+            }
+        }
     }
     
 }

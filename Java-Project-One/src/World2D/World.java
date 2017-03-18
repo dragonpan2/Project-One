@@ -5,13 +5,14 @@
  */
 package World2D;
 
+import Physics.Simulation;
 import World2D.Objects.DisplayObject;
 
 /**
  *
  * @author bowen
  */
-public interface World {
+public interface World { //Interfaces for world objects to be passed to Scene. Contains DisplayObjects and optionally a Simulation.
     public DisplayObject[] getDisplayObjects();
-    public long getTicks();
+    public Simulation getSimulation();
 }
